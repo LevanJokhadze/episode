@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+:root {
+  --episode-primary-dark: #1f3436;
+  --episode-primary-light: #d1e9ec;
+  --episode-secondary-blue: #b8daf0;
+  --episode-secondary-green: #d8f6c5;
+  --episode-secondary-terracotta: #fed5ca;
+
+  --episode-font-display: "Beatrice Display", "Playfair Display", serif;
+  --episode-font-body: "Untitled Sans", "Inter", "Segoe UI", Arial, sans-serif;
+}
+
+body {
+  font-family: var(--episode-font-body);
+}
+
+.episode-font-display {
+  font-family: var(--episode-font-display);
+}
+
+.episode-font-body {
+  font-family: var(--episode-font-body);
+}
