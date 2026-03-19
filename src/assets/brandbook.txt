@@ -1,48 +1,42 @@
-1. Color Palette (The "Source of Truth")
-Use these hex codes for your CSS/Tailwind configuration:
-Primary Background & Text:
-Aqua Green: #1F3436 (Main dark tone for backgrounds or headers)
-Calm Sky: #D1E9EC (Primary light tone for sections or text on dark BG)
-Secondary/Accent Colors (Use for buttons, cards, and playful UI):
-Dreamy Blue: #B8DAF0
-Sweet Green: #D8F6C5
-Terracotta: #FED5CA (Calculated from RGB 254, 213, 202)
-2. Typography Rules
-Headline Font: Beatrice Display
-Usage: Only for very short words or titles.
-Rule: Minimum size 40px.
-Character: Chunky, playful, and high contrast.
-Body & Utility Font: Untitled Sans
-Bold: Use for sub-headlines, highlights, and UI labels.
-Regular: Use for all body copy and long descriptions.
-Hierarchy: Clean, neutral, and highly readable.
-3. Layout & Visual Logic (The "Lines System")
-This is the brand's unique design signature:
-Border Thickness: Layout lines must be 1/4 of the logo line size (typically 1px to 2px on web).
-The "L" Frame: Use thin borders to create "framed" sections, inspired by the logo's bottom/right line system.
-Minimalism: No heavy shadows. Use flat colors and thin lines to separate content.
-Imagery: "Inside & Out" concept. Use window-like framing for photos. Portraits should be shot in natural daylight.
-4. Website Structure & Navigation (From Brief)
-Main Navigation Items:
-Offers
-Who we are
-Stay at Episode
-Eat and drink
-Work With Us
-CTA: Book a Room (Must be visible in header at all times).
-Key Functionalities:
-Mobile-First: Layout must prioritize mobile UX.
-Smooth Transitions: Use smooth scroll between homepage sections.
-Help Widget: Floating support/help icon in the corner.
-Two Booking Paths:
-Standard (Check-in/out, guests, promo).
-Loyalty (Login/Join for member rates).
-5. Core Copy & Taglines
-Hero Text: "Welcome to New Generation Hotel. Your space to Stay, Work and Connect."
-Brand Slogan: "More YOU."
-About Section: "Episode was created for a new generation of travelers — curious, connected, and always moving. Here, design meets smart technology, and comfort meets community."
-Tone of Voice Keywords: Innovative, Empowered, Fresh, Accessible, Intelligent, Inviting, Genuine.
-6. Room Categories & Data points
-Total Rooms: 118 guest rooms.
-Types: Solo, Double, Twin, Triple, Spinner (Special offer), Episode Special, Accessible.
-Amenities to highlight: Luxury bedlinen, organic in-house products, streamable TV.
+EPISODE HOTELS - DIGITAL-FIRST BRANDBOOK V2
+
+1) Core Palette
+- Aqua Green (Primary Dark): #1F3436
+- Calm Sky (Primary Light): #D1E9EC
+- Dreamy Blue (Tech Accent): #B8DAF0
+- Sweet Green (Status Accent): #D8F6C5
+- Terracotta (Human Accent): #FED5CA
+
+2) Interface Layer (Digital Skin)
+- Deep glass overlays over photo/video backdrops.
+- Primary panel style: backdrop blur + soft line + low-opacity glow.
+- Pattern language: subtle grids, circuit-like connectors, scan lines.
+- Avoid loud neon. Keep it premium, calm, and precise.
+
+3) Typography System
+- Display: Beatrice Display for emotional headlines.
+- Body/UI: Untitled Sans for clarity.
+- Technical Data: JetBrains Mono for stats and HUD labels.
+- Hero headline minimum: 40px.
+
+4) Motion Language
+- Smooth momentum feeling on scroll and section reveal.
+- Blur-to-focus image transitions.
+- Drawn line/circuit transitions across sections.
+- Haptic micro-hover: slight lift + glow (not bouncy).
+
+5) UX Signature
+- "Hotel OS" personality: service-first interface.
+- Booking is a command center, not a plain form.
+- Shared spaces communicate live energy (occupancy/vibe meters).
+- AI Concierge stays always reachable.
+
+6) Content Tone
+- Intelligent, effortless, inviting.
+- Human-first hospitality with data-assisted precision.
+- Tagline direction: "More YOU." + "Intelligent Stay OS".
+
+7) Product Baseline
+- 118 rooms total.
+- Types: Solo, Double, Twin, Triple, Spinner, Episode Special, Accessible.
+- Highlight features: keyless entry, smart controls, luxury comfort.
