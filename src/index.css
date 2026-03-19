@@ -12,12 +12,12 @@
   --episode-font-body: "Untitled Sans", "Inter", "Segoe UI", Arial, sans-serif;
   --episode-font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
 
-  --episode-overlay-900: rgba(11, 25, 27, 0.78);
-  --episode-overlay-700: rgba(20, 42, 45, 0.52);
-  --episode-glass-light: rgba(209, 233, 236, 0.16);
-  --episode-line-soft: rgba(209, 233, 236, 0.34);
-  --episode-text-high: #e8f6f8;
-  --episode-text-mid: rgba(232, 246, 248, 0.78);
+  --episode-overlay-900: rgba(255, 255, 255, 0.74);
+  --episode-overlay-700: rgba(255, 255, 255, 0.56);
+  --episode-glass-light: rgba(255, 255, 255, 0.72);
+  --episode-line-soft: rgba(31, 52, 54, 0.2);
+  --episode-text-high: #1f3436;
+  --episode-text-mid: rgba(31, 52, 54, 0.72);
 }
 
 html {
@@ -27,7 +27,7 @@ html {
 body {
   font-family: var(--episode-font-body);
   margin: 0;
-  background: var(--episode-primary-dark);
+  background: #f6fbfc;
 }
 
 .episode-font-display {
@@ -44,27 +44,37 @@ body {
 
 .episode-global-grid {
   background-image:
-    linear-gradient(to right, rgba(209, 233, 236, 0.06) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(209, 233, 236, 0.05) 1px, transparent 1px),
-    radial-gradient(circle at 20% 18%, rgba(184, 218, 240, 0.12), transparent 28%),
-    radial-gradient(circle at 80% 72%, rgba(216, 246, 197, 0.08), transparent 28%);
+    linear-gradient(to right, rgba(31, 52, 54, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(31, 52, 54, 0.06) 1px, transparent 1px),
+    radial-gradient(circle at 20% 18%, rgba(184, 218, 240, 0.25), transparent 28%),
+    radial-gradient(circle at 80% 72%, rgba(216, 246, 197, 0.2), transparent 28%);
   background-size: 52px 52px, 52px 52px, 100% 100%, 100% 100%;
 }
 
 .episode-glass {
-  background: linear-gradient(160deg, rgba(20, 42, 45, 0.62), rgba(11, 25, 27, 0.66));
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.82), rgba(246, 252, 253, 0.86));
   backdrop-filter: blur(10px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(209, 233, 236, 0.15);
+  box-shadow: 0 10px 26px rgba(13, 34, 37, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.episode-surface {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(244, 251, 252, 0.9));
+}
+
+.episode-kpi {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.6));
+  backdrop-filter: blur(8px);
 }
 
 .episode-nav-link {
   color: var(--episode-text-high);
+  font-size: 15px;
   transition: color 0.25s ease, text-shadow 0.25s ease;
 }
 
 .episode-nav-link:hover {
-  color: var(--episode-secondary-blue);
-  text-shadow: 0 0 12px rgba(184, 218, 240, 0.3);
+  color: #275366;
+  text-shadow: 0 0 10px rgba(184, 218, 240, 0.45);
 }
 
 .episode-scan {
@@ -104,7 +114,7 @@ body {
 
 .smart-hover:hover {
   transform: translateY(-1px);
-  box-shadow: 0 0 0 1px rgba(184, 218, 240, 0.3);
+  box-shadow: 0 0 0 1px rgba(39, 83, 102, 0.22);
 }
 
 @keyframes episodeButtonSweep {
@@ -142,6 +152,7 @@ body {
   position: relative;
   overflow: hidden;
   animation: episodeButtonGlow 2.8s ease-in-out infinite;
+  color: var(--episode-text-high);
 }
 
 .episode-btn-ambient::after {

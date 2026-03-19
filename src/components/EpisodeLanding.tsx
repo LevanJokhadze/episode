@@ -1,278 +1,143 @@
 import React, { useEffect, useState } from 'react'
-import {
-  Calendar,
-  ChevronDown,
-  Cpu,
-  Menu,
-  X,
-} from 'lucide-react'
-import { AnimatePresence, motion, useMotionValue, useScroll, useSpring, useTransform } from 'framer-motion'
+import { Calendar, ChevronDown, Menu, MessageCircle, X } from 'lucide-react'
 import atriumImage from '../assets/images/atrium.jpg'
+import episode1Image from '../assets/images/episode1.jpg'
+import episode2Image from '../assets/images/episode2.jpg'
+import episode3Image from '../assets/images/episode3.jpg'
+import episode4Image from '../assets/images/episode4.jpg'
 
 const EpisodeLanding: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [nights, setNights] = useState(3)
-  const [guests, setGuests] = useState(2)
-  const [rooms, setRooms] = useState(1)
-  const [cursorScale, setCursorScale] = useState(1)
-
-  const cursorX = useMotionValue(-100)
-  const cursorY = useMotionValue(-100)
-  const cursorXSpring = useSpring(cursorX, { stiffness: 420, damping: 30 })
-  const cursorYSpring = useSpring(cursorY, { stiffness: 420, damping: 30 })
-
-  const { scrollYProgress } = useScroll()
-  const lineProgress = useTransform(scrollYProgress, [0, 1], [0.05, 1])
-  const lineOpacity = useTransform(scrollYProgress, [0, 0.15, 1], [0.2, 0.8, 1])
+  const [activeSlide, setActiveSlide] = useState(0)
+  const backgroundSlides = [atriumImage, episode1Image, episode2Image, episode3Image, episode4Image]
 
   useEffect(() => {
-    const onMove = (event: MouseEvent) => {
-      cursorX.set(event.clientX)
-      cursorY.set(event.clientY)
-      const target = event.target as HTMLElement | null
-      setCursorScale(target?.closest('.smart-hover') ? 1.9 : 1)
-    }
+    const timer = window.setInterval(() => {
+      setActiveSlide((prev) => (prev + 1) % backgroundSlides.length)
+    }, 5000)
 
-    window.addEventListener('mousemove', onMove)
-    return () => window.removeEventListener('mousemove', onMove)
-  }, [cursorX, cursorY])
+    return () => window.clearInterval(timer)
+  }, [backgroundSlides.length])
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-[var(--episode-primary-dark)] episode-font-body text-[var(--episode-primary-light)] selection:bg-[var(--episode-primary-light)] selection:text-[var(--episode-primary-dark)]">
-      <div
-        className="absolute left-0 right-0 top-0 h-[110vh] bg-cover bg-center"
-        style={{ backgroundImage: `url(${atriumImage})` }}
-      />
-      <div className="absolute left-0 right-0 top-0 h-[110vh] bg-[var(--episode-overlay-900)]/85" />
-      <div className="absolute left-0 right-0 top-0 h-[110vh] episode-global-grid" />
+    <div className="relative min-h-screen overflow-hidden bg-[#0f1819] text-[var(--episode-primary-light)]">
+      <div className="absolute inset-0">
+        {backgroundSlides.map((image, index) => (
+          <img
+            key={image}
+            src={image}
+            alt="Episode hotel background"
+            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ${index === activeSlide ? 'opacity-100' : 'opacity-0'}`}
+          />
+        ))}
+      </div>
+      <div className="absolute inset-0 bg-black/28" />
 
-      <motion.div
-        className="pointer-events-none fixed z-40 hidden h-7 w-7 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[var(--episode-secondary-blue)]/80 bg-[var(--episode-secondary-blue)]/20 backdrop-blur-sm md:block"
-        style={{ x: cursorXSpring, y: cursorYSpring, scale: cursorScale }}
-      />
-
-      <motion.svg
-        viewBox="0 0 1440 2200"
-        className="pointer-events-none absolute inset-0 z-10 h-full w-full"
-        fill="none"
-      >
-        <motion.path
-          d="M1400 120 H980 L980 420 H760 L760 740 H520 L520 1120 H280 L280 1500 H120"
-          stroke="rgba(209,233,236,0.35)"
-          strokeWidth="1.4"
-          style={{ pathLength: lineProgress, opacity: lineOpacity }}
-        />
-        <motion.path
-          d="M80 200 H460 L460 520 H720 L720 860 H980 L980 1260 H1220 L1220 1700 H1360"
-          stroke="rgba(184,218,240,0.28)"
-          strokeWidth="1.2"
-          style={{ pathLength: lineProgress, opacity: lineOpacity }}
-        />
-      </motion.svg>
-
-      <nav className="relative z-50 flex items-center justify-between border-b border-[var(--episode-line-soft)] px-6 py-6 md:px-8">
-        <div className="episode-font-body text-lg font-bold tracking-[0.03em]">EPISODE</div>
-
-        <div className="episode-glass hidden items-center space-x-8 rounded-full border border-[var(--episode-line-soft)] px-5 py-2 text-[15px] font-semibold lg:flex">
-          <a href="#offers" className="episode-nav-link smart-hover">Offers</a>
-
-          <div className="group relative">
-            <button className="episode-nav-link smart-hover flex items-center space-x-1">
-              <span>Stay at Episode</span>
-              <ChevronDown size={14} />
-            </button>
-            <div className="episode-glass invisible absolute right-0 top-full z-10 mt-2 w-52 rounded-2xl border border-[var(--episode-line-soft)] p-4 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
-              <ul className="space-y-2">
-                <li><a href="#rooms" className="episode-nav-link block py-1">Sleep</a></li>
-                <li><a href="#spaces" className="episode-nav-link block py-1">Meet & Work</a></li>
-                <li><a href="#spaces" className="episode-nav-link block py-1">Eat & Drink</a></li>
-              </ul>
-            </div>
+      <header className="relative z-30 px-4 pt-4 md:px-6 md:pt-5">
+        <div className="mx-auto flex w-full max-w-7xl items-center justify-between rounded-2xl border border-[#173032]/20 bg-[#dbe9e6]/92 px-5 py-3 shadow-[0_14px_42px_rgba(31,52,54,0.18)] backdrop-blur-md">
+          <div className="flex items-center gap-3">
+            <div className="episode-font-body text-2xl font-bold tracking-[0.06em] text-[#173032] md:text-[30px]">EPISODE</div>
+            <span className="hidden rounded-full bg-[#d8f6c5] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#173032] sm:inline-block">
+              Smart Stay
+            </span>
           </div>
 
-          <div className="group relative">
-            <button className="episode-nav-link smart-hover flex items-center space-x-1">
-              <span>Who we are</span>
-              <ChevronDown size={14} />
+          <nav className="hidden items-center gap-8 text-[15px] font-semibold text-[#173032] lg:flex">
+            <button type="button" className="inline-flex items-center gap-1.5 transition-opacity hover:opacity-75">
+              Stay <ChevronDown size={15} />
             </button>
-            <div className="episode-glass invisible absolute right-0 top-full z-10 mt-2 w-52 rounded-2xl border border-[var(--episode-line-soft)] p-4 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
-              <ul className="space-y-2">
-                <li><a href="#about" className="episode-nav-link block py-1">About Episode</a></li>
-                <li><a href="#about" className="episode-nav-link block py-1">System Ready</a></li>
-                <li><a href="#about" className="episode-nav-link block py-1">Journal</a></li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="group relative">
-            <button className="episode-nav-link smart-hover flex items-center space-x-1">
-              <span>Work with us</span>
-              <ChevronDown size={14} />
+            <button type="button" className="inline-flex items-center gap-1.5 transition-opacity hover:opacity-75">
+              Offers <ChevronDown size={15} />
             </button>
-            <div className="episode-glass invisible absolute right-0 top-full z-10 mt-2 w-52 rounded-2xl border border-[var(--episode-line-soft)] p-4 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100">
-              <ul className="space-y-2">
-                <li><a href="#spaces" className="episode-nav-link block py-1">Develop with us</a></li>
-                <li><a href="#spaces" className="episode-nav-link block py-1">Careers</a></li>
-              </ul>
-            </div>
-          </div>
+            <button type="button" className="inline-flex items-center gap-1.5 transition-opacity hover:opacity-75">
+              Experience <ChevronDown size={15} />
+            </button>
+            <button type="button" className="transition-opacity hover:opacity-75">Get the App</button>
+          </nav>
 
-          <a href="#app" className="episode-nav-link smart-hover">Get the App</a>
+          <div className="flex items-center gap-2.5">
+            <button
+              type="button"
+              className="hidden rounded-xl border border-[#173032]/25 bg-white px-4 py-2 text-sm font-semibold text-[#173032] md:inline-flex"
+            >
+              Sign In
+            </button>
+            <button
+              type="button"
+              className="hidden rounded-xl border border-[#2c5a5f] bg-[#0f3f43] px-4 py-2 text-sm font-semibold text-[#d1e9ec] md:inline-flex"
+            >
+              Check Rates
+            </button>
+            <button
+              className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-[#173032]/20 bg-white text-[#173032] lg:hidden"
+              onClick={() => setIsMenuOpen((prev) => !prev)}
+              type="button"
+            >
+              {isMenuOpen ? <X size={21} /> : <Menu size={21} />}
+            </button>
+          </div>
         </div>
+      </header>
 
-        <button
-          className="episode-glass smart-hover rounded-full p-2 transition-colors lg:hidden"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-        >
-          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
-      </nav>
-
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="episode-glass absolute left-0 top-0 z-40 w-full rounded-b-3xl border-b border-[var(--episode-line-soft)] px-6 pb-12 pt-24 lg:hidden"
-          >
-            <div className="episode-font-body flex flex-col space-y-6 text-xl font-medium">
-              <a href="#offers" onClick={() => setIsMenuOpen(false)}>Offers</a>
-              <div className="space-y-4">
-                <div className="text-sm uppercase tracking-widest text-[var(--episode-text-mid)]">Stay at Episode</div>
-                <div className="flex flex-col space-y-3 pl-4">
-                  <a href="#rooms" onClick={() => setIsMenuOpen(false)}>Sleep</a>
-                  <a href="#spaces" onClick={() => setIsMenuOpen(false)}>Meet & Work</a>
-                  <a href="#spaces" onClick={() => setIsMenuOpen(false)}>Eat & Drink</a>
-                </div>
-              </div>
-              <div className="space-y-4">
-                <div className="text-sm uppercase tracking-widest text-[var(--episode-text-mid)]">Who we are</div>
-                <div className="flex flex-col space-y-3 pl-4">
-                  <a href="#about" onClick={() => setIsMenuOpen(false)}>About Episode</a>
-                  <a href="#about" onClick={() => setIsMenuOpen(false)}>Journal</a>
-                </div>
-              </div>
-              <a href="#app" onClick={() => setIsMenuOpen(false)}>Get the App</a>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <main className="relative z-20">
-        <section className="px-6 pb-24 pt-24 md:px-8 md:pb-28 md:pt-36">
-          <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
-            <motion.div
-              initial={{ opacity: 0, y: 28, filter: 'blur(8px)' }}
-              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-              transition={{ duration: 0.8 }}
-            >
-              <div className="mb-4 inline-flex items-center gap-3 rounded-full border border-[var(--episode-line-soft)] bg-[var(--episode-overlay-700)] px-4 py-1.5 text-xs uppercase tracking-[0.18em] text-[var(--episode-text-mid)]">
-                <span className="h-1.5 w-1.5 rounded-full bg-[var(--episode-secondary-green)]" />
-                Active
-              </div>
-              <h1 className="episode-font-display max-w-[13ch] text-[40px] leading-[1.02] text-[var(--episode-text-high)] sm:text-5xl md:text-6xl lg:text-7xl">
-                Welcome to New Generation Hotel.
-              </h1>
-              <p className="mt-3 max-w-2xl text-base text-[var(--episode-text-mid)] md:text-xl">
-                Your space to Stay, Work and Connect.
-              </p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 18, filter: 'blur(10px)' }}
-              animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
-              transition={{ duration: 0.8, delay: 0.15 }}
-              className="episode-glass rounded-3xl border border-[var(--episode-line-soft)] p-5 md:p-6"
-            >
-              <div className="mb-4 flex items-center justify-between">
-                <p className="episode-font-mono text-xs uppercase tracking-[0.17em] text-[var(--episode-text-mid)]">
-                  Booking Command Center
-                </p>
-                <Cpu size={16} className="text-[var(--episode-secondary-blue)]" />
-              </div>
-
-              <div className="grid gap-3 sm:grid-cols-3">
-                <div className="rounded-xl border border-[var(--episode-line-soft)] bg-[var(--episode-glass-light)] p-3">
-                  <p className="text-xs uppercase tracking-[0.14em] text-[var(--episode-text-mid)]">Nights</p>
-                  <div className="mt-2 flex items-center justify-between">
-                    <button
-                      type="button"
-                      className="episode-btn-ambient smart-hover rounded-lg border border-[var(--episode-line-soft)] px-2 py-1 transition-transform hover:scale-105"
-                      onClick={() => setNights((prev) => Math.max(1, prev - 1))}
-                    >
-                      -
-                    </button>
-                    <span className="episode-font-mono text-xl">{nights}</span>
-                    <button
-                      type="button"
-                      className="episode-btn-ambient smart-hover rounded-lg border border-[var(--episode-line-soft)] px-2 py-1 transition-transform hover:scale-105"
-                      onClick={() => setNights((prev) => prev + 1)}
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-
-                <div className="rounded-xl border border-[var(--episode-line-soft)] bg-[var(--episode-glass-light)] p-3">
-                  <p className="text-xs uppercase tracking-[0.14em] text-[var(--episode-text-mid)]">Guests</p>
-                  <div className="mt-2 flex items-center justify-between">
-                    <button
-                      type="button"
-                      className="episode-btn-ambient smart-hover rounded-lg border border-[var(--episode-line-soft)] px-2 py-1 transition-transform hover:scale-105"
-                      onClick={() => setGuests((prev) => Math.max(1, prev - 1))}
-                    >
-                      -
-                    </button>
-                    <span className="episode-font-mono text-xl">{guests}</span>
-                    <button
-                      type="button"
-                      className="episode-btn-ambient smart-hover rounded-lg border border-[var(--episode-line-soft)] px-2 py-1 transition-transform hover:scale-105"
-                      onClick={() => setGuests((prev) => prev + 1)}
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-
-                <div className="rounded-xl border border-[var(--episode-line-soft)] bg-[var(--episode-glass-light)] p-3">
-                  <p className="text-xs uppercase tracking-[0.14em] text-[var(--episode-text-mid)]">Rooms</p>
-                  <div className="mt-2 flex items-center justify-between">
-                    <button
-                      type="button"
-                      className="episode-btn-ambient smart-hover rounded-lg border border-[var(--episode-line-soft)] px-2 py-1 transition-transform hover:scale-105"
-                      onClick={() => setRooms((prev) => Math.max(1, prev - 1))}
-                    >
-                      -
-                    </button>
-                    <span className="episode-font-mono text-xl">{rooms}</span>
-                    <button
-                      type="button"
-                      className="episode-btn-ambient smart-hover rounded-lg border border-[var(--episode-line-soft)] px-2 py-1 transition-transform hover:scale-105"
-                      onClick={() => setRooms((prev) => prev + 1)}
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_auto]">
-                <button className="episode-btn-ambient smart-hover rounded-xl border border-[var(--episode-line-soft)] bg-[var(--episode-glass-light)] px-4 py-3 text-left">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[var(--episode-text-mid)]">Check-in</span>
-                    <Calendar size={16} className="text-[var(--episode-secondary-blue)]" />
-                  </div>
-                </button>
-                <button className="episode-btn-ambient smart-hover rounded-xl border border-[var(--episode-secondary-blue)] bg-[var(--episode-secondary-blue)]/18 px-5 py-3 text-sm font-semibold uppercase tracking-[0.12em] text-[var(--episode-text-high)] transition-transform hover:scale-[1.02]">
-                  Book a Room
-                </button>
-              </div>
-            </motion.div>
+      {isMenuOpen && (
+        <div className="relative z-30 mx-4 mt-2 rounded-2xl border border-[#173032]/20 bg-[#dbe9e6]/95 px-5 py-4 text-sm text-[#173032] shadow-[0_10px_28px_rgba(31,52,54,0.15)] lg:hidden">
+          <div className="flex flex-col gap-3">
+            <button type="button" className="text-left">Offers</button>
+            <button type="button" className="text-left">Stay at Episode</button>
+            <button type="button" className="text-left">Who we are</button>
+            <button type="button" className="text-left">Work with us</button>
+            <button type="button" className="text-left">Get the App</button>
           </div>
-        </section>
+        </div>
+      )}
+
+      <main className="relative z-20 flex min-h-[calc(100vh-76px)] flex-col items-center justify-center px-4 pb-36 pt-14 text-center md:px-6 md:pb-40">
+        <h1 className="episode-font-display max-w-4xl text-4xl leading-tight text-[#d9e9ec] drop-shadow-[0_4px_18px_rgba(0,0,0,0.4)] md:text-6xl">
+          Experience modern living at Episode
+        </h1>
+        <button
+          type="button"
+          className="mt-6 rounded-xl border border-white/35 bg-[#dbe9e6]/20 px-6 py-3 text-sm font-semibold uppercase tracking-[0.08em] text-[#dbe9e6] transition hover:bg-[#dbe9e6]/30"
+        >
+          View Hotel In 360℃
+        </button>
       </main>
 
+      <div className="absolute inset-x-0 bottom-5 z-30 px-3 md:px-5">
+        <div className="mx-auto flex w-full max-w-3xl flex-col gap-2 rounded-2xl border border-white/25 bg-black/35 p-2 backdrop-blur-[2px] md:flex-row">
+          <button type="button" className="flex h-12 items-center justify-between rounded-xl border border-white/20 bg-[#dbe9e6] px-4 text-left text-[#173032] md:flex-1">
+            <span className="text-sm font-medium">Check In</span>
+            <span className="inline-flex h-6 w-6 items-center justify-center rounded-md border border-[#173032]/25 bg-black/5">
+              <Calendar size={14} />
+            </span>
+          </button>
+          <button type="button" className="flex h-12 items-center justify-between rounded-xl border border-white/20 bg-[#dbe9e6] px-4 text-left text-[#173032] md:flex-1">
+            <span className="text-sm font-medium">Check Out</span>
+            <span className="inline-flex h-6 w-6 items-center justify-center rounded-md border border-[#173032]/25 bg-black/5">
+              <Calendar size={14} />
+            </span>
+          </button>
+          <button type="button" className="flex h-12 items-center justify-between rounded-xl border border-white/20 bg-[#dbe9e6] px-4 text-left text-[#173032] md:flex-1">
+            <span className="text-sm font-medium">Guest number</span>
+            <span className="inline-flex h-6 w-6 items-center justify-center rounded-md border border-[#173032]/25 bg-black/5">
+              <Calendar size={14} />
+            </span>
+          </button>
+          <button type="button" className="h-12 rounded-xl border border-[#2c5a5f] bg-[#0f3f43] px-7 text-sm font-semibold text-[#d1e9ec] md:w-[160px]">
+            Book now
+          </button>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        className="absolute bottom-5 right-4 z-30 inline-flex items-center gap-2 rounded-xl border border-white/20 bg-[#173032]/84 px-3 py-2 text-[11px] font-medium uppercase tracking-[0.08em] text-white/90 backdrop-blur-sm md:right-6"
+      >
+        <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#d8f6c5] text-[#173032]">
+          <MessageCircle size={12} />
+        </span>
+        AI Concierge
+      </button>
     </div>
   )
 }
