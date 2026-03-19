@@ -9,7 +9,7 @@ import episode4Image from '../assets/images/episode4.jpg'
 const EpisodeLanding: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [activeSlide, setActiveSlide] = useState(0)
-  const backgroundSlides = [atriumImage, episode1Image, episode2Image, episode3Image, episode4Image]
+  const backgroundSlides = [atriumImage, episode4Image, episode1Image, episode2Image, episode3Image]
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -34,24 +34,42 @@ const EpisodeLanding: React.FC = () => {
       <div className="absolute inset-0 bg-black/28" />
 
       <header className="relative z-30 px-4 pt-4 md:px-6 md:pt-5">
-        <div className="mx-auto flex w-full max-w-7xl items-center justify-between rounded-2xl border border-[#173032]/20 bg-[#dbe9e6]/92 px-5 py-3 shadow-[0_14px_42px_rgba(31,52,54,0.18)] backdrop-blur-md">
+        <div className="mx-auto flex w-full max-w-7xl items-center justify-between rounded-2xl border border-white/45 bg-[#dbe9e6]/48 px-5 py-3 shadow-[0_14px_42px_rgba(31,52,54,0.2)] backdrop-blur-xl">
           <div className="flex items-center gap-3">
             <div className="episode-font-body text-2xl font-bold tracking-[0.06em] text-[#173032] md:text-[30px]">EPISODE</div>
-            <span className="hidden rounded-full bg-[#d8f6c5] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[#173032] sm:inline-block">
-              Smart Stay
-            </span>
           </div>
 
           <nav className="hidden items-center gap-8 text-[15px] font-semibold text-[#173032] lg:flex">
-            <button type="button" className="inline-flex items-center gap-1.5 transition-opacity hover:opacity-75">
-              Stay <ChevronDown size={15} />
-            </button>
-            <button type="button" className="inline-flex items-center gap-1.5 transition-opacity hover:opacity-75">
-              Offers <ChevronDown size={15} />
-            </button>
-            <button type="button" className="inline-flex items-center gap-1.5 transition-opacity hover:opacity-75">
-              Experience <ChevronDown size={15} />
-            </button>
+            <div className="group relative">
+              <button type="button" className="inline-flex items-center gap-1.5 transition-opacity hover:opacity-75">
+                Stay <ChevronDown size={15} />
+              </button>
+              <div className="invisible absolute left-0 top-full z-40 mt-2 w-44 rounded-xl border border-white/45 bg-[#dbe9e6]/60 p-2 opacity-0 shadow-[0_10px_28px_rgba(31,52,54,0.15)] backdrop-blur-xl transition-all duration-200 group-hover:visible group-hover:opacity-100">
+                <button type="button" className="block w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-white/45">Rooms</button>
+                <button type="button" className="block w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-white/45">Suites</button>
+                <button type="button" className="block w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-white/45">Long Stay</button>
+              </div>
+            </div>
+            <div className="group relative">
+              <button type="button" className="inline-flex items-center gap-1.5 transition-opacity hover:opacity-75">
+                Offers <ChevronDown size={15} />
+              </button>
+              <div className="invisible absolute left-0 top-full z-40 mt-2 w-44 rounded-xl border border-white/45 bg-[#dbe9e6]/60 p-2 opacity-0 shadow-[0_10px_28px_rgba(31,52,54,0.15)] backdrop-blur-xl transition-all duration-200 group-hover:visible group-hover:opacity-100">
+                <button type="button" className="block w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-white/45">Early Bird</button>
+                <button type="button" className="block w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-white/45">Weekend</button>
+                <button type="button" className="block w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-white/45">Packages</button>
+              </div>
+            </div>
+            <div className="group relative">
+              <button type="button" className="inline-flex items-center gap-1.5 transition-opacity hover:opacity-75">
+                Experience <ChevronDown size={15} />
+              </button>
+              <div className="invisible absolute left-0 top-full z-40 mt-2 w-44 rounded-xl border border-white/45 bg-[#dbe9e6]/60 p-2 opacity-0 shadow-[0_10px_28px_rgba(31,52,54,0.15)] backdrop-blur-xl transition-all duration-200 group-hover:visible group-hover:opacity-100">
+                <button type="button" className="block w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-white/45">Dining</button>
+                <button type="button" className="block w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-white/45">Wellness</button>
+                <button type="button" className="block w-full rounded-lg px-3 py-2 text-left text-sm hover:bg-white/45">Events</button>
+              </div>
+            </div>
             <button type="button" className="transition-opacity hover:opacity-75">Get the App</button>
           </nav>
 
@@ -80,7 +98,7 @@ const EpisodeLanding: React.FC = () => {
       </header>
 
       {isMenuOpen && (
-        <div className="relative z-30 mx-4 mt-2 rounded-2xl border border-[#173032]/20 bg-[#dbe9e6]/95 px-5 py-4 text-sm text-[#173032] shadow-[0_10px_28px_rgba(31,52,54,0.15)] lg:hidden">
+        <div className="relative z-30 mx-4 mt-2 rounded-2xl border border-white/45 bg-[#dbe9e6]/55 px-5 py-4 text-sm text-[#173032] shadow-[0_10px_28px_rgba(31,52,54,0.15)] backdrop-blur-xl lg:hidden">
           <div className="flex flex-col gap-3">
             <button type="button" className="text-left">Offers</button>
             <button type="button" className="text-left">Stay at Episode</button>
@@ -103,21 +121,33 @@ const EpisodeLanding: React.FC = () => {
         </button>
       </main>
 
+      <div className="pointer-events-none absolute inset-x-0 bottom-24 z-30 flex justify-center">
+        <div className="relative flex items-center gap-2">
+          {backgroundSlides.map((image) => (
+            <span key={`dash-${image}`} className="h-1.5 w-8 rounded-full bg-white/35" />
+          ))}
+          <span
+            className="absolute left-0 top-0 h-1.5 w-8 rounded-full bg-white transition-transform duration-500 ease-out"
+            style={{ transform: `translateX(${activeSlide * 2.5}rem)` }}
+          />
+        </div>
+      </div>
+
       <div className="absolute inset-x-0 bottom-5 z-30 px-3 md:px-5">
-        <div className="mx-auto flex w-full max-w-3xl flex-col gap-2 rounded-2xl border border-white/25 bg-black/35 p-2 backdrop-blur-[2px] md:flex-row">
-          <button type="button" className="flex h-12 items-center justify-between rounded-xl border border-white/20 bg-[#dbe9e6] px-4 text-left text-[#173032] md:flex-1">
+        <div className="mx-auto flex w-full max-w-3xl flex-col gap-2 rounded-2xl border border-white/40 bg-[#dbe9e6]/24 p-2 shadow-[0_10px_34px_rgba(5,18,20,0.35)] backdrop-blur-xl md:flex-row">
+          <button type="button" className="flex h-12 items-center justify-between rounded-xl border border-white/45 bg-[#dbe9e6]/56 px-4 text-left text-[#173032] backdrop-blur-lg md:flex-1">
             <span className="text-sm font-medium">Check In</span>
             <span className="inline-flex h-6 w-6 items-center justify-center rounded-md border border-[#173032]/25 bg-black/5">
               <Calendar size={14} />
             </span>
           </button>
-          <button type="button" className="flex h-12 items-center justify-between rounded-xl border border-white/20 bg-[#dbe9e6] px-4 text-left text-[#173032] md:flex-1">
+          <button type="button" className="flex h-12 items-center justify-between rounded-xl border border-white/45 bg-[#dbe9e6]/56 px-4 text-left text-[#173032] backdrop-blur-lg md:flex-1">
             <span className="text-sm font-medium">Check Out</span>
             <span className="inline-flex h-6 w-6 items-center justify-center rounded-md border border-[#173032]/25 bg-black/5">
               <Calendar size={14} />
             </span>
           </button>
-          <button type="button" className="flex h-12 items-center justify-between rounded-xl border border-white/20 bg-[#dbe9e6] px-4 text-left text-[#173032] md:flex-1">
+          <button type="button" className="flex h-12 items-center justify-between rounded-xl border border-white/45 bg-[#dbe9e6]/56 px-4 text-left text-[#173032] backdrop-blur-lg md:flex-1">
             <span className="text-sm font-medium">Guest number</span>
             <span className="inline-flex h-6 w-6 items-center justify-center rounded-md border border-[#173032]/25 bg-black/5">
               <Calendar size={14} />
