@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { ArrowRight, CalendarCheck2, CalendarDays, ChevronDown, Menu, MessageCircle, Users, X } from 'lucide-react'
+import { ArrowRight, BedDouble, CalendarCheck2, CalendarDays, ChevronDown, ChevronLeft, ChevronRight, Menu, MessageCircle, Users, X } from 'lucide-react'
 import mainHeroVideo from '../assets/video.mp4'
 import episodeRoomImage from '../assets/images/episode4.jpg'
 import logoImage from '../assets/images/logo2.png'
@@ -23,19 +23,26 @@ const EpisodeLandingTenth: React.FC = () => {
   const [carouselIndex, setCarouselIndex] = useState(0)
   const [collisionFlash, setCollisionFlash] = useState(false)
   const [collisionSpark, setCollisionSpark] = useState(false)
+  const [activeSnapIndex, setActiveSnapIndex] = useState(0)
+  const [activeRoomSlide, setActiveRoomSlide] = useState(0)
   const sceneVideos = [mainHeroVideo]
   const videoRefs = useRef<Array<HTMLVideoElement | null>>([])
   const dropdownCloseTimeout = useRef<number | null>(null)
   const mainScrollRef = useRef<HTMLElement | null>(null)
   const firstSectionRef = useRef<HTMLElement | null>(null)
   const secondSectionRef = useRef<HTMLElement | null>(null)
+  const thirdSectionRef = useRef<HTMLElement | null>(null)
   const energyPathBRef = useRef<SVGPathElement | null>(null)
   const energyPathCRef = useRef<SVGPathElement | null>(null)
   const ballBOuterRef = useRef<SVGCircleElement | null>(null)
   const ballBInnerRef = useRef<SVGCircleElement | null>(null)
   const ballCOuterRef = useRef<SVGCircleElement | null>(null)
   const ballCInnerRef = useRef<SVGCircleElement | null>(null)
+  const roomsCarouselRef = useRef<HTMLDivElement | null>(null)
   const snapLockRef = useRef(false)
+  const wheelDeltaAccumulatorRef = useRef(0)
+  const wheelResetTimeoutRef = useRef<number | null>(null)
+  const snapSettleTimeoutRef = useRef<number | null>(null)
   const fadeUp = {
     hidden: { opacity: 0, y: 24 },
     show: { opacity: 1, y: 0 },
@@ -44,6 +51,7 @@ const EpisodeLandingTenth: React.FC = () => {
   const accentLineColor = episodeDesignLibrary.colors.accent.blue
   const accentGreenColor = episodeDesignLibrary.colors.accent.green
   const accentTerracottaColor = episodeDesignLibrary.colors.accent.terracotta
+  const brandDarkColor = episodeDesignLibrary.colors.brand.dark
   const brandLightColor = episodeDesignLibrary.colors.brand.light
   const dropdownItems: Record<'stay' | 'about' | 'work', string[]> = {
     stay: ['Sleep', 'Meet & Work', 'Eat & Drink'],
@@ -174,11 +182,45 @@ const EpisodeLandingTenth: React.FC = () => {
     secondSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
+  const scrollRoomsCarousel = (direction: -1 | 1) => {
+    const carousel = roomsCarouselRef.current
+    if (!carousel) return
+    const firstCard = carousel.querySelector('[data-room-card="true"]') as HTMLElement | null
+    const step = (firstCard?.offsetWidth ?? 280) + 12
+    carousel.scrollBy({ left: direction * step, behavior: 'smooth' })
+  }
+
+  useEffect(() => {
+    if (activeSnapIndex !== 2) return
+    if (window.matchMedia('(min-width: 768px)').matches) return
+    const carousel = roomsCarouselRef.current
+    if (!carousel) return
+    const roomCount = 3
+
+    const scrollToSlide = (index: number) => {
+      const firstCard = carousel.querySelector('[data-room-card="true"]') as HTMLElement | null
+      const step = (firstCard?.offsetWidth ?? 280) + 8
+      carousel.scrollTo({ left: step * index, behavior: 'smooth' })
+    }
+
+    scrollToSlide(activeRoomSlide)
+
+    const timer = window.setInterval(() => {
+      setActiveRoomSlide((prev) => {
+        const next = (prev + 1) % roomCount
+        scrollToSlide(next)
+        return next
+      })
+    }, 3200)
+
+    return () => window.clearInterval(timer)
+  }, [activeSnapIndex])
+
   useEffect(() => {
     const container = mainScrollRef.current
     if (!container) return
 
-    const sections = [firstSectionRef.current, secondSectionRef.current].filter(Boolean) as HTMLElement[]
+    const sections = [firstSectionRef.current, secondSectionRef.current, thirdSectionRef.current].filter(Boolean) as HTMLElement[]
     if (sections.length < 2) return
 
     const lockFor = (ms: number) => {
@@ -190,8 +232,9 @@ const EpisodeLandingTenth: React.FC = () => {
 
     const snapToIndex = (targetIndex: number) => {
       const boundedIndex = Math.max(0, Math.min(targetIndex, sections.length - 1))
+      setActiveSnapIndex(boundedIndex)
       sections[boundedIndex]?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      lockFor(650)
+      lockFor(560)
     }
 
     const getActiveIndex = () => {
@@ -213,16 +256,53 @@ const EpisodeLandingTenth: React.FC = () => {
         event.preventDefault()
         return
       }
-      if (Math.abs(event.deltaY) < 4) return
+
+      if (Math.abs(event.deltaY) < 2) return
       event.preventDefault()
+
+      wheelDeltaAccumulatorRef.current += event.deltaY
+      if (wheelResetTimeoutRef.current) {
+        window.clearTimeout(wheelResetTimeoutRef.current)
+      }
+      wheelResetTimeoutRef.current = window.setTimeout(() => {
+        wheelDeltaAccumulatorRef.current = 0
+      }, 140)
+
+      if (Math.abs(wheelDeltaAccumulatorRef.current) < 42) return
+
       const currentIndex = getActiveIndex()
-      const nextIndex = event.deltaY > 0 ? currentIndex + 1 : currentIndex - 1
+      const direction = wheelDeltaAccumulatorRef.current > 0 ? 1 : -1
+      wheelDeltaAccumulatorRef.current = 0
+      const nextIndex = currentIndex + direction
+      if (nextIndex === currentIndex) return
       snapToIndex(nextIndex)
     }
 
+    const onScroll = () => {
+      setActiveSnapIndex(getActiveIndex())
+      if (snapSettleTimeoutRef.current) {
+        window.clearTimeout(snapSettleTimeoutRef.current)
+      }
+      snapSettleTimeoutRef.current = window.setTimeout(() => {
+        if (snapLockRef.current) return
+        const settledIndex = getActiveIndex()
+        sections[settledIndex]?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        lockFor(380)
+      }, 120)
+    }
+
     container.addEventListener('wheel', onWheel, { passive: false })
+    container.addEventListener('scroll', onScroll, { passive: true })
+    onScroll()
     return () => {
+      if (wheelResetTimeoutRef.current) {
+        window.clearTimeout(wheelResetTimeoutRef.current)
+      }
+      if (snapSettleTimeoutRef.current) {
+        window.clearTimeout(snapSettleTimeoutRef.current)
+      }
       container.removeEventListener('wheel', onWheel)
+      container.removeEventListener('scroll', onScroll)
     }
   }, [])
 
@@ -369,7 +449,7 @@ const EpisodeLandingTenth: React.FC = () => {
           </button>
         </motion.div>
       )}
-      <main ref={mainScrollRef} className="h-screen snap-y snap-mandatory overflow-y-auto overscroll-y-contain scroll-smooth">
+      <main ref={mainScrollRef} className="h-screen snap-y snap-mandatory md:snap-proximity overflow-y-auto overscroll-y-contain scroll-smooth">
         <section ref={firstSectionRef} className="relative flex h-screen snap-start snap-always items-center justify-center overflow-hidden pt-16 md:pt-20">
           <div className="absolute inset-0 z-0 bg-[#1f3436]">
             {sceneVideos.map((videoSrc, index) => (
@@ -655,6 +735,115 @@ const EpisodeLandingTenth: React.FC = () => {
               Read more
               <ArrowRight size={16} />
             </motion.button>
+          </div>
+        </section>
+
+        <section ref={thirdSectionRef} className={ui.sleepSection.wrapper}>
+          <div className="pointer-events-none absolute inset-0 overflow-hidden">
+            <div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: `
+                  radial-gradient(58% 52% at 16% 14%, ${accentGreenColor}40 0%, transparent 66%),
+                  radial-gradient(44% 40% at 84% 22%, ${accentLineColor}3b 0%, transparent 72%),
+                  radial-gradient(40% 34% at 52% 84%, ${accentTerracottaColor}26 0%, transparent 70%),
+                  linear-gradient(145deg, #f3f6f6 0%, #e8efef 52%, #e3ebec 100%)
+                `,
+              }}
+            />
+            <motion.div
+              initial={{ x: -30, y: 0, opacity: 0.26 }}
+              animate={{ x: 24, y: -10, opacity: 0.36 }}
+              transition={{ duration: 9, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut' }}
+              className="absolute -left-10 top-[16%] h-[280px] w-[280px] rounded-full bg-white/55 blur-3xl"
+            />
+            <motion.div
+              initial={{ x: 18, y: 8, opacity: 0.18 }}
+              animate={{ x: -22, y: -14, opacity: 0.28 }}
+              transition={{ duration: 11, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut' }}
+              className="absolute right-[-40px] top-[34%] h-[260px] w-[260px] rounded-full bg-[#c9d9de]/55 blur-3xl"
+            />
+            <div className="absolute inset-0 opacity-[0.11] [background-image:linear-gradient(rgba(31,52,54,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(31,52,54,0.12)_1px,transparent_1px)] [background-size:64px_64px]" />
+          </div>
+          <div className={ui.sleepSection.container}>
+            <motion.div
+              initial={{ y: '100%', scaleY: 0, opacity: 0 }}
+              animate={activeSnapIndex === 2 ? { y: 0, scaleY: 1, opacity: 1 } : { y: '100%', scaleY: 0, opacity: 0 }}
+              transition={{ duration: 1.5, ease: [0.2, 0.9, 0.24, 1] }}
+              className={ui.sleepSection.panel}
+              style={{ background: `linear-gradient(145deg, ${brandDarkColor} 0%, #184c72 100%)`, transformOrigin: 'bottom center' }}
+            >
+              <div className={ui.sleepSection.panelLines}>
+                <svg viewBox="0 0 1200 700" preserveAspectRatio="none" className={ui.sleepSection.panelLinesSvg}>
+                  <path d="M-80 470 C 190 330, 390 330, 620 470" fill="none" stroke={brandLightColor} strokeWidth="1.2" opacity="0.24" />
+                  <path d="M340 0 L340 220 C 340 328, 448 392, 590 392 C 734 392, 840 328, 840 220 L840 0" fill="none" stroke={brandLightColor} strokeWidth="1.1" opacity="0.2" />
+                  <path d="M700 700 L700 518 C 700 414, 792 354, 908 354 C 1024 354, 1108 414, 1108 500 L1108 700" fill="none" stroke={brandLightColor} strokeWidth="1" opacity="0.16" />
+                </svg>
+              </div>
+              <div className={ui.sleepSection.headerRow}>
+                <div>
+                  <h2 className={ui.sleepSection.heading}>Sleep</h2>
+                  <p className={ui.sleepSection.description}>
+                    Step into smart, easy-going comfort and discover modern amenities designed for your convenience. Relax in pillowy soft beds and stylish surroundings, equipped with everything you need to create your own unique episode.
+                  </p>
+                </div>
+
+                <div className={ui.sleepSection.callout}>
+                  <p className={ui.sleepSection.calloutText}>
+                    Book directly on our website for the best deals and exclusive benefits
+                  </p>
+                  <a href="#" className={ui.sleepSection.calloutCta}>
+                    Book now
+                    <ArrowRight size={18} />
+                  </a>
+                </div>
+              </div>
+
+              <div ref={roomsCarouselRef} className={ui.sleepSection.cardsRow}>
+                {[
+                  { title: 'Solo', src: sectionCarouselImages[0] ?? episodeRoomImage, guests: 'x1', beds: 'x1', size: '20 m²' },
+                  { title: 'Double Room', src: sectionCarouselImages[1] ?? episodeRoomImage, guests: 'x2', beds: 'x1', size: '20 m²' },
+                  { title: 'Twin Room', src: sectionCarouselImages[0] ?? episodeRoomImage, guests: 'x2', beds: 'x2', size: '20 m²' },
+                ].map((room) => (
+                  <article key={room.title} data-room-card="true" className={ui.sleepSection.card}>
+                    <div className={ui.sleepSection.badgeRow}>
+                      <span className={ui.sleepSection.badge}>
+                        <Users size={11} />
+                        {room.guests}
+                      </span>
+                      <span className={ui.sleepSection.badge}>
+                        <BedDouble size={11} />
+                        {room.beds}
+                      </span>
+                      <span className={ui.sleepSection.badge}>{room.size}</span>
+                    </div>
+                    <div className={`${ui.sleepSection.cardMedia} relative`}>
+                      <img src={room.src} alt={room.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
+                      <button
+                        type="button"
+                        aria-label="Previous room"
+                        onClick={() => scrollRoomsCarousel(-1)}
+                        className="absolute left-2 top-1/2 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-black/35 text-white backdrop-blur-sm md:hidden"
+                      >
+                        <ChevronLeft size={16} />
+                      </button>
+                      <button
+                        type="button"
+                        aria-label="Next room"
+                        onClick={() => scrollRoomsCarousel(1)}
+                        className="absolute right-2 top-1/2 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-black/35 text-white backdrop-blur-sm md:hidden"
+                      >
+                        <ChevronRight size={16} />
+                      </button>
+                    </div>
+                    <h3 className={ui.sleepSection.cardTitle}>
+                      {room.title}
+                      <ArrowRight size={18} />
+                    </h3>
+                  </article>
+                ))}
+              </div>
+            </motion.div>
           </div>
         </section>
       </main>

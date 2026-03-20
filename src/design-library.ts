@@ -156,6 +156,33 @@ export const components = {
     wrapper:
       'fixed bottom-8 right-4 z-40 inline-flex h-[62px] w-[62px] items-center justify-center rounded-full bg-[#d1e9ec]/70 p-3 text-[#1f3436] shadow-[0_10px_24px_rgba(0,0,0,0.28)] md:bottom-6 md:right-8 md:h-[74px] md:w-[74px] md:p-[13px]',
   },
+  sleepSection: {
+    wrapper:
+      'relative flex h-screen snap-start snap-always items-end overflow-hidden bg-[#eef2f2] px-4 pb-0 pt-[84px] text-[#171717] md:px-10 md:pt-[96px]',
+    container: 'mx-auto w-full max-w-[1420px]',
+    panel:
+      'relative h-[calc(100vh-84px)] overflow-hidden rounded-t-[32px] rounded-b-none p-5 md:h-[calc(100vh-96px)] md:rounded-t-[32px] md:rounded-b-none md:p-8',
+    panelLines:
+      'pointer-events-none absolute inset-0 opacity-[0.22]',
+    panelLinesSvg: 'h-full w-full',
+    headerRow: 'relative z-10 grid grid-cols-1 gap-4 md:grid-cols-[minmax(0,1fr)_300px] md:items-start md:gap-8',
+    eyebrow: 'text-[11px] uppercase tracking-[0.18em] text-white/80',
+    heading: 'mt-2 text-[40px] font-semibold leading-[0.95] tracking-tight text-[#efd3ac] max-[430px]:text-[28px] md:text-[62px]',
+    description: 'mt-2 max-w-[700px] text-[14px] leading-[1.45] text-white/82 max-[430px]:text-[13px]',
+    callout:
+      'rounded-2xl bg-white/10 p-4 text-white backdrop-blur-sm',
+    calloutText: 'text-[14px] font-medium leading-[1.35]',
+    calloutCta: 'mt-2 inline-flex items-center gap-1 text-[16px] font-semibold leading-none',
+    cardsRow:
+      'relative z-10 mt-5 flex snap-x snap-mandatory gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:mt-8 md:grid md:grid-cols-3 md:gap-4 md:overflow-visible',
+    card:
+      'group relative min-w-[95%] snap-start overflow-hidden rounded-2xl border border-white/12 bg-white/8 p-2.5 md:min-w-0',
+    cardMedia: 'h-[170px] overflow-hidden rounded-xl bg-[#cfd5d5] md:h-[250px]',
+    badgeRow: 'absolute left-4 top-4 z-20 flex gap-2',
+    badge:
+      'inline-flex items-center gap-1 rounded-full bg-white/80 px-2 py-0.5 text-[11px] font-medium text-[#1f3436] backdrop-blur-sm',
+    cardTitle: 'mt-2 inline-flex items-center gap-2 text-[24px] font-medium leading-none text-white max-[430px]:text-[20px]',
+  },
 } as const
 
 export const contentGuidelines = {
