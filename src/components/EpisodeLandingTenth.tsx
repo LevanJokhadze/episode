@@ -1,9 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowRight, CalendarCheck2, CalendarDays, ChevronDown, Menu, MessageCircle, Users, X } from 'lucide-react'
-import hotelHeroVideo from '../assets/videos/hotel-hero.mp4'
-import hotelHeroVideo2 from '../assets/videos/hotel-hero-2.mp4'
-import hotelHeroVideo3 from '../assets/videos/hotel-hero-3.mp4'
+import mainHeroVideo from '../assets/video.mp4'
 import episodeRoomImage from '../assets/images/episode4.jpg'
 import logoImage from '../assets/images/logo2.png'
 import { episodeDesignLibrary } from '../design-library'
@@ -25,7 +23,7 @@ const EpisodeLandingTenth: React.FC = () => {
   const [carouselIndex, setCarouselIndex] = useState(0)
   const [collisionFlash, setCollisionFlash] = useState(false)
   const [collisionSpark, setCollisionSpark] = useState(false)
-  const sceneVideos = [hotelHeroVideo, hotelHeroVideo2, hotelHeroVideo3]
+  const sceneVideos = [mainHeroVideo]
   const videoRefs = useRef<Array<HTMLVideoElement | null>>([])
   const dropdownCloseTimeout = useRef<number | null>(null)
   const mainScrollRef = useRef<HTMLElement | null>(null)
