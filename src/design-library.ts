@@ -139,12 +139,12 @@ export const components = {
     bottomLine: 'mx-auto mt-4 h-px w-[92%] max-w-[1220px] origin-center bg-gradient-to-r from-transparent via-white/45 to-transparent',
   },
   hero: {
-    heading: 'mx-auto mb-5 max-w-[340px] text-center text-[42px] font-bold leading-[0.92] tracking-tight text-white md:mb-6 md:max-w-4xl md:text-7xl',
+    heading: 'mx-auto mb-4 max-w-[320px] text-center text-[24px] font-bold leading-[1.05] tracking-tight text-white sm:text-[32px] md:mb-6 md:max-w-4xl md:text-7xl',
     subCta:
-      'mt-2 rounded-xl border border-white/10 bg-[#1f3436]/55 px-5 py-3 text-[12px] font-semibold uppercase tracking-[0.08em] text-[#dbe9e6] transition hover:bg-[#1f3436]/60 md:mt-[12px] md:px-6 md:text-sm',
+      'mt-3 rounded-xl border border-white/10 bg-[#1f3436]/55 px-5 py-3 text-[12px] font-semibold uppercase tracking-[0.08em] text-[#dbe9e6] transition hover:bg-[#1f3436]/60 md:mt-[12px] md:px-6 md:text-sm',
   },
   bookingPanel: {
-    wrapper: 'absolute inset-x-0 top-[58%] z-30 -translate-y-1/2 px-4 md:bottom-[106px] md:top-auto md:translate-y-0',
+    wrapper: 'absolute inset-x-0 top-[64%] z-30 -translate-y-1/2 px-4 md:bottom-[106px] md:top-auto md:translate-y-0',
     container:
       'mx-auto flex w-full max-w-5xl flex-col gap-2 rounded-[22px] border border-white/10 bg-[#1f3436]/58 p-[11px] md:flex-row md:p-[13px]',
     field:

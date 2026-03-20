@@ -400,7 +400,7 @@ const EpisodeLandingTenth: React.FC = () => {
             initial="hidden"
             animate="show"
             transition={{ duration: 0.7, ease: 'easeOut', delay: 0.2 }}
-            className="relative z-20 container mx-auto grid h-full grid-cols-1 items-start gap-10 px-5 pb-48 pt-24 md:grid-cols-2 md:items-center md:px-6 md:pb-20 md:pt-0"
+            className="relative z-20 container mx-auto grid h-full grid-cols-1 items-start gap-10 px-5 pb-64 pt-28 md:grid-cols-2 md:items-center md:px-6 md:pb-20 md:pt-0"
           >
             <div className="md:col-span-2">
               <motion.h1
@@ -469,7 +469,18 @@ const EpisodeLandingTenth: React.FC = () => {
             transition={{ opacity: { duration: 0.5, ease: 'easeOut', delay: 0.65 }, y: { duration: 2.6, repeat: Infinity, ease: 'easeInOut' } }}
             whileHover={{ y: -2, scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className={ui.chatButton.wrapper}
+            className="absolute bottom-8 right-4 z-40 inline-flex h-[62px] w-[62px] items-center justify-center rounded-full bg-[#d1e9ec]/70 p-3 text-[#1f3436] shadow-[0_10px_24px_rgba(0,0,0,0.28)] md:hidden"
+          >
+            <MessageCircle size={24} />
+          </motion.button>
+          <motion.button
+            type="button"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: [0, -4, 0] }}
+            transition={{ opacity: { duration: 0.5, ease: 'easeOut', delay: 0.65 }, y: { duration: 2.6, repeat: Infinity, ease: 'easeInOut' } }}
+            whileHover={{ y: -2, scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="hidden md:fixed md:bottom-6 md:right-8 md:z-40 md:inline-flex md:h-[74px] md:w-[74px] md:items-center md:justify-center md:rounded-full md:bg-[#d1e9ec]/70 md:p-[13px] md:text-[#1f3436] md:shadow-[0_10px_24px_rgba(0,0,0,0.28)]"
           >
             <MessageCircle size={24} />
           </motion.button>
@@ -477,7 +488,7 @@ const EpisodeLandingTenth: React.FC = () => {
 
         <section
           ref={secondSectionRef}
-          className="relative flex h-screen snap-start snap-always items-center overflow-hidden bg-[#edf3f4] px-4 pb-8 pt-24 text-[#171717] md:px-10 md:pt-28"
+          className="relative flex h-screen snap-start snap-always items-start overflow-hidden bg-[#edf3f4] px-4 pb-6 pt-24 text-[#171717] max-[390px]:px-3 max-[390px]:pb-4 max-[390px]:pt-20 max-[360px]:pt-18 md:items-center md:px-10 md:pt-28"
         >
           <div className="pointer-events-none absolute inset-0">
             <div
@@ -498,7 +509,7 @@ const EpisodeLandingTenth: React.FC = () => {
             viewBox="0 0 1000 360"
             preserveAspectRatio="none"
             shapeRendering="geometricPrecision"
-            className="pointer-events-none absolute inset-x-0 top-20 h-[34%] w-full opacity-[0.82] md:hidden"
+            className="pointer-events-none absolute inset-x-0 top-20 h-[34%] w-full opacity-[0.82] max-[390px]:top-16 max-[390px]:h-[30%] max-[360px]:h-[28%] md:hidden"
           >
             <defs>
               <filter id="energyGlowMobile" x="-220%" y="-220%" width="560%" height="560%">
@@ -601,13 +612,13 @@ const EpisodeLandingTenth: React.FC = () => {
               <path d="M20 2 L8 5 L13 -5 Z" fill="#ffe872" opacity="0.9" />
             </g>
           </svg>
-          <div className="relative mx-auto grid w-full max-w-[1240px] grid-cols-1 items-center gap-8 md:grid-cols-2 md:gap-12">
+          <div className="relative mx-auto grid w-full max-w-[1240px] grid-cols-1 items-start gap-4 max-[390px]:gap-3 md:grid-cols-2 md:items-center md:gap-12">
             <div className="max-w-[640px]">
-              <h2 className="mb-4 text-4xl font-bold tracking-tight md:text-5xl">Who we are</h2>
-              <p className="text-base leading-7 text-[#1f1f1f]/85 md:text-lg">
+              <h2 className="mb-2 text-[28px] font-bold leading-[1.05] tracking-tight max-[390px]:text-[24px] max-[360px]:text-[22px] md:mb-4 md:text-5xl">Who we are</h2>
+              <p className="text-[15px] leading-[1.55] text-[#1f1f1f]/85 max-[390px]:text-[13.5px] max-[390px]:leading-[1.45] max-[360px]:text-[13px] md:text-lg md:leading-7">
                 Episode is created for today&apos;s modern travelers: those who demand more for less. We are innovators who merge technology with chic design to create unique experiences. Our hotel rooms and social spaces are created to offer maximum comfort and style, providing everything you need and nothing you don&apos;t. Join us and experience the future of hospitality today.
               </p>
-              <h3 className="mt-10 text-3xl font-medium tracking-tight md:text-4xl">
+              <h3 className="mt-5 text-[28px] font-medium leading-[1.08] tracking-tight max-[390px]:mt-4 max-[390px]:text-[24px] max-[360px]:text-[22px] md:mt-10 md:text-4xl">
                 Just like our doors, our minds are open too!
               </h3>
               <motion.button
@@ -622,7 +633,7 @@ const EpisodeLandingTenth: React.FC = () => {
             </div>
 
             <div
-              className={`relative h-[320px] overflow-hidden rounded-3xl border-0 transition-all duration-200 md:h-[420px] md:border-2 ${
+              className={`relative h-[220px] overflow-hidden rounded-3xl border-0 transition-all duration-200 max-[390px]:h-[190px] max-[360px]:h-[170px] md:h-[420px] md:border-2 ${
                 collisionFlash
                   ? 'md:border-[#86d8ff] md:shadow-[0_0_0_1px_rgba(134,216,255,0.92),0_0_24px_rgba(91,195,255,0.9),0_0_56px_rgba(91,195,255,0.62),inset_0_0_18px_rgba(143,226,255,0.35)]'
                   : 'md:border-transparent md:shadow-none'
@@ -639,7 +650,7 @@ const EpisodeLandingTenth: React.FC = () => {
               type="button"
               whileHover={{ y: -1 }}
               whileTap={{ scale: 0.98 }}
-              className="mt-1 inline-flex justify-self-start items-center gap-2 rounded-xl bg-black px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-[#121212] md:hidden"
+              className="mt-2 inline-flex justify-self-start items-center gap-2 rounded-xl bg-black px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-[#121212] max-[390px]:px-5 max-[390px]:py-2.5 max-[390px]:text-[13px] md:hidden"
             >
               Read more
               <ArrowRight size={16} />
