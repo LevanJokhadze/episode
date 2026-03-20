@@ -32,6 +32,7 @@ const EpisodeLandingTenth: React.FC = () => {
   const firstSectionRef = useRef<HTMLElement | null>(null)
   const secondSectionRef = useRef<HTMLElement | null>(null)
   const thirdSectionRef = useRef<HTMLElement | null>(null)
+  const fourthSectionRef = useRef<HTMLElement | null>(null)
   const energyPathBRef = useRef<SVGPathElement | null>(null)
   const energyPathCRef = useRef<SVGPathElement | null>(null)
   const ballBOuterRef = useRef<SVGCircleElement | null>(null)
@@ -58,6 +59,23 @@ const EpisodeLandingTenth: React.FC = () => {
     about: ['About Episode', 'FAQ', 'Blog'],
     work: ['Develop with us', 'Careers'],
   }
+  const testimonialBaseSlides = [
+    {
+      quote:
+        'Modern interiors, automated check-in process, nice cafe and bar downstairs, and a free co-working space. I enjoyed every minute of my stay!',
+      author: 'Denis',
+    },
+    {
+      quote:
+        'Smart rooms, super fast check-in, and an amazing social vibe. Perfect blend of comfort and modern city living.',
+      author: 'Nina',
+    },
+    {
+      quote:
+        'Great location, clean spaces, and a super smooth digital stay experience. I would absolutely come back again.',
+      author: 'Mark',
+    },
+  ] as const
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -220,7 +238,7 @@ const EpisodeLandingTenth: React.FC = () => {
     const container = mainScrollRef.current
     if (!container) return
 
-    const sections = [firstSectionRef.current, secondSectionRef.current, thirdSectionRef.current].filter(Boolean) as HTMLElement[]
+    const sections = [firstSectionRef.current, secondSectionRef.current, thirdSectionRef.current, fourthSectionRef.current].filter(Boolean) as HTMLElement[]
     if (sections.length < 2) return
 
     const lockFor = (ms: number) => {
@@ -466,7 +484,7 @@ const EpisodeLandingTenth: React.FC = () => {
                 disablePictureInPicture
                 controlsList="nodownload noplaybackrate nofullscreen noremoteplayback"
                 preload="auto"
-                className={`absolute inset-0 h-full w-full object-cover blur-[0.5px] transition-opacity duration-1000 ${
+                className={`absolute inset-0 h-full w-full object-cover object-[center_38%] md:object-center blur-[0.5px] transition-opacity duration-1000 ${
                   index === activeScene ? 'opacity-100' : 'opacity-0'
                 }`}
               >
@@ -844,6 +862,121 @@ const EpisodeLandingTenth: React.FC = () => {
                 ))}
               </div>
             </motion.div>
+          </div>
+        </section>
+
+        <section ref={fourthSectionRef} className={ui.testimonialSection.wrapper}>
+          <svg
+            viewBox="0 0 1000 360"
+            preserveAspectRatio="none"
+            shapeRendering="geometricPrecision"
+            className="pointer-events-none absolute inset-x-0 top-20 h-[34%] w-full opacity-[0.82] md:hidden"
+          >
+            <defs>
+              <filter id="energyGlowPage4Mobile" x="-220%" y="-220%" width="560%" height="560%">
+                <feGaussianBlur stdDeviation="10" result="blurred" />
+                <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="coreGlow" />
+                <feMerge>
+                  <feMergeNode in="blurred" />
+                  <feMergeNode in="coreGlow" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+              <path id="energyPathPage4M1" d="M-60 92 C 120 26, 320 20, 500 132 C 650 224, 830 216, 1060 110" />
+              <path id="energyPathPage4M2" d="M-80 214 C 140 140, 330 126, 520 78 C 700 34, 850 52, 1080 198" />
+              <path id="energyPathPage4M3" d="M-40 290 C 180 250, 360 214, 560 152 C 760 92, 910 116, 1080 244" />
+            </defs>
+            <use href="#energyPathPage4M1" fill="none" stroke={accentLineColor} strokeWidth="2.4" />
+            <use href="#energyPathPage4M2" fill="none" stroke={accentLineColor} strokeWidth="2.2" />
+            <use href="#energyPathPage4M3" fill="none" stroke={accentLineColor} strokeWidth="2" />
+
+            <circle r="12.3" fill={accentGreenColor} filter="url(#energyGlowPage4Mobile)" opacity="0.62">
+              <animateMotion dur="4.6s" repeatCount="indefinite" rotate="auto">
+                <mpath href="#energyPathPage4M1" />
+              </animateMotion>
+            </circle>
+            <circle r="6.3" fill="#fcfff7" filter="url(#energyGlowPage4Mobile)" opacity="1">
+              <animateMotion dur="4.6s" repeatCount="indefinite" rotate="auto">
+                <mpath href="#energyPathPage4M1" />
+              </animateMotion>
+            </circle>
+            <circle r="12.3" fill={accentGreenColor} filter="url(#energyGlowPage4Mobile)" opacity="0.62">
+              <animateMotion dur="5s" repeatCount="indefinite" rotate="auto">
+                <mpath href="#energyPathPage4M2" />
+              </animateMotion>
+            </circle>
+            <circle r="6.3" fill="#fcfff7" filter="url(#energyGlowPage4Mobile)" opacity="1">
+              <animateMotion dur="5s" repeatCount="indefinite" rotate="auto">
+                <mpath href="#energyPathPage4M2" />
+              </animateMotion>
+            </circle>
+            <circle r="12.3" fill={accentGreenColor} filter="url(#energyGlowPage4Mobile)" opacity="0.62">
+              <animateMotion dur="5.4s" repeatCount="indefinite" rotate="auto">
+                <mpath href="#energyPathPage4M3" />
+              </animateMotion>
+            </circle>
+            <circle r="6.3" fill="#fcfff7" filter="url(#energyGlowPage4Mobile)" opacity="1">
+              <animateMotion dur="5.4s" repeatCount="indefinite" rotate="auto">
+                <mpath href="#energyPathPage4M3" />
+              </animateMotion>
+            </circle>
+          </svg>
+
+          <svg
+            viewBox="0 0 1600 900"
+            preserveAspectRatio="none"
+            shapeRendering="geometricPrecision"
+            className="pointer-events-none absolute inset-0 hidden h-full w-full opacity-[0.78] md:block"
+          >
+            <defs>
+              <filter id="energyGlowPage4Desktop" x="-220%" y="-220%" width="560%" height="560%">
+                <feGaussianBlur stdDeviation="12" result="blurred" />
+                <feGaussianBlur in="SourceGraphic" stdDeviation="3.6" result="coreGlow" />
+                <feColorMatrix in="coreGlow" type="saturate" values="1.9" result="saturatedCore" />
+                <feComponentTransfer in="saturatedCore" result="brightCore">
+                  <feFuncR type="linear" slope="1.2" />
+                  <feFuncG type="linear" slope="1.35" />
+                  <feFuncB type="linear" slope="1.15" />
+                </feComponentTransfer>
+                <feMerge>
+                  <feMergeNode in="blurred" />
+                  <feMergeNode in="brightCore" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+              <path id="energyPathPage4A" d="M-120 300 C 180 40, 480 40, 520 320 L 520 900" />
+              <path id="energyPathPage4B" d="M-120 210 C 180 120, 540 120, 900 210 C 1260 300, 1620 300, 1920 210" />
+              <path id="energyPathPage4C" d="M1920 250 C 1620 340, 1260 340, 900 210 C 540 80, 180 80, -120 250" />
+              <path id="energyPathPage4D" d="M740 900 L 740 520 C 740 340, 860 250, 1020 250 C 1170 250, 1280 330, 1280 500 L 1280 900" />
+            </defs>
+            <use href="#energyPathPage4A" fill="none" stroke={accentLineColor} strokeWidth="2.6" />
+            <use href="#energyPathPage4B" fill="none" stroke={accentLineColor} strokeWidth="2.45" />
+            <use href="#energyPathPage4C" fill="none" stroke={accentLineColor} strokeWidth="2.1" />
+            <use href="#energyPathPage4D" fill="none" stroke={accentLineColor} strokeWidth="1.95" opacity="0.9" />
+            <circle r="12.3" fill={accentGreenColor} filter="url(#energyGlowPage4Desktop)" opacity="0.62"><animateMotion dur="5.1s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathPage4A" /></animateMotion></circle>
+            <circle r="6.3" fill="#fcfff7" filter="url(#energyGlowPage4Desktop)" opacity="1"><animateMotion dur="5.1s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathPage4A" /></animateMotion></circle>
+            <circle r="12.3" fill={accentGreenColor} filter="url(#energyGlowPage4Desktop)" opacity="0.62"><animateMotion dur="4.1s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathPage4B" /></animateMotion></circle>
+            <circle r="6.3" fill="#fcfff7" filter="url(#energyGlowPage4Desktop)" opacity="1"><animateMotion dur="4.1s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathPage4B" /></animateMotion></circle>
+            <circle r="12.3" fill={accentGreenColor} filter="url(#energyGlowPage4Desktop)" opacity="0.62"><animateMotion dur="4.8s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathPage4C" /></animateMotion></circle>
+            <circle r="6.3" fill="#fcfff7" filter="url(#energyGlowPage4Desktop)" opacity="1"><animateMotion dur="4.8s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathPage4C" /></animateMotion></circle>
+            <circle r="12.3" fill={accentGreenColor} filter="url(#energyGlowPage4Desktop)" opacity="0.62"><animateMotion dur="5.6s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathPage4D" /></animateMotion></circle>
+            <circle r="6.3" fill="#fcfff7" filter="url(#energyGlowPage4Desktop)" opacity="1"><animateMotion dur="5.6s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathPage4D" /></animateMotion></circle>
+          </svg>
+          <div className={ui.testimonialSection.container}>
+            <div className={ui.testimonialSection.carouselViewport}>
+              <div className={ui.testimonialSection.carouselTrack}>
+                {[...testimonialBaseSlides, ...testimonialBaseSlides].map((item, cardIndex) => (
+                  <div key={`${item.author}-${cardIndex}`} className={ui.testimonialSection.panel}>
+                    <p className={ui.testimonialSection.quoteMark}>“</p>
+                    <p className={ui.testimonialSection.quoteText}>{item.quote}</p>
+                    <div className={ui.testimonialSection.authorRow}>
+                      <span className={ui.testimonialSection.authorName}>{item.author}</span>
+                      <span className={ui.testimonialSection.authorMeta}>(More reviews →)</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </section>
       </main>

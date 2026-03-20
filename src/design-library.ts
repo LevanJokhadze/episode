@@ -183,6 +183,22 @@ export const components = {
       'inline-flex items-center gap-1 rounded-full bg-white/80 px-2 py-0.5 text-[11px] font-medium text-[#1f3436] backdrop-blur-sm',
     cardTitle: 'mt-2 inline-flex items-center gap-2 text-[24px] font-medium leading-none text-white max-[430px]:text-[20px]',
   },
+  testimonialSection: {
+    wrapper:
+      'relative flex h-screen snap-start snap-always items-center overflow-hidden bg-[#f1f3f3] px-4 py-10 md:px-10',
+    container: 'mx-auto w-full max-w-[1320px]',
+    carouselViewport:
+      'relative w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_15%,black_85%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_15%,black_85%,transparent)]',
+    carouselTrack:
+      'testimonial-marquee-track flex w-max gap-3 hover:[animation-play-state:paused] md:gap-6',
+    panel:
+      'relative min-w-[86%] snap-start rounded-[28px] bg-[#e8ecec] px-6 py-8 md:w-[400px] md:min-w-[400px] md:max-w-[400px] md:px-7 md:py-7',
+    quoteMark: 'text-5xl font-bold leading-none text-[#111] md:text-6xl',
+    quoteText: 'mt-1 max-w-[980px] text-[28px] leading-[1.2] text-[#101616] md:text-[28px] md:leading-[1.28]',
+    authorRow: 'mt-4 text-[20px] text-[#111] md:text-[18px]',
+    authorName: 'font-semibold',
+    authorMeta: 'ml-2 text-[#2f3839]/80',
+  },
 } as const
 
 export const contentGuidelines = {
