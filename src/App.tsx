@@ -1,7 +1,7 @@
-import EpisodeLanding from './components/EpisodeLanding'
+import EpisodeLandingTenth from './components/EpisodeLandingTenth'
 
 function App() {
-  return <EpisodeLanding />
+  return <EpisodeLandingTenth />
 }
 
 export default App

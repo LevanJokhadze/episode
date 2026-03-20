@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Episode Hotels — Stay Smart. Stay Social.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+<style>
+
+/* =============================================
+   EPISODE HOTELS — LANDING PAGE
+   Brand Colors:
+   --aqua: #1f3436
+   --sky:  #d1e9ec
+   Colors extracted from branding PDF
+   ============================================= */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --aqua:    #1f3436;
+  --sky:     #d1e9ec;
+  --sky-50:  rgba(209,233,236,0.5);
+  --sky-20:  rgba(209,233,236,0.18);
+  --dreamy:  #b8daf0;
+  --sweet:   #d8f6c5;
+  --terra:   #fed5ca;
+  --white:   #f7f9f9;
+  --off:     #e8f2f3;
+  --ink:     #0d1f21;
+  --line:    rgba(31,52,54,0.15);
+  --ease:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease2:   cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--sky);
+  color: var(--aqua);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ── CUSTOM CURSOR ── */
+.cursor {
+  position: fixed;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--aqua);
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%,-50%);
+  transition: transform 0.1s, width 0.3s var(--ease), height 0.3s var(--ease), background 0.3s;
+  mix-blend-mode: multiply;
+}
+.cursor-ring {
+  position: fixed;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid var(--aqua);
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%,-50%);
+  transition: transform 0.18s var(--ease2), width 0.4s var(--ease), height 0.4s var(--ease), opacity 0.3s;
+  opacity: 0.5;
+}
+body:hover .cursor { opacity: 1; }
+a:hover ~ .cursor, button:hover ~ .cursor { width: 18px; height: 18px; }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 48px;
+  mix-blend-mode: normal;
+  transition: background 0.4s, padding 0.4s;
+}
+nav.scrolled {
+  background: rgba(209,233,236,0.85);
+  backdrop-filter: blur(16px);
+  padding: 14px 48px;
+  border-bottom: 1px solid var(--line);
+}
+
+.nav-logo {
+  display: flex; flex-direction: column;
+  gap: 0;
+  text-decoration: none;
+}
+.nav-logo .wordmark {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px;
+  letter-spacing: 0.04em;
+  color: var(--aqua);
+  line-height: 1;
+}
+.nav-logo .sub {
+  font-size: 7px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--aqua);
+  opacity: 0.6;
+  margin-left: 1px;
+}
+.logo-bracket {
+  display: inline-flex;
+  align-items: stretch;
+  gap: 4px;
+}
+.logo-bracket .lb {
+  display: block;
+  width: 2px;
+  background: var(--aqua);
+  align-self: stretch;
+}
+
+.nav-links {
+  display: flex; gap: 36px; list-style: none;
+}
+.nav-links a {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--aqua);
+  text-decoration: none;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+.nav-links a:hover { opacity: 1; }
+
+.nav-book {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.btn-book {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sky);
+  background: var(--aqua);
+  border: none;
+  padding: 10px 24px;
+  cursor: none;
+  transition: background 0.25s, transform 0.2s var(--ease);
+}
+.btn-book:hover { transform: translateY(-1px); background: var(--ink); }
+
+/* ── HERO ── */
+.hero {
+  position: relative;
+  height: 100vh;
+  min-height: 680px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+  background: var(--aqua);
+}
+
+/* Animated grid background */
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(var(--sky-20) 1px, transparent 1px),
+    linear-gradient(90deg, var(--sky-20) 1px, transparent 1px);
+  background-size: 80px 80px;
+  animation: gridDrift 30s linear infinite;
+  opacity: 0.4;
+}
+@keyframes gridDrift {
+  0% { transform: translate(0,0); }
+  100% { transform: translate(80px, 80px); }
+}
+
+/* Image panels */
+.hero-panels {
+  position: absolute; inset: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2px;
+}
+.panel {
+  position: relative;
+  overflow: hidden;
+}
+.panel::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--aqua);
+  opacity: 0.55;
+  transition: opacity 0.6s var(--ease);
+}
+.hero-panels:hover .panel::after { opacity: 0.7; }
+.panel:hover::after { opacity: 0.2 !important; }
+
+.panel img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transform: scale(1.08);
+  transition: transform 8s ease;
+}
+.panel:hover img { transform: scale(1.0); }
+
+/* Hero text block */
+.hero-content {
+  position: relative; z-index: 10;
+  padding: 0 48px 60px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: flex-end;
+  gap: 40px;
+}
+
+.hero-headline {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(72px, 10vw, 148px);
+  line-height: 0.9;
+  color: var(--sky);
+  letter-spacing: 0.01em;
+}
+.hero-headline .italic-word {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 0.85em;
+  color: var(--dreamy);
+}
+
+.hero-right {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-bottom: 8px;
+}
+.hero-sub {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--sky);
+  line-height: 1.7;
+  opacity: 0.8;
+  max-width: 340px;
+}
+
+/* Booking strip */
+.booking-strip {
+  display: flex;
+  align-items: stretch;
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid rgba(209,233,236,0.2);
+}
+.booking-field {
+  flex: 1;
+  background: rgba(209,233,236,0.07);
+  backdrop-filter: blur(8px);
+  padding: 14px 16px;
+  border: none;
+  display: flex; flex-direction: column; gap: 2px;
+  cursor: none;
+  transition: background 0.2s;
+}
+.booking-field:hover { background: rgba(209,233,236,0.14); }
+.booking-field label {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sky);
+  opacity: 0.5;
+}
+.booking-field span {
+  font-size: 13px;
+  color: var(--sky);
+  font-weight: 400;
+}
+.booking-btn {
+  background: var(--sky);
+  color: var(--aqua);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  border: none;
+  padding: 0 28px;
+  cursor: none;
+  transition: background 0.25s;
+  white-space: nowrap;
+}
+.booking-btn:hover { background: var(--white); }
+
+/* Scroll hint */
+.scroll-hint {
+  position: absolute;
+  bottom: 28px;
+  right: 48px;
+  display: flex; align-items: center; gap: 10px;
+  color: var(--sky);
+  opacity: 0.4;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  z-index: 10;
+}
+.scroll-line {
+  width: 40px; height: 1px;
+  background: var(--sky);
+  position: relative;
+  overflow: hidden;
+}
+.scroll-line::after {
+  content: '';
+  position: absolute; top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: var(--sky);
+  animation: scrollAnim 2s ease-in-out infinite;
+}
+@keyframes scrollAnim {
+  0% { left: -100%; }
+  50% { left: 0%; }
+  100% { left: 100%; }
+}
+
+/* ── SECTION: WHO WE ARE ── */
+.section-who {
+  background: var(--white);
+  padding: 120px 48px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+.section-who::before {
+  content: 'EP';
+  position: absolute;
+  right: -20px; top: -60px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 400px;
+  color: var(--sky);
+  line-height: 1;
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+.who-label {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--aqua);
+  opacity: 0.4;
+  margin-bottom: 24px;
+  display: flex; align-items: center; gap: 12px;
+}
+.who-label::before {
+  content: '';
+  display: block;
+  width: 32px; height: 1px;
+  background: currentColor;
+}
+
+.who-headline {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(48px, 5vw, 80px);
+  line-height: 0.95;
+  color: var(--aqua);
+  margin-bottom: 32px;
+}
+.who-headline em {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 0.9em;
+  color: var(--aqua);
+  opacity: 0.6;
+}
+
+.who-body {
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: var(--aqua);
+  opacity: 0.7;
+  margin-bottom: 40px;
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--aqua);
+  text-decoration: none;
+  border-bottom: 1px solid var(--aqua);
+  padding-bottom: 6px;
+  transition: gap 0.3s var(--ease), opacity 0.2s;
+}
+.btn-outline:hover { gap: 20px; }
+.btn-outline .arrow { font-size: 16px; }
+
+.who-right {
+  position: relative;
+}
+.who-image-stack {
+  position: relative;
+  height: 520px;
+}
+.who-img-main {
+  width: 78%;
+  height: 440px;
+  object-fit: cover;
+  display: block;
+  margin-left: auto;
+}
+.who-img-accent {
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 52%;
+  height: 280px;
+  object-fit: cover;
+  border: 4px solid var(--white);
+}
+.who-stat {
+  position: absolute;
+  top: 32px; left: 0;
+  background: var(--aqua);
+  color: var(--sky);
+  padding: 20px 24px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.who-stat .num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 48px;
+  line-height: 1;
+  color: var(--sky);
+}
+.who-stat .label {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+/* ── VALUES STRIP ── */
+.values-strip {
+  background: var(--aqua);
+  padding: 80px 48px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+}
+.value-card {
+  padding: 40px 32px;
+  border-right: 1px solid rgba(209,233,236,0.1);
+  transition: background 0.3s;
+}
+.value-card:last-child { border-right: none; }
+.value-card:hover { background: rgba(209,233,236,0.05); }
+.value-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: var(--sky);
+  opacity: 0.3;
+  margin-bottom: 24px;
+}
+.value-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 36px;
+  color: var(--sky);
+  letter-spacing: 0.02em;
+  margin-bottom: 16px;
+  line-height: 1;
+}
+.value-desc {
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: var(--sky);
+  opacity: 0.55;
+}
+
+/* ── ROOMS SECTION ── */
+.section-rooms {
+  background: var(--off);
+  padding: 120px 48px;
+}
+
+.section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 64px;
+}
+.section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(48px, 6vw, 96px);
+  line-height: 0.9;
+  color: var(--aqua);
+}
+.section-title em {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 0.85em;
+  opacity: 0.5;
+}
+.section-meta {
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: var(--aqua);
+  opacity: 0.5;
+  text-align: right;
+  line-height: 1.6;
+}
+
+.rooms-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  grid-template-rows: 280px 280px;
+  gap: 4px;
+}
+
+.room-card {
+  position: relative;
+  overflow: hidden;
+  background: var(--aqua);
+  cursor: none;
+}
+.room-card:first-child {
+  grid-row: 1 / 3;
+}
+.room-card img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s var(--ease), filter 0.4s;
+  filter: brightness(0.85) saturate(0.9);
+}
+.room-card:hover img {
+  transform: scale(1.05);
+  filter: brightness(0.7) saturate(1.1);
+}
+.room-info {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 24px;
+  background: linear-gradient(transparent, rgba(15,28,30,0.85));
+  transform: translateY(20px);
+  transition: transform 0.4s var(--ease), opacity 0.4s;
+  opacity: 0.7;
+}
+.room-card:hover .room-info {
+  transform: translateY(0);
+  opacity: 1;
+}
+.room-type {
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--dreamy);
+  margin-bottom: 6px;
+}
+.room-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px;
+  color: var(--sky);
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+}
+.room-from {
+  font-size: 11px;
+  color: var(--sky);
+  opacity: 0.6;
+}
+
+.rooms-cta {
+  margin-top: 48px;
+  text-align: center;
+}
+
+/* ── SPACES SECTION ── */
+.section-spaces {
+  background: var(--sky);
+  padding: 120px 0;
+  overflow: hidden;
+}
+.spaces-inner {
+  padding: 0 48px;
+  margin-bottom: 64px;
+}
+.spaces-intro {
+  max-width: 600px;
+}
+.spaces-intro p {
+  font-size: 18px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: var(--aqua);
+  opacity: 0.75;
+  margin-top: 20px;
+}
+
+/* Horizontal scroll ticker for spaces */
+.spaces-ticker {
+  display: flex;
+  gap: 4px;
+  animation: tickerScroll 40s linear infinite;
+  width: max-content;
+  padding: 0 48px;
+}
+.spaces-ticker:hover { animation-play-state: paused; }
+@keyframes tickerScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.space-thumb {
+  width: 320px;
+  height: 420px;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  background: var(--aqua);
+  cursor: none;
+}
+.space-thumb img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  opacity: 0.85;
+  transition: opacity 0.4s, transform 0.6s var(--ease);
+}
+.space-thumb:hover img { opacity: 0.65; transform: scale(1.04); }
+.space-thumb-label {
+  position: absolute;
+  bottom: 20px; left: 20px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  color: var(--sky);
+  letter-spacing: 0.04em;
+}
+.space-tag {
+  position: absolute;
+  top: 16px; right: 16px;
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  background: rgba(209,233,236,0.15);
+  backdrop-filter: blur(8px);
+  color: var(--sky);
+  padding: 5px 10px;
+  border: 1px solid rgba(209,233,236,0.2);
+}
+
+/* ── EAT & DRINK ── */
+.section-eat {
+  background: var(--aqua);
+  padding: 120px 48px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+.eat-left { position: relative; }
+.eat-img {
+  width: 100%;
+  height: 560px;
+  object-fit: cover;
+  display: block;
+}
+.eat-badge {
+  position: absolute;
+  top: -24px; right: -24px;
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  background: var(--terra);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  animation: rotateBadge 12s linear infinite;
+}
+.eat-badge span {
+  font-size: 8px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--aqua);
+  font-weight: 500;
+}
+@keyframes rotateBadge {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.eat-right {
+  color: var(--sky);
+}
+.eat-label {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  opacity: 0.4;
+  margin-bottom: 24px;
+  display: flex; align-items: center; gap: 12px;
+}
+.eat-label::before {
+  content: '';
+  display: block; width: 32px; height: 1px;
+  background: currentColor;
+}
+.eat-headline {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(40px, 4vw, 68px);
+  line-height: 0.95;
+  margin-bottom: 32px;
+}
+.eat-headline em {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  opacity: 0.5;
+}
+.eat-body {
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.85;
+  opacity: 0.65;
+  margin-bottom: 48px;
+}
+
+.eat-hours {
+  border-top: 1px solid rgba(209,233,236,0.15);
+  padding-top: 32px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.hour-item {}
+.hour-day {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.4;
+  margin-bottom: 4px;
+}
+.hour-time {
+  font-size: 14px;
+  font-weight: 400;
+  opacity: 0.85;
+}
+
+/* ── OFFERS SECTION ── */
+.section-offers {
+  background: var(--white);
+  padding: 120px 48px;
+}
+
+.offers-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  margin-top: 64px;
+}
+.offer-card {
+  padding: 48px 36px;
+  border: 1px solid var(--line);
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s, transform 0.4s var(--ease);
+  background: var(--white);
+}
+.offer-card:hover {
+  border-color: var(--aqua);
+  transform: translateY(-4px);
+}
+.offer-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--aqua);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s var(--ease));
+}
+.offer-card:hover::before { transform: scaleX(1); }
+
+.offer-tag {
+  display: inline-block;
+  font-size: 8px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--aqua);
+  background: var(--sky);
+  padding: 4px 10px;
+  margin-bottom: 24px;
+}
+.offer-discount {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 72px;
+  line-height: 1;
+  color: var(--aqua);
+  opacity: 0.12;
+  position: absolute;
+  top: 20px; right: 20px;
+}
+.offer-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px;
+  color: var(--aqua);
+  letter-spacing: 0.02em;
+  margin-bottom: 16px;
+  line-height: 1.1;
+}
+.offer-desc {
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: var(--aqua);
+  opacity: 0.6;
+  margin-bottom: 32px;
+}
+.offer-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--aqua);
+  text-decoration: none;
+  font-weight: 500;
+  transition: gap 0.3s var(--ease);
+}
+.offer-cta:hover { gap: 18px; }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--ink);
+  padding: 80px 48px 40px;
+  color: var(--sky);
+}
+.footer-top {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 60px;
+  padding-bottom: 60px;
+  border-bottom: 1px solid rgba(209,233,236,0.1);
+  margin-bottom: 32px;
+}
+.footer-brand .logo-text {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 40px;
+  color: var(--sky);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.footer-brand .logo-sub {
+  font-size: 8px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  opacity: 0.3;
+  margin-bottom: 20px;
+}
+.footer-brand p {
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.8;
+  opacity: 0.5;
+  max-width: 280px;
+}
+.footer-col h4 {
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  opacity: 0.35;
+  margin-bottom: 20px;
+}
+.footer-col ul { list-style: none; }
+.footer-col ul li {
+  margin-bottom: 10px;
+}
+.footer-col ul li a {
+  font-size: 13px;
+  color: var(--sky);
+  text-decoration: none;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+.footer-col ul li a:hover { opacity: 1; }
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  opacity: 0.3;
+}
+
+/* ── REVEAL ANIMATIONS ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* ── HERO ENTRANCE ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.hero-headline { animation: fadeUp 1.2s var(--ease) 0.3s both; }
+.hero-sub { animation: fadeUp 1s var(--ease) 0.6s both; }
+.booking-strip { animation: fadeUp 0.8s var(--ease) 0.9s both; }
+
+/* Progress bar */
+.progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  background: var(--aqua);
+  z-index: 200;
+  transition: width 0.1s;
+  width: 0%;
+}
+
+/* Noise texture overlay */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.3;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1024px) {
+  nav { padding: 16px 24px; }
+  .nav-links { display: none; }
+  .hero-content {
+    grid-template-columns: 1fr;
+    padding: 0 24px 48px;
+  }
+  .hero-right { max-width: 100%; }
+  .booking-strip { flex-wrap: wrap; }
+  .booking-field { min-width: 45%; }
+  .section-who, .section-eat {
+    grid-template-columns: 1fr;
+    padding: 80px 24px;
+  }
+  .values-strip {
+    grid-template-columns: 1fr 1fr;
+    padding: 60px 24px;
+  }
+  .section-rooms { padding: 80px 24px; }
+  .rooms-grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+  }
+  .room-card:first-child { grid-row: auto; }
+  .section-spaces .spaces-inner { padding: 0 24px; }
+  .offers-grid { grid-template-columns: 1fr; }
+  .section-offers { padding: 80px 24px; }
+  footer { padding: 60px 24px 32px; }
+  .footer-top { grid-template-columns: 1fr 1fr; gap: 40px; }
+}
+
+@media (max-width: 640px) {
+  .hero-panels { grid-template-columns: 1fr 1fr; }
+  .hero-panels .panel:last-child { display: none; }
+  .values-strip { grid-template-columns: 1fr; }
+  .section-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .rooms-grid { grid-template-columns: 1fr; }
+  .footer-top { grid-template-columns: 1fr; }
+  .who-image-stack { height: 320px; }
+  .who-img-main { height: 280px; }
+  .who-img-accent { display: none; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Progress bar -->
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- ══ NAV ══ -->
+<nav id="mainNav">
+  <a href="#" class="nav-logo">
+    <div class="logo-bracket">
+      <span class="wordmark">EPISODE</span>
+      <span class="lb"></span>
+    </div>
+    <span class="sub">Hotels</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#">Offers</a></li>
+    <li><a href="#">Stay</a></li>
+    <li><a href="#">Eat & Drink</a></li>
+    <li><a href="#">Work With Us</a></li>
+  </ul>
+  <div class="nav-book">
+    <button class="btn-book">Book a Room</button>
+  </div>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section class="hero" id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-panels">
+    <!-- Using CSS gradients as stand-ins for real photography -->
+    <div class="panel">
+      <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=80" alt="Episode Hotel Room" loading="eager">
+    </div>
+    <div class="panel">
+      <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80" alt="Episode Hotel Garden" loading="eager">
+    </div>
+    <div class="panel">
+      <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=800&q=80" alt="Episode Hotel Lobby" loading="eager">
+    </div>
+  </div>
+
+  <div class="hero-content">
+    <h1 class="hero-headline">
+      Stay<br>
+      <em class="italic-word">Smart.</em><br>
+      Stay Social.
+    </h1>
+    <div class="hero-right">
+      <p class="hero-sub">
+        Georgia's first tech-driven hotel. Where design meets intelligence, and comfort meets community.
+      </p>
+      <div class="booking-strip">
+        <div class="booking-field">
+          <label>Check-in</label>
+          <span>Add date</span>
+        </div>
+        <div class="booking-field">
+          <label>Check-out</label>
+          <span>Add date</span>
+        </div>
+        <div class="booking-field">
+          <label>Guests</label>
+          <span>1 Guest</span>
+        </div>
+        <button class="booking-btn">Check Availability</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ══ WHO WE ARE ══ -->
+<section class="section-who" id="about">
+  <div class="who-left reveal">
+    <div class="who-label">Who We Are</div>
+    <h2 class="who-headline">A new kind of<br><em>hospitality</em></h2>
+    <p class="who-body">
+      Episode was created for a new generation of travelers — curious, connected, and always moving. Here, design meets smart technology, and comfort meets community. No complications. No excess. Just a fresh, modern way to experience hospitality.
+    </p>
+    <a href="#" class="btn-outline">
+      Discover our story <span class="arrow">→</span>
+    </a>
+  </div>
+  <div class="who-right reveal reveal-delay-2">
+    <div class="who-image-stack">
+      <img class="who-img-main" src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=700&q=80" alt="Episode Room">
+      <img class="who-img-accent" src="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=500&q=80" alt="Episode Courtyard">
+      <div class="who-stat">
+        <span class="num">118</span>
+        <span class="label">Designed rooms</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ VALUES ══ -->
+<div class="values-strip">
+  <div class="value-card reveal">
+    <div class="value-num">01</div>
+    <div class="value-title">Inclusive</div>
+    <p class="value-desc">Everybody is welcome to stay, from adventurers to everyday travellers.</p>
+  </div>
+  <div class="value-card reveal reveal-delay-1">
+    <div class="value-num">02</div>
+    <div class="value-title">Intelligent</div>
+    <p class="value-desc">New innovations excite us. We use technology with wisdom, not just novelty.</p>
+  </div>
+  <div class="value-card reveal reveal-delay-2">
+    <div class="value-num">03</div>
+    <div class="value-title">Effortless</div>
+    <p class="value-desc">From first encounter to check-out — your experience is seamless throughout.</p>
+  </div>
+  <div class="value-card reveal reveal-delay-3">
+    <div class="value-num">04</div>
+    <div class="value-title">Honest</div>
+    <p class="value-desc">No hidden surprises, no hidden agenda. Your experience is exactly as expected.</p>
+  </div>
+</div>
+
+<!-- ══ ROOMS ══ -->
+<section class="section-rooms" id="rooms">
+  <div class="section-header">
+    <h2 class="section-title reveal">Find<br><em>Your Room</em></h2>
+    <div class="section-meta reveal">
+      118 rooms<br>Multiple categories<br>Designed for different ways of staying
+    </div>
+  </div>
+  <div class="rooms-grid reveal">
+    <div class="room-card">
+      <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&q=80" alt="Episode Room">
+      <div class="room-info">
+        <div class="room-type">Most Popular</div>
+        <div class="room-name">Double Room</div>
+        <div class="room-from">From ₾250 / night</div>
+      </div>
+    </div>
+    <div class="room-card">
+      <img src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=700&q=80" alt="Solo Room">
+      <div class="room-info">
+        <div class="room-type">Solo Traveller</div>
+        <div class="room-name">Solo Room</div>
+        <div class="room-from">From ₾180 / night</div>
+      </div>
+    </div>
+    <div class="room-card">
+      <img src="https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=700&q=80" alt="Spinner Room">
+      <div class="room-info">
+        <div class="room-type">Signature</div>
+        <div class="room-name">Spinner Double</div>
+        <div class="room-from">From ₾320 / night</div>
+      </div>
+    </div>
+    <div class="room-card">
+      <img src="https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=700&q=80" alt="Episode Special">
+      <div class="room-info">
+        <div class="room-type">Premium</div>
+        <div class="room-name">Episode Special</div>
+        <div class="room-from">From ₾420 / night</div>
+      </div>
+    </div>
+  </div>
+  <div class="rooms-cta reveal">
+    <a href="#" class="btn-outline" style="color:var(--aqua);">
+      View all rooms <span class="arrow">→</span>
+    </a>
+  </div>
+</section>
+
+<!-- ══ SPACES ══ -->
+<section class="section-spaces" id="spaces">
+  <div class="spaces-inner">
+    <div class="who-label reveal" style="opacity:0.4;">Shared Spaces</div>
+    <h2 class="section-title reveal">Life at Episode<br><em>happens here</em></h2>
+    <div class="spaces-intro reveal">
+      <p>From buzzing social spots to productive work corners — our spaces are designed to connect people, spark ideas, and make every visit feel vibrant and effortless.</p>
+    </div>
+  </div>
+  <!-- Scrolling ticker -->
+  <div style="overflow:hidden;">
+    <div class="spaces-ticker">
+      <!-- First set -->
+      <div class="space-thumb">
+        <img src="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=500&q=80" alt="Courtyard">
+        <span class="space-tag">Outdoor</span>
+        <div class="space-thumb-label">Courtyard</div>
+      </div>
+      <div class="space-thumb">
+        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=500&q=80" alt="Cowork">
+        <span class="space-tag">Work</span>
+        <div class="space-thumb-label">Cowork Space</div>
+      </div>
+      <div class="space-thumb">
+        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=500&q=80" alt="Restaurant">
+        <span class="space-tag">Eat & Drink</span>
+        <div class="space-thumb-label">Restaurant</div>
+      </div>
+      <div class="space-thumb">
+        <img src="https://images.unsplash.com/photo-1591088398332-8a7791972843?w=500&q=80" alt="Bar">
+        <span class="space-tag">Social</span>
+        <div class="space-thumb-label">Bar & Lounge</div>
+      </div>
+      <div class="space-thumb">
+        <img src="https://images.unsplash.com/photo-1517502884422-41eaead166d4?w=500&q=80" alt="Meeting">
+        <span class="space-tag">Events</span>
+        <div class="space-thumb-label">Meeting Rooms</div>
+      </div>
+      <!-- Duplicate set for seamless loop -->
+      <div class="space-thumb">
+        <img src="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=500&q=80" alt="Courtyard">
+        <span class="space-tag">Outdoor</span>
+        <div class="space-thumb-label">Courtyard</div>
+      </div>
+      <div class="space-thumb">
+        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=500&q=80" alt="Cowork">
+        <span class="space-tag">Work</span>
+        <div class="space-thumb-label">Cowork Space</div>
+      </div>
+      <div class="space-thumb">
+        <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=500&q=80" alt="Restaurant">
+        <span class="space-tag">Eat & Drink</span>
+        <div class="space-thumb-label">Restaurant</div>
+      </div>
+      <div class="space-thumb">
+        <img src="https://images.unsplash.com/photo-1591088398332-8a7791972843?w=500&q=80" alt="Bar">
+        <span class="space-tag">Social</span>
+        <div class="space-thumb-label">Bar & Lounge</div>
+      </div>
+      <div class="space-thumb">
+        <img src="https://images.unsplash.com/photo-1517502884422-41eaead166d4?w=500&q=80" alt="Meeting">
+        <span class="space-tag">Events</span>
+        <div class="space-thumb-label">Meeting Rooms</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ EAT & DRINK ══ -->
+<section class="section-eat" id="eat">
+  <div class="eat-left reveal">
+    <img class="eat-img" src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80" alt="Episode Restaurant">
+    <div class="eat-badge">
+      <span>Open<br>Today</span>
+    </div>
+  </div>
+  <div class="eat-right reveal reveal-delay-2">
+    <div class="eat-label">Eat & Drink</div>
+    <h2 class="eat-headline">Hungry?<br><em>Thirsty?</em><br>Both?</h2>
+    <p class="eat-body">Episode Restaurant brings together good food, creative drinks, and a lively atmosphere that feels effortless. Drop in for coffee, stay for lunch, and don't be surprised if the evening stretches a little longer.</p>
+    <div class="eat-hours">
+      <div class="hour-item">
+        <div class="hour-day">Mon – Thu</div>
+        <div class="hour-time">08:00 – 23:00</div>
+      </div>
+      <div class="hour-item">
+        <div class="hour-day">Fri – Sat</div>
+        <div class="hour-time">08:00 – 00:00</div>
+      </div>
+      <div class="hour-item">
+        <div class="hour-day">Sunday</div>
+        <div class="hour-time">09:00 – 22:00</div>
+      </div>
+      <div class="hour-item">
+        <div class="hour-day">Bar</div>
+        <div class="hour-time">Until late</div>
+      </div>
+    </div>
+    <div style="margin-top:36px; display:flex; gap:16px;">
+      <a href="#" style="text-decoration:none;">
+        <button class="btn-book" style="font-family:'DM Sans',sans-serif; cursor:none;">Reserve a Table</button>
+      </a>
+      <a href="#" class="btn-outline" style="color:var(--sky); border-color:rgba(209,233,236,0.4);">
+        See Menus <span class="arrow">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ OFFERS ══ -->
+<section class="section-offers" id="offers">
+  <div class="section-header">
+    <h2 class="section-title reveal">Offers You<br><em>Can't Resist</em></h2>
+  </div>
+  <div class="offers-grid">
+    <div class="offer-card reveal">
+      <div class="offer-discount">10%</div>
+      <div class="offer-tag">Direct Booking</div>
+      <h3 class="offer-title">Book Direct & Save More</h3>
+      <p class="offer-desc">Book directly on episode-hotels.com and receive a 10% further discount on any of our public rates.</p>
+      <a href="#" class="offer-cta">Book Your Stay <span>→</span></a>
+    </div>
+    <div class="offer-card reveal reveal-delay-1">
+      <div class="offer-discount">20%</div>
+      <div class="offer-tag">Long Stay</div>
+      <h3 class="offer-title">Stay Longer, Save More</h3>
+      <p class="offer-desc">Whether your journey is a night or twenty. Long-stay guests receive 20% off F&B and 30% off laundry services.</p>
+      <a href="#" class="offer-cta">Explore Long Stay <span>→</span></a>
+    </div>
+    <div class="offer-card reveal reveal-delay-2">
+      <div class="offer-discount">∞</div>
+      <div class="offer-tag">Coworking</div>
+      <h3 class="offer-title">Pay Less With a Membership</h3>
+      <p class="offer-desc">Become a 6 or 12-month member and get full access to our flexible workspace. Save more by staying longer.</p>
+      <a href="#" class="offer-cta">View Plans <span>→</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="logo-text">EPISODE</div>
+      <div class="logo-sub">Hotels · Tbilisi, Georgia</div>
+      <p>The future of the hotel industry lies at the intersection of design and technology. We are rethinking hospitality for every traveller.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Stay</h4>
+      <ul>
+        <li><a href="#">All Rooms</a></li>
+        <li><a href="#">Solo Room</a></li>
+        <li><a href="#">Double Room</a></li>
+        <li><a href="#">Episode Special</a></li>
+        <li><a href="#">Long Stay</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Experience</h4>
+      <ul>
+        <li><a href="#">Eat & Drink</a></li>
+        <li><a href="#">Cowork</a></li>
+        <li><a href="#">Meetings</a></li>
+        <li><a href="#">Offers</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Episode</h4>
+      <ul>
+        <li><a href="#">Who We Are</a></li>
+        <li><a href="#">Work With Us</a></li>
+        <li><a href="#">Press</a></li>
+        <li><a href="#">Contact</a></li>
+        <li><a href="#">Instagram</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Episode Hotels. All rights reserved.</span>
+    <span>episode-hotels.com</span>
+  </div>
+</footer>
+
+<script>
+// ── Custom cursor
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = mx + 'px';
+  cursor.style.top  = my + 'px';
+});
+function animateRing() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  ring.style.left = rx + 'px';
+  ring.style.top  = ry + 'px';
+  requestAnimationFrame(animateRing);
+}
+animateRing();
+
+document.querySelectorAll('a, button, .room-card, .offer-card, .space-thumb, .booking-field').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cursor.style.width = '20px'; cursor.style.height = '20px';
+    ring.style.width = '54px'; ring.style.height = '54px';
+    ring.style.opacity = '0.3';
+  });
+  el.addEventListener('mouseleave', () => {
+    cursor.style.width = '10px'; cursor.style.height = '10px';
+    ring.style.width = '36px'; ring.style.height = '36px';
+    ring.style.opacity = '0.5';
+  });
+});
+
+// ── Nav scroll
+const nav = document.getElementById('mainNav');
+const progressBar = document.getElementById('progressBar');
+window.addEventListener('scroll', () => {
+  const scrollY = window.scrollY;
+  const docH = document.body.scrollHeight - window.innerHeight;
+  progressBar.style.width = (scrollY / docH * 100) + '%';
+  nav.classList.toggle('scrolled', scrollY > 80);
+});
+
+// ── Intersection Observer reveal
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12 });
+reveals.forEach(r => observer.observe(r));
+
+// ── Panel hover parallax
+const hero = document.getElementById('hero');
+hero.addEventListener('mousemove', e => {
+  const { left, top, width, height } = hero.getBoundingClientRect();
+  const x = (e.clientX - left) / width - 0.5;
+  const y = (e.clientY - top) / height - 0.5;
+  document.querySelectorAll('.panel img').forEach((img, i) => {
+    const factor = (i - 1) * 8;
+    img.style.transform = `scale(1.08) translate(${x * factor}px, ${y * factor * 0.5}px)`;
+  });
+});
+hero.addEventListener('mouseleave', () => {
+  document.querySelectorAll('.panel img').forEach(img => {
+    img.style.transform = 'scale(1.08)';
+  });
+});
+
+// ── Smooth anchor scrolling
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const id = a.getAttribute('href').slice(1);
+    if (!id) return;
+    const el = document.getElementById(id);
+    if (el) {
+      e.preventDefault();
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+</body>
+</html>

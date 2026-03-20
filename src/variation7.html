@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Episode | Intelligent Stay OS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        episode: {
+                            aqua: '#1F3436',     /* Primary Dark */
+                            sky: '#D1E9EC',      /* Primary Light */
+                            dreamy: '#B8DAF0',   /* Tech Accent */
+                            sweet: '#D8F6C5',    /* Status Accent */
+                            terra: '#FED5CA',    /* Human Accent */
+                        }
+                    },
+                    fontFamily: {
+                        /* 100% aligned with your Brandbook V2 */
+                        display:['"Beatrice Display"', 'system-ui', 'sans-serif'],
+                        sans:['"Untitled Sans"', 'system-ui', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Exact Typography enforcement for the environment */
+        body { background-color: #1F3436; color: #D1E9EC; font-family: "Untitled Sans", sans-serif; }
+        h1, h2, .font-display { font-family: "Beatrice Display", sans-serif; }
+        .font-mono { font-family: "JetBrains Mono", monospace; }
+
+        /* V2 Brandbook Layer: Deep glass overlays + soft line */
+        .glass-layer {
+            background: rgba(209, 233, 236, 0.04);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-top: 1px solid rgba(209, 233, 236, 0.1);
+            border-bottom: 1px solid rgba(209, 233, 236, 0.05);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        /* V2 Pattern Language: Subtle Grid */
+        .bg-grid {
+            background-image: 
+                linear-gradient(rgba(184, 218, 240, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(184, 218, 240, 0.02) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        /* Seamless Hero Image Setup */
+        .hero-image {
+            background-image: url('https://i.ibb.co/LtbC3qP/room.jpg');
+            background-size: cover;
+            background-position: center 60%;
+        }
+
+        /* V2 Motion: Haptic micro-hover */
+        .haptic-hover { transition: all 0.2s ease-out; }
+        .haptic-hover:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(254, 213, 202, 0.15); }
+
+        /* Clean native inputs */
+        input:focus, select:focus { outline: none; }
+        ::-webkit-calendar-picker-indicator { opacity: 0.6; cursor: pointer; filter: invert(1); }
+    </style>
+</head>
+<body class="bg-grid min-h-screen flex flex-col relative overflow-x-hidden selection:bg-episode-terra selection:text-episode-aqua">
+
+    <!-- ================= 1. HEADER (Minimalist & Functional) ================= -->
+    <header class="absolute top-0 w-full z-40 px-6 lg:px-12 py-8 flex justify-between items-start">
+        <!-- Logo (Display Font) -->
+        <div class="font-display text-2xl md:text-3xl text-white tracking-wide uppercase">
+            Episode
+        </div>
+        
+        <!-- Center Navigation (Untitled Sans) -->
+        <nav class="hidden md:flex gap-10 font-sans text-[13px] font-medium tracking-wide text-episode-sky">
+            <a href="#" class="hover:text-episode-terra transition-colors">Our Rooms</a>
+            <a href="#" class="hover:text-episode-terra transition-colors">Digital OS</a>
+            <a href="#" class="hover:text-episode-terra transition-colors">Experience</a>
+        </nav>
+
+        <!-- Right: Status / Sign In -->
+        <div class="flex items-center gap-6">
+            <!-- Tech Accent Data -->
+            <div class="hidden lg:block text-right font-mono text-[10px] text-episode-dreamy opacity-60">
+                118_ROOMS <br> ONLINE
+            </div>
+            <button class="font-sans text-[13px] font-medium text-episode-sky border border-episode-sky/20 px-5 py-2 rounded-full haptic-hover hover:border-episode-terra hover:text-white">
+                Sign In
+            </button>
+        </div>
+    </header>
+
+    <!-- ================= 2. HERO SECTION (High Visual Impact) ================= -->
+    <main class="relative w-full h-[75vh] min-h-[500px] hero-image">
+        <!-- Brandbook Overlay: Deep glass over backdrop -->
+        <div class="absolute inset-0 bg-episode-aqua/40 mix-blend-multiply z-10"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-episode-aqua via-episode-aqua/20 to-transparent z-10"></div>
+
+        <div class="relative z-20 w-full h-full flex flex-col justify-center px-6 lg:px-12 max-w-7xl mx-auto mt-10">
+            <!-- Emotional Headline (Beatrice Display, minimum 40px rule applied) -->
+            <h1 class="font-display text-6xl md:text-[80px] lg:text-[100px] text-white leading-[1] mb-6">
+                More <span class="text-episode-terra italic pr-2">YOU.</span>
+            </h1>
+            <!-- Tagline (Untitled Sans) -->
+            <p class="font-sans text-episode-sky/90 text-lg md:text-xl font-light max-w-xl leading-relaxed">
+                Intelligent Stay OS. <br>
+                Human-first hospitality with data-assisted precision. Keyless entry, smart controls, and luxury comfort.
+            </p>
+        </div>
+    </main>
+
+    <!-- ================= 3. THE BOOKING ENGINE (Data-Driven UX, High Conversion) ================= -->
+    <!-- Positioned to seamlessly overlap the hero image and the solid background -->
+    <div class="relative z-30 w-full px-4 lg:px-12 mt-[-50px] lg:mt-[-60px] mb-20">
+        <div class="max-w-6xl mx-auto glass-layer rounded-[20px] p-2 lg:p-3 backdrop-blur-2xl">
+            
+            <form class="flex flex-col lg:flex-row items-center justify-between w-full">
+                
+                <div class="flex flex-col md:flex-row w-full lg:w-3/4 divide-y md:divide-y-0 md:divide-x divide-episode-sky/10">
+                    <!-- Arrival -->
+                    <div class="flex-1 px-6 py-4 lg:py-3 cursor-pointer group hover:bg-white/5 transition-colors rounded-t-lg md:rounded-l-lg md:rounded-tr-none">
+                        <label class="block font-mono text-[10px] text-episode-dreamy uppercase tracking-[0.15em] mb-1.5 opacity-80 group-hover:opacity-100">Check-in</label>
+                        <input type="date" class="w-full bg-transparent text-white font-sans text-lg font-medium cursor-pointer" required>
+                    </div>
+
+                    <!-- Departure -->
+                    <div class="flex-1 px-6 py-4 lg:py-3 cursor-pointer group hover:bg-white/5 transition-colors">
+                        <label class="block font-mono text-[10px] text-episode-dreamy uppercase tracking-[0.15em] mb-1.5 opacity-80 group-hover:opacity-100">Check-out</label>
+                        <input type="date" class="w-full bg-transparent text-white font-sans text-lg font-medium cursor-pointer" required>
+                    </div>
+
+                    <!-- Occupancy -->
+                    <div class="flex-1 px-6 py-4 lg:py-3 cursor-pointer group hover:bg-white/5 transition-colors">
+                        <label class="block font-mono text-[10px] text-episode-dreamy uppercase tracking-[0.15em] mb-1.5 opacity-80 group-hover:opacity-100">Occupancy</label>
+                        <select class="w-full bg-transparent text-white font-sans text-lg font-medium cursor-pointer appearance-none border-none">
+                            <option value="1">1 Room, 2 Guests</option>
+                            <option value="2">1 Room, 1 Guest</option>
+                            <option value="3">2 Rooms, 4 Guests</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Primary CTA (Terracotta - Human Accent) -->
+                <div class="w-full lg:w-1/4 p-2">
+                    <button type="submit" class="w-full bg-episode-terra text-episode-aqua font-sans text-[15px] font-semibold tracking-wide py-4 lg:py-5 rounded-[12px] haptic-hover flex items-center justify-center gap-2">
+                        Check Availability
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= 4. AI CONCIERGE (Unobtrusive & Functional) ================= -->
+    <div class="fixed bottom-8 right-8 z-50">
+        <!-- V2 Pattern: Soft line + low-opacity glow -->
+        <button class="glass-layer px-4 py-3 rounded-full flex items-center gap-3 haptic-hover group border border-episode-sweet/20 hover:border-episode-sweet/60 transition-all">
+            <!-- Sweet Green (Status Accent) used strictly for live/active element -->
+            <div class="relative flex items-center justify-center w-6 h-6">
+                <div class="absolute inset-0 bg-episode-sweet rounded-full opacity-20 group-hover:animate-ping"></div>
+                <div class="w-2.5 h-2.5 rounded-full bg-episode-sweet relative z-10 shadow-[0_0_10px_rgba(216,246,197,0.8)]"></div>
+            </div>
+            
+            <div class="flex flex-col text-left pr-2">
+                <span class="font-mono text-[9px] text-episode-sweet uppercase tracking-[0.2em] leading-tight">Live Support</span>
+                <span class="font-sans text-[13px] text-white font-medium leading-tight group-hover:text-episode-terra transition-colors">AI Concierge</span>
+            </div>
+        </button>
+    </div>
+
+</body>
+</html>

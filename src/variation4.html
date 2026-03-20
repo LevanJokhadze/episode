@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Episode Hotel | Seamless Stays</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        episode: {
+                            aqua: '#1F3436',     /* Primary Dark - Trust & Calm */
+                            sky: '#D1E9EC',      /* Primary Light - Breathing space */
+                            dreamy: '#B8DAF0',   /* Tech Accent - Subtle info */
+                            sweet: '#D8F6C5',    /* Status Accent - Active states */
+                            terra: '#FED5CA',    /* Human Accent - CTA & Emotion */
+                        }
+                    },
+                    fontFamily: {
+                        /* Beatrice Display alternative for emotional, elegant headlines */
+                        display:['"Fraunces"', '"Playfair Display"', 'serif'],
+                        /* Untitled Sans alternative for ultra-clean UI reading */
+                        sans: ['"Manrope"', '"Inter"', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'premium': '0 20px 40px -10px rgba(0, 0, 0, 0.3)',
+                        'floating': '0 10px 30px -5px rgba(31, 52, 54, 0.4)',
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #1F3436; color: #D1E9EC; overflow-x: hidden; }
+        
+        /* The Hero Background - High quality, elegant darkening */
+        .hero-image {
+            background-image: url('https://i.ibb.co/LtbC3qP/room.jpg');
+            background-size: cover;
+            background-position: center 60%;
+        }
+
+        /* Very subtle, barely visible grid just for texture, not "cyber" */
+        .subtle-texture {
+            background-image: linear-gradient(rgba(209, 233, 236, 0.02) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(209, 233, 236, 0.02) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        /* Soft Glass for the booking engine - maximizing readability */
+        .booking-glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .smooth-hover { transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .smooth-hover:hover { transform: translateY(-3px); }
+    </style>
+</head>
+<body class="font-sans antialiased h-screen flex flex-col subtle-texture">
+
+    <!-- ================= HEADER (Classic, Trustworthy, Clear) ================= -->
+    <header class="absolute top-0 w-full z-40 px-6 md:px-12 py-6 flex justify-between items-center bg-gradient-to-b from-black/50 to-transparent">
+        <div class="font-display text-2xl md:text-3xl text-white tracking-wide">
+            EPISODE.
+        </div>
+        
+        <nav class="hidden md:flex gap-8 text-white/90 font-sans text-sm font-medium">
+            <a href="#" class="hover:text-episode-terra transition-colors">Our Rooms</a>
+            <a href="#" class="hover:text-episode-terra transition-colors">Experience</a>
+            <a href="#" class="hover:text-episode-terra transition-colors">Digital App</a>
+        </nav>
+
+        <!-- Secondary CTA -->
+        <a href="#" class="text-white font-medium text-sm border-b border-transparent hover:border-episode-terra transition-all">
+            Sign In
+        </a>
+    </header>
+
+    <!-- ================= MAIN HERO (Emotion & Clarity) ================= -->
+    <main class="relative flex-grow flex items-center justify-center hero-image">
+        <!-- Elegant overlay to ensure text pops and looks premium -->
+        <div class="absolute inset-0 bg-episode-aqua/60 mix-blend-multiply z-10"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-episode-aqua via-transparent to-transparent z-10"></div>
+
+        <div class="relative z-20 text-center px-4 max-w-4xl mt-[-5vh]">
+            <!-- Brandbook rule: "More YOU." -->
+            <p class="font-sans text-episode-sweet font-medium tracking-widest uppercase text-xs mb-6 flex items-center justify-center gap-3">
+                <span class="w-8 h-[1px] bg-episode-sweet"></span>
+                Intelligent Stay OS
+                <span class="w-8 h-[1px] bg-episode-sweet"></span>
+            </p>
+            
+            <h1 class="font-display text-5xl md:text-7xl lg:text-[80px] text-white leading-tight mb-6">
+                Hospitality, <br>
+                <span class="text-episode-terra italic">centered around you.</span>
+            </h1>
+            
+            <p class="font-sans text-episode-sky/90 text-lg md:text-xl font-light max-w-2xl mx-auto leading-relaxed">
+                Skip the lines with keyless entry. Relax in uncompromised comfort. Meet our 3D AI Concierge for anything you need. 
+            </p>
+        </div>
+    </main>
+
+    <!-- ================= THE BOOKING ENGINE (High Conversion, Foolproof) ================= -->
+    <!-- Positioned to overlap the image and the solid background, creating depth -->
+    <div class="relative z-30 px-4 md:px-12 pb-12 mt-[-60px] md:mt-[-80px]">
+        <div class="max-w-6xl mx-auto booking-glass rounded-3xl p-3 md:p-4 shadow-premium flex flex-col md:flex-row items-center justify-between gap-4">
+            
+            <div class="flex flex-col md:flex-row w-full divide-y md:divide-y-0 md:divide-x divide-gray-200">
+                
+                <!-- Arrival -->
+                <button class="flex-1 text-left px-6 py-3 hover:bg-gray-50 rounded-xl md:rounded-l-2xl transition group w-full">
+                    <span class="block font-sans text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1 group-hover:text-episode-aqua">Check In</span>
+                    <span class="block font-sans text-lg text-episode-aqua font-medium">Add dates</span>
+                </button>
+
+                <!-- Departure -->
+                <button class="flex-1 text-left px-6 py-3 hover:bg-gray-50 transition group w-full">
+                    <span class="block font-sans text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1 group-hover:text-episode-aqua">Check Out</span>
+                    <span class="block font-sans text-lg text-episode-aqua font-medium">Add dates</span>
+                </button>
+
+                <!-- Guests/Rooms -->
+                <button class="flex-1 text-left px-6 py-3 hover:bg-gray-50 md:rounded-r-2xl transition group w-full">
+                    <span class="block font-sans text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1 group-hover:text-episode-aqua">Guests & Rooms</span>
+                    <span class="block font-sans text-lg text-episode-aqua font-medium">1 Room, 2 Guests</span>
+                </button>
+            </div>
+
+            <!-- PRIMARY ACTION (The Money Button) -->
+            <button class="w-full md:w-auto bg-episode-terra text-episode-aqua hover:bg-[#F2C5BA] font-sans font-semibold text-base px-10 py-5 md:py-4 rounded-2xl smooth-hover shadow-floating whitespace-nowrap flex items-center justify-center gap-2">
+                Check Availability
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+            </button>
+
+        </div>
+    </div>
+
+    <!-- ================= 3D AI CONCIERGE (Friendly, not intimidating) ================= -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <div class="bg-episode-aqua border border-episode-sky/20 rounded-full p-2 pr-5 flex items-center gap-4 shadow-premium cursor-pointer smooth-hover group hover:border-episode-dreamy">
+            <!-- Warm, soft indicator of AI -->
+            <div class="w-10 h-10 rounded-full bg-episode-sky flex items-center justify-center relative">
+                <div class="absolute inset-0 rounded-full border-2 border-episode-sweet animate-[ping_3s_cubic-bezier(0,0,0.2,1)_infinite] opacity-50"></div>
+                <svg class="w-5 h-5 text-episode-aqua" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+                </svg>
+            </div>
+            <div>
+                <p class="font-sans text-[10px] text-episode-sky/60 uppercase tracking-widest mb-0.5">Need help?</p>
+                <p class="font-sans text-sm text-episode-sky font-medium group-hover:text-white transition-colors">Ask our 3D Concierge</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

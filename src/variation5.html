@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Episode OS | Live</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        episode: {
+                            aqua: '#1F3436',     /* Primary Dark */
+                            sky: '#D1E9EC',      /* Primary Light */
+                            dreamy: '#B8DAF0',   /* Tech Accent */
+                            sweet: '#D8F6C5',    /* Status Accent */
+                            terra: '#FED5CA',    /* Human Accent */
+                        }
+                    },
+                    fontFamily: {
+                        display: ['"Playfair Display"', 'serif'],
+                        sans: ['"Inter"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            background-color: #1F3436; 
+            color: #D1E9EC; 
+            overflow: hidden; /* No scrolling allowed. It's an app now. */
+        }
+        
+        /* The "Window" effect */
+        .viewport-frame {
+            height: calc(100vh - 2rem);
+            margin: 1rem;
+            border-radius: 24px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bg-feed {
+            background-image: url('https://i.ibb.co/LtbC3qP/room.jpg');
+            background-size: cover;
+            background-position: center;
+            transform: scale(1.02);
+            transition: transform 10s ease-out;
+        }
+        
+        .viewport-frame:hover .bg-feed { transform: scale(1); }
+
+        /* The conversational input styles */
+        .dash-input {
+            background: transparent;
+            border-bottom: 2px dashed rgba(254, 213, 202, 0.5); /* Terra color */
+            color: #FED5CA;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            text-align: center;
+            outline: none;
+            width: auto;
+            min-width: 120px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .dash-input:hover, .dash-input:focus {
+            border-bottom-style: solid;
+            background: rgba(254, 213, 202, 0.1);
+        }
+
+        /* Ambient AI Glow */
+        .ai-orb {
+            box-shadow: 0 0 40px rgba(216, 246, 197, 0.1), inset 0 0 20px rgba(216, 246, 197, 0.2);
+            background: radial-gradient(circle at center, rgba(216, 246, 197, 0.4) 0%, transparent 70%);
+        }
+    </style>
+</head>
+<body class="font-sans antialiased h-screen w-screen flex items-center justify-center">
+
+    <div class="viewport-frame w-full max-w-[1800px] shadow-2xl bg-episode-aqua flex flex-col justify-between">
+        
+        <!-- Live Camera Feed / Background -->
+        <div class="absolute inset-0 bg-feed z-0"></div>
+        <div class="absolute inset-0 bg-episode-aqua/80 backdrop-blur-sm mix-blend-multiply z-10"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-episode-aqua via-transparent to-episode-aqua/50 z-10"></div>
+
+        <!-- ================= FOUR CORNERS HUD (Heads Up Display) ================= -->
+        <div class="relative z-20 w-full p-8 md:p-12 flex justify-between items-start pointer-events-none">
+            
+            <!-- Top Left: Brand & Local Time -->
+            <div class="pointer-events-auto">
+                <h1 class="font-display text-3xl text-white tracking-widest uppercase mb-2">Episode</h1>
+                <div class="font-mono text-[10px] text-episode-dreamy uppercase flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-episode-sweet animate-pulse"></span>
+                    Live / Tbilisi / Mar 20, 2026 / 01:26 AM
+                </div>
+            </div>
+
+            <!-- Top Right: System Status -->
+            <div class="text-right font-mono text-[10px] text-episode-dreamy/60 uppercase leading-relaxed hidden md:block">
+                SYS.V2.0 <br>
+                CAPACITY: 118 UNITS <br>
+                CLIMATE: OPTIMAL
+            </div>
+        </div>
+
+        <!-- ================= CENTER: THE CONVERSATIONAL BOOKING ================= -->
+        <div class="relative z-30 flex-grow flex flex-col items-center justify-center px-6 text-center">
+            
+            <div class="mb-12">
+                <p class="font-mono text-xs text-episode-sweet tracking-[0.2em] uppercase mb-4">Welcome to the future of hospitality</p>
+                <h2 class="font-display text-5xl md:text-7xl lg:text-[90px] text-white leading-none font-light">
+                    Your space, <br> <span class="text-episode-sky italic">reimagined.</span>
+                </h2>
+            </div>
+
+            <!-- Mad Libs Booking UI (The radical change) -->
+            <div class="bg-black/20 backdrop-blur-md border border-white/10 p-6 md:p-10 rounded-3xl max-w-4xl shadow-2xl">
+                <p class="font-display text-2xl md:text-4xl text-episode-sky leading-relaxed md:leading-loose font-light">
+                    I want to check in on 
+                    <input type="text" value="Today" class="dash-input mx-2" readonly> 
+                    and stay until 
+                    <input type="text" value="Sunday" class="dash-input mx-2" readonly>, 
+                    for 
+                    <input type="text" value="2 Guests" class="dash-input mx-2" readonly>.
+                </p>
+                
+                <div class="mt-10 flex justify-center">
+                    <button class="bg-episode-terra text-episode-aqua font-sans font-medium text-sm md:text-base uppercase tracking-widest px-12 py-4 rounded-full hover:bg-white hover:scale-105 transition-all duration-300 shadow-[0_0_20px_rgba(254,213,202,0.3)]">
+                        Prepare My Room
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ================= BOTTOM HUD: AI & SCROLL/EXPLORE ================= -->
+        <div class="relative z-20 w-full p-8 md:p-12 flex justify-between items-end pointer-events-none">
+            
+            <!-- Bottom Left: 3D AI Concierge Presence -->
+            <div class="pointer-events-auto group cursor-pointer flex items-center gap-4">
+                <div class="relative w-12 h-12 flex items-center justify-center ai-orb rounded-full border border-episode-sweet/30 group-hover:border-episode-sweet transition-colors">
+                    <svg class="w-5 h-5 text-episode-sweet" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+                </div>
+                <div>
+                    <div class="font-mono text-[9px] text-episode-sweet tracking-widest uppercase mb-1">AI Concierge Listening</div>
+                    <div class="font-sans text-sm text-episode-sky font-medium group-hover:text-white transition-colors">"How can I assist you tonight?"</div>
+                </div>
+            </div>
+
+            <!-- Bottom Right: Explore (Instead of scroll) -->
+            <div class="pointer-events-auto hidden md:flex items-center gap-3 cursor-pointer group">
+                <span class="font-sans text-xs text-white uppercase tracking-widest font-medium group-hover:text-episode-terra transition-colors">Enter Gallery</span>
+                <div class="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center group-hover:border-episode-terra transition-colors">
+                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

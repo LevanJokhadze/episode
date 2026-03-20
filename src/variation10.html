@@ -1,0 +1,141 @@
+import React from 'react';
+import { motion } from 'framer-motion';
+
+const SophisticatedLanding = () => {
+  return (
+    <div className="min-h-screen bg-[#1F3436] text-[#D1E9EC] font-sans overflow-x-hidden">
+      
+      {/* 1. MINIMAL NAV (Refined Tech) */}
+      <nav className="fixed top-0 w-full z-50 px-8 py-6 flex justify-between items-center mix-blend-difference">
+        <div className="text-xl font-bold tracking-tight uppercase">
+          Episode Hotels
+        </div>
+        <div className="hidden md:flex space-x-12 text-[10px] font-bold uppercase tracking-[0.2em]">
+          <a href="#" className="hover:opacity-50 transition-opacity">The Stay</a>
+          <a href="#" className="hover:opacity-50 transition-opacity">Workspaces</a>
+          <a href="#" className="hover:opacity-50 transition-opacity">Eat & Drink</a>
+          <a href="#" className="hover:opacity-50 transition-opacity">Offers</a>
+        </div>
+        <button className="border border-[#D1E9EC] px-5 py-2 text-[10px] font-bold uppercase tracking-widest hover:bg-[#D1E9EC] hover:text-[#1F3436] transition-all">
+          Reservations
+        </button>
+      </nav>
+
+      {/* 2. HERO SECTION (Editorial Layering - 25hours style) */}
+      <section className="relative h-screen flex items-center justify-center pt-20">
+        <div className="container mx-auto px-6 grid grid-cols-12 h-full items-center">
+          
+          {/* Main Typography Overlap */}
+          <div className="col-span-12 md:col-span-10 z-20">
+            <motion.h1 
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1 }}
+              className="text-[12vw] font-black leading-[0.85] uppercase tracking-tighter"
+            >
+              More <br /> 
+              <span className="ml-[10vw] text-[#FED5CA]">You.</span>
+            </h1 >
+          </div>
+
+          {/* Overlapping Image Frame (The "Inside/Out" Concept) */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 1.1 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.5 }}
+            className="absolute right-[5%] top-[15%] w-[45vw] h-[70vh] z-10 overflow-hidden"
+          >
+            {/* The "L" Border from Brandbook p.17 */}
+            <div className="absolute bottom-0 right-0 w-full h-full border-r-[1px] border-b-[1px] border-[#D8F6C5] z-30 pointer-events-none"></div>
+            
+            <img 
+              src="https://images.unsplash.com/photo-1590490359683-658d3d23f972?auto=format&fit=crop&q=80" 
+              className="w-full h-full object-cover grayscale brightness-75 hover:grayscale-0 transition-all duration-1000"
+              alt="Luxury Interior"
+            />
+          </motion.div>
+        </div>
+
+        {/* Minimal Scroll Indicator */}
+        <div className="absolute bottom-10 left-10 flex items-center space-x-4 opacity-50">
+          <div className="w-px h-12 bg-[#D1E9EC]"></div>
+          <span className="text-[10px] uppercase tracking-widest">Scroll to explore</span>
+        </div>
+      </section>
+
+      {/* 3. "WHO WE ARE" (Asymmetrical & Matte) */}
+      <section className="py-40 bg-[#D1E9EC] text-[#1F3436]">
+        <div className="container mx-auto px-6 grid grid-cols-12 gap-12">
+          
+          <div className="col-span-12 md:col-span-6 flex flex-col justify-center">
+            <h2 className="text-6xl font-black uppercase leading-[0.9] mb-8">
+              Intelligence <br /> in every <br /> <span className="italic font-light">detail.</span>
+            </h2>
+            <p className="text-xl leading-relaxed opacity-80 max-w-md font-light">
+              We rethink hospitality for the modern traveler. No clutter, no excess. Just pure design and seamless technology working in the background.
+            </p>
+          </div>
+
+          <div className="col-span-12 md:col-span-6 relative">
+             <div className="aspect-[4/5] overflow-hidden">
+                <img 
+                  src="https://images.unsplash.com/photo-1582719478250-c89cae4df85b?auto=format&fit=crop&q=80" 
+                  className="w-full h-full object-cover"
+                  alt="Minimalist Design"
+                />
+             </div>
+             {/* Offset Color Block (25hours Style) */}
+             <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-[#FED5CA] -z-10"></div>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. THE ROOMS (Filmstrip Layout) */}
+      <section className="py-40">
+        <div className="px-10 mb-20 flex justify-between items-end">
+          <h3 className="text-8xl font-black uppercase opacity-10 leading-none">The Rooms</h3>
+          <div className="text-right">
+            <span className="text-[#D8F6C5] block font-bold mb-2 uppercase tracking-widest text-[10px]">Curated Spaces</span>
+            <p className="max-w-xs text-sm opacity-60 italic">Designed for different ways of staying, working, and being.</p>
+          </div>
+        </div>
+
+        {/* Horizontal Editorial Grid */}
+        <div className="grid grid-cols-12 gap-1 px-4">
+          {[
+            { name: "Solo", price: "$120", size: "18m²", img: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&q=80" },
+            { name: "Double", price: "$180", size: "24m²", img: "https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&q=80" },
+            { name: "Episode Special", price: "$250", size: "32m²", img: "https://images.unsplash.com/photo-1591088398332-8a77d3996166?auto=format&fit=crop&q=80" }
+          ].map((room, idx) => (
+            <div key={idx} className="col-span-12 md:col-span-4 group cursor-pointer border-[0.5px] border-white/10 p-4 hover:bg-white/5 transition-all">
+              <div className="aspect-[3/4] overflow-hidden mb-8">
+                <img src={room.img} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000 grayscale group-hover:grayscale-0" alt={room.name} />
+              </div>
+              <div className="flex justify-between items-start">
+                <div>
+                  <h4 className="text-2xl font-black uppercase">{room.name}</h4>
+                  <span className="text-[10px] opacity-50 font-bold uppercase tracking-widest">{room.size}</span>
+                </div>
+                <div className="text-right">
+                  <span className="text-sm font-light italic">From {room.price}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 5. MINIMAL FOOTER */}
+      <footer className="py-20 border-t border-white/5 mx-10 flex flex-col md:flex-row justify-between items-center opacity-40 text-[10px] font-bold uppercase tracking-[0.3em]">
+        <div>© Episode Hotels 2024</div>
+        <div className="flex space-x-12 mt-8 md:mt-0">
+          <a href="#">Instagram</a>
+          <a href="#">LinkedIn</a>
+          <a href="#">Privacy</a>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default SophisticatedLanding;

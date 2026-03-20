@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Episode Hotel | Modern Tech Hospitality</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        episode: {
+                            aqua: '#1F3436',     /* Primary Dark */
+                            sky: '#D1E9EC',      /* Primary Light */
+                            dreamy: '#B8DAF0',   /* Tech Accent */
+                            sweet: '#D8F6C5',    /* Status Accent */
+                            terra: '#FED5CA',    /* Human Accent (CTA) */
+                        }
+                    },
+                    fontFamily: {
+                        display: ['"Playfair Display"', 'serif'],
+                        sans:['"Inter"', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'booking': '0 20px 40px -15px rgba(31, 52, 54, 0.15)',
+                        'float': '0 10px 30px -5px rgba(0, 0, 0, 0.1)',
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Smooth scrolling and clean base */
+        html { scroll-behavior: smooth; }
+        body { background-color: #F8FAFC; color: #1F3436; }
+        
+        /* Hero Image Setup */
+        .hero-bg {
+            background-image: url('https://i.ibb.co/LtbC3qP/room.jpg');
+            background-size: cover;
+            background-position: center 60%;
+            background-repeat: no-repeat;
+        }
+
+        /* Standard custom scrollbar for premium feel */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #1F3436; border-radius: 4px; }
+        
+        /* Input overrides */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            opacity: 0.5;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased selection:bg-episode-terra selection:text-episode-aqua">
+
+    <!-- ================= NAVBAR ================= -->
+    <!-- Transparent on top, would become solid white on scroll via JS -->
+    <header class="absolute top-0 w-full z-50 px-6 lg:px-12 py-6 flex justify-between items-center bg-gradient-to-b from-black/60 to-transparent">
+        <div class="font-display text-3xl font-semibold text-white tracking-wide">
+            EPISODE
+        </div>
+        
+        <nav class="hidden md:flex gap-8 text-white font-medium text-sm">
+            <a href="#" class="hover:text-episode-terra transition-colors duration-300">Stay</a>
+            <a href="#" class="hover:text-episode-terra transition-colors duration-300">Offers</a>
+            <a href="#" class="hover:text-episode-terra transition-colors duration-300">Experience</a>
+            <a href="#" class="hover:text-episode-terra transition-colors duration-300">Get the App</a>
+        </nav>
+
+        <div class="flex items-center gap-6">
+            <a href="#" class="text-white text-sm font-medium hidden md:block hover:text-episode-terra transition-colors">Manage Booking</a>
+            <!-- Hamburger for mobile -->
+            <button class="md:hidden text-white">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- ================= HERO SECTION ================= -->
+    <section class="relative w-full h-[80vh] min-h-[600px] max-h-[900px] hero-bg flex flex-col justify-center items-center">
+        <!-- Overlays for perfect text readability -->
+        <div class="absolute inset-0 bg-episode-aqua/30 z-10"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-episode-aqua/80 via-transparent to-transparent z-10"></div>
+
+        <div class="relative z-20 text-center px-4 max-w-4xl mt-[-5vh]">
+            <span class="inline-block py-1 px-3 border border-white/30 rounded-full text-white/90 text-xs tracking-widest uppercase font-medium mb-6 backdrop-blur-sm">
+                The First Georgian Tech Hotel
+            </span>
+            <h1 class="font-display text-5xl md:text-6xl lg:text-7xl text-white font-medium leading-tight mb-6 drop-shadow-lg">
+                Smart luxury, <br> 
+                <span class="italic text-episode-sky font-normal">designed for you.</span>
+            </h1>
+            <p class="font-sans text-lg md:text-xl text-white/90 font-light max-w-2xl mx-auto drop-shadow-md">
+                Experience seamless hospitality with self check-in, intelligent room controls, and uncompromised comfort in the heart of the city.
+            </p>
+        </div>
+    </section>
+
+    <!-- ================= BOOKING WIDGET (The Conversion Engine) ================= -->
+    <section class="relative z-30 w-full px-4 sm:px-6 lg:px-8 mt-[-60px] md:mt-[-40px] mb-16">
+        <div class="max-w-6xl mx-auto bg-white rounded-2xl shadow-booking p-2 md:p-3">
+            <form class="flex flex-col md:flex-row items-center justify-between gap-2 md:gap-0 divide-y md:divide-y-0 md:divide-x divide-gray-100">
+                
+                <!-- Check-in / Check-out (Combined for mobile, split for desktop) -->
+                <div class="flex w-full md:w-auto flex-1 divide-x divide-gray-100">
+                    <div class="flex-1 p-3 md:px-6 hover:bg-gray-50 rounded-tl-xl md:rounded-l-xl transition cursor-pointer group">
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1 group-hover:text-episode-aqua">Check In</label>
+                        <input type="date" class="w-full text-episode-aqua font-medium text-base md:text-lg bg-transparent outline-none cursor-pointer">
+                    </div>
+                    <div class="flex-1 p-3 md:px-6 hover:bg-gray-50 transition cursor-pointer group">
+                        <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1 group-hover:text-episode-aqua">Check Out</label>
+                        <input type="date" class="w-full text-episode-aqua font-medium text-base md:text-lg bg-transparent outline-none cursor-pointer">
+                    </div>
+                </div>
+
+                <!-- Guests -->
+                <div class="w-full md:w-auto flex-1 p-3 md:px-6 hover:bg-gray-50 transition cursor-pointer group">
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1 group-hover:text-episode-aqua">Guests & Rooms</label>
+                    <select class="w-full text-episode-aqua font-medium text-base md:text-lg bg-transparent outline-none cursor-pointer appearance-none">
+                        <option>1 Room, 2 Adults</option>
+                        <option>1 Room, 1 Adult</option>
+                        <option>2 Rooms, 4 Adults</option>
+                    </select>
+                </div>
+
+                <!-- Promo Code (Optional, highly requested by corporate/loyal guests) -->
+                <div class="w-full md:w-auto flex-1 p-3 md:px-6 hover:bg-gray-50 transition cursor-pointer group hidden lg:block">
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1 group-hover:text-episode-aqua">Promo / Corporate</label>
+                    <input type="text" placeholder="Got a code?" class="w-full text-episode-aqua placeholder-gray-300 font-medium text-base md:text-lg bg-transparent outline-none">
+                </div>
+
+                <!-- Search Button -->
+                <div class="w-full md:w-auto p-2">
+                    <button type="button" class="w-full md:w-auto bg-episode-terra hover:bg-[#F2C5BA] text-episode-aqua font-semibold px-8 py-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2">
+                        Check Rates
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Direct Booking Perks (Crucial for minimizing OTA commissions) -->
+        <div class="max-w-4xl mx-auto mt-6 flex flex-wrap items-center justify-center gap-6 md:gap-12 text-sm text-gray-500 font-medium">
+            <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-episode-sweet" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                Best Rate Guarantee
+            </div>
+            <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-episode-sweet" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                Keyless Mobile Entry
+            </div>
+            <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-episode-sweet" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                Priority Support via App
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= FLOATING AI CONCIERGE (Professional & Accessible) ================= -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <button class="bg-episode-aqua text-white rounded-full p-3 md:pr-6 flex items-center gap-3 shadow-float hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group border border-episode-aqua/50">
+            <div class="w-10 h-10 rounded-full bg-episode-sky/10 flex items-center justify-center relative">
+                <!-- Subtle tech indicator, not a scary glowing orb -->
+                <div class="absolute top-0 right-0 w-2.5 h-2.5 bg-episode-sweet rounded-full border-2 border-episode-aqua"></div>
+                <svg class="w-5 h-5 text-episode-sky" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+            </div>
+            <div class="hidden md:flex flex-col text-left">
+                <span class="text-[10px] text-episode-sky uppercase tracking-wider font-semibold">24/7 Digital Service</span>
+                <span class="text-sm font-medium">Ask AI Concierge</span>
+            </div>
+        </button>
+    </div>
+
+</body>
+</html>

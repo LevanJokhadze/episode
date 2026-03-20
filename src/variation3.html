@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Episode Hotel | Intelligent Stay OS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        episode: {
+                            aqua: '#1F3436',     /* Primary Dark */
+                            sky: '#D1E9EC',      /* Primary Light */
+                            dreamy: '#B8DAF0',   /* Tech Accent */
+                            sweet: '#D8F6C5',    /* Status Accent */
+                            terra: '#FED5CA',    /* Human Accent */
+                        }
+                    },
+                    fontFamily: {
+                        /* Prioritizing your brand fonts, with high-quality Google fallbacks */
+                        display:['"Beatrice Display"', 'Fraunces', 'Playfair Display', 'serif'],
+                        sans:['"Untitled Sans"', 'Manrope', 'Inter', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    },
+                    animation: {
+                        'blur-to-focus': 'blurFocus 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards',
+                        'scanline': 'scan 8s linear infinite',
+                        'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        blurFocus: {
+                            '0%': { filter: 'blur(20px)', transform: 'scale(1.05)', opacity: '0' },
+                            '100%': { filter: 'blur(0px)', transform: 'scale(1)', opacity: '1' },
+                        },
+                        scan: {
+                            '0%': { transform: 'translateY(-100%)' },
+                            '100%': { transform: 'translateY(100vh)' },
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { boxShadow: '0 0 10px rgba(216, 246, 197, 0.2)' },
+                            '50%': { boxShadow: '0 0 20px rgba(216, 246, 197, 0.6)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&family=Manrope:wght@300;400;500&family=Fraunces:opsz,wght@9..144,300;9..144,400&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #1F3436; overflow-x: hidden; color: #D1E9EC; }
+        
+        /* Deep Glass Overlay per Brandbook */
+        .glass-panel {
+            background: rgba(209, 233, 236, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(209, 233, 236, 0.1);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        /* Subtle Grid / Circuit Language */
+        .bg-grid {
+            background-image: 
+                linear-gradient(rgba(184, 218, 240, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(184, 218, 240, 0.03) 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+
+        /* Scanline effect for images */
+        .scanlines {
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1));
+            background-size: 100% 4px;
+            pointer-events: none;
+        }
+
+        /* Haptic Micro-Hover per Brandbook */
+        .haptic-hover {
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .haptic-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(184, 218, 240, 0.15);
+        }
+    </style>
+</head>
+<body class="font-sans h-screen flex flex-col md:flex-row bg-grid">
+
+    <!-- ================= LEFT PANEL: THE OS & EMOTION (Editorial Structure) ================= -->
+    <div class="w-full md:w-5/12 h-full flex flex-col justify-between p-8 md:p-12 relative z-20">
+        
+        <!-- Top Tech Status Bar -->
+        <header class="flex justify-between items-start">
+            <div class="font-display text-3xl md:text-4xl text-episode-sky uppercase tracking-wide">
+                Episode.
+            </div>
+            <!-- Technical Data Layer -->
+            <div class="font-mono text-[10px] text-episode-dreamy opacity-70 text-right leading-tight hidden md:block">
+                SYS_ONLINE // 118_ROOMS <br>
+                TYPES: SOLO_DOUBLE_TWIN_TRIPLE <br>
+                MOD: SPINNER_SPECIAL_ACCESSIBLE
+            </div>
+        </header>
+
+        <!-- Main Emotional Content -->
+        <main class="my-auto">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="w-2 h-2 rounded-full bg-episode-sweet animate-pulse-glow"></span>
+                <span class="font-mono text-[11px] text-episode-sweet uppercase tracking-widest">Intelligent Stay OS</span>
+            </div>
+            
+            <!-- Beatrice Display equivalent for headlines -->
+            <h1 class="font-display text-6xl md:text-7xl lg:text-[80px] leading-[0.9] text-episode-sky mb-6">
+                More <span class="text-episode-terra italic pr-2">YOU.</span>
+            </h1>
+            
+            <p class="font-sans text-episode-sky/70 text-base md:text-lg max-w-sm font-light leading-relaxed">
+                Human-first hospitality with data-assisted precision. Keyless entry, smart controls, and luxury comfort.
+            </p>
+        </main>
+
+        <!-- Command Center (Booking Widget) -->
+        <div class="glass-panel p-6 rounded-2xl w-full max-w-md relative overflow-hidden group">
+            <!-- Subtle circuit connection line -->
+            <div class="absolute left-0 top-0 w-1 h-full bg-episode-dreamy/20 group-hover:bg-episode-dreamy transition-colors duration-500"></div>
+            
+            <form class="space-y-5 relative z-10">
+                <div class="grid grid-cols-2 gap-4 border-b border-episode-sky/10 pb-5">
+                    <div>
+                        <label class="font-mono text-[9px] text-episode-dreamy/70 uppercase tracking-widest block mb-1">Check In</label>
+                        <div class="text-episode-sky text-lg cursor-pointer hover:text-white transition">24.10.26</div>
+                    </div>
+                    <div>
+                        <label class="font-mono text-[9px] text-episode-dreamy/70 uppercase tracking-widest block mb-1">Check Out</label>
+                        <div class="text-episode-sky text-lg cursor-pointer hover:text-white transition">28.10.26</div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between items-center">
+                    <div>
+                        <label class="font-mono text-[9px] text-episode-dreamy/70 uppercase tracking-widest block mb-1">Occupancy</label>
+                        <div class="text-episode-sky text-lg cursor-pointer hover:text-white transition">2 Guests</div>
+                    </div>
+                    
+                    <!-- Primary CTA using Terracotta (Human Accent) -->
+                    <button type="button" class="bg-episode-terra text-episode-aqua font-sans font-medium px-6 py-3 rounded-full text-sm haptic-hover flex items-center gap-2">
+                        Initialize
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+    </div>
+
+    <!-- ================= RIGHT PANEL: THE VISUAL & AI (Digital Skin) ================= -->
+    <div class="w-full md:w-7/12 h-[50vh] md:h-full relative overflow-hidden">
+        
+        <!-- Image with Blur-to-Focus motion and deep glass overlays -->
+        <img src="https://i.ibb.co/LtbC3qP/room.jpg" alt="Episode Room" class="absolute inset-0 w-full h-full object-cover animate-blur-to-focus">
+        
+        <!-- Digital Skin Overlays -->
+        <div class="absolute inset-0 bg-episode-aqua/20 mix-blend-multiply"></div>
+        <div class="absolute inset-0 scanlines opacity-30"></div>
+        <div class="absolute inset-0 bg-gradient-to-l from-transparent to-episode-aqua/90 md:to-episode-aqua/100"></div>
+
+        <!-- System HUD Elements on Image -->
+        <div class="absolute top-8 right-8 text-right hidden md:block">
+            <div class="font-mono text-[10px] text-episode-sky/80 border border-episode-sky/20 px-3 py-1 rounded backdrop-blur-sm">
+                LAT: 41.7151° N // LNG: 44.8271° E
+            </div>
+        </div>
+
+        <!-- ================= AI CONCIERGE (Always Reachable) ================= -->
+        <div class="absolute bottom-8 right-8 z-30">
+            <div class="glass-panel p-2 pl-4 pr-5 rounded-full flex items-center gap-4 haptic-hover cursor-pointer group border border-episode-sweet/20 hover:border-episode-sweet/50">
+                <!-- AI Status Indicator -->
+                <div class="relative flex items-center justify-center w-8 h-8">
+                    <div class="absolute inset-0 bg-episode-sweet rounded-full opacity-20 group-hover:animate-ping"></div>
+                    <!-- 3D Human Placeholder Icon -->
+                    <div class="w-6 h-6 rounded-full bg-episode-sweet flex items-center justify-center relative z-10 overflow-hidden">
+                        <svg class="w-4 h-4 text-episode-aqua mt-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col">
+                    <span class="font-mono text-[9px] text-episode-sweet uppercase tracking-widest leading-none mb-1">Live Feed</span>
+                    <span class="font-sans text-xs text-episode-sky font-medium leading-none">AI Concierge</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

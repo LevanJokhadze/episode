@@ -1,0 +1,163 @@
+import React from 'react';
+import { motion } from 'framer-motion';
+
+// ფერების კონფიგურაცია ბრენდბუქიდან
+const colors = {
+  dark: '#1F3436',      // Aqua Green
+  light: '#D1E9EC',     // Calm Sky
+  green: '#D8F6C5',     // Sweet Green
+  terracotta: '#FED5CA', // Accent
+};
+
+const CyberBoutiqueLanding = () => {
+  return (
+    <div className="min-h-screen bg-[#1F3436] text-[#D1E9EC] font-sans selection:bg-[#D8F6C5] selection:text-[#1F3436]">
+      
+      {/* 1. SMART STICKY HEADER (Glassmorphism) */}
+      <nav className="fixed top-0 w-full z-50 backdrop-blur-md bg-white/5 border-b border-white/10 px-6 py-4 flex justify-between items-center">
+        <div className="text-2xl font-black tracking-tighter uppercase">
+          Episode<span className="text-[#D8F6C5]">.</span>
+        </div>
+        <div className="hidden md:flex space-x-8 text-sm font-medium uppercase tracking-widest">
+          <a href="#" className="hover:text-[#D8F6C5] transition-colors">Stay</a>
+          <a href="#" className="hover:text-[#D8F6C5] transition-colors">Work</a>
+          <a href="#" className="hover:text-[#D8F6C5] transition-colors">Eat</a>
+          <a href="#" className="hover:text-[#D8F6C5] transition-colors">Offers</a>
+        </div>
+        <button className="bg-[#D1E9EC] text-[#1F3436] px-6 py-2 font-bold uppercase text-xs hover:bg-[#D8F6C5] transition-all transform hover:scale-105">
+          Book a Room
+        </button>
+      </nav>
+
+      {/* 2. HERO SECTION (25hours Layering Style + HUD) */}
+      <section className="relative h-screen flex items-center justify-center overflow-hidden pt-20">
+        {/* Background Video/Image Placeholder */}
+        <div className="absolute inset-0 z-0 bg-gradient-to-b from-black/40 to-[#1F3436]">
+          <img 
+            src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80" 
+            className="w-full h-full object-cover opacity-50 mix-blend-luminosity"
+            alt="Hero"
+          />
+        </div>
+
+        {/* HUD Elements (Digital Grid) */}
+        <div className="absolute inset-0 z-10 opacity-20 pointer-events-none" 
+             style={{ backgroundImage: 'radial-gradient(#D1E9EC 1px, transparent 1px)', size: '40px 40px', backgroundSize: '40px 40px' }}>
+        </div>
+
+        {/* Hero Content */}
+        <div className="relative z-20 container mx-auto px-6 grid grid-cols-12 gap-4">
+          <motion.div 
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="col-span-12 md:col-span-8"
+          >
+            <h1 className="text-7xl md:text-9xl font-black leading-none uppercase mb-6">
+              More <br />
+              <span className="text-[#FED5CA] italic">YOU</span><span className="text-[#D8F6C5]">.</span>
+            </h1>
+            <p className="text-xl max-w-lg font-light leading-relaxed opacity-80 border-l-2 border-[#D8F6C5] pl-6">
+              Rethinking hospitality for every traveler. Design meets smart technology in the heart of the city.
+            </p>
+          </motion.div>
+
+          {/* Floating Data Point (HUD Style) */}
+          <div className="hidden md:block col-span-4 self-end">
+            <div className="border border-white/20 p-4 backdrop-blur-sm rounded-sm">
+              <span className="text-[10px] font-mono text-[#D8F6C5] block mb-2">SYSTEM_STATUS: ACTIVE</span>
+              <div className="text-sm font-mono leading-none">
+                LOCATION: 41.7151° N, 44.8271° E <br />
+                TEMP: 21°C / HUMIDITY: 45%
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. ASYMMETRICAL "WHO WE ARE" (Cyber-Boutique Style) */}
+      <section className="py-32 container mx-auto px-6 grid grid-cols-12 gap-12 items-center">
+        <div className="col-span-12 md:col-span-5 relative">
+          <div className="absolute -top-10 -left-10 w-32 h-32 border-t-2 border-l-2 border-[#D8F6C5] pointer-events-none opacity-50"></div>
+          <img 
+            src="https://images.unsplash.com/photo-1582719478250-c89cae4df85b?auto=format&fit=crop&q=80" 
+            className="w-full grayscale hover:grayscale-0 transition-all duration-700 shadow-2xl"
+            alt="Interior"
+          />
+        </div>
+        
+        <div className="col-span-12 md:col-span-7">
+          <span className="text-[#D8F6C5] font-mono text-sm tracking-widest mb-4 block underline">01. THE VISION</span>
+          <h2 className="text-5xl font-black uppercase mb-8 leading-tight">
+            Design meets <br /> smart <span className="bg-[#D8F6C5] text-[#1F3436] px-2">tech</span>
+          </h2>
+          <p className="text-lg opacity-70 mb-10 leading-relaxed max-w-xl">
+            Episode was created for a new generation of travelers — curious, connected, and always moving. 
+            No complications. No excess. Just a fresh, modern way to experience hospitality.
+          </p>
+          <button className="flex items-center space-x-4 group uppercase font-bold tracking-widest text-sm">
+            <span className="border-b-2 border-[#D8F6C5] pb-1">Our Story</span>
+            <span className="bg-[#D8F6C5] text-[#1F3436] p-2 group-hover:translate-x-2 transition-transform">→</span>
+          </button>
+        </div>
+      </section>
+
+      {/* 4. SMART ROOMS (Layered Horizontal Scroll Concept) */}
+      <section className="bg-[#D1E9EC] text-[#1F3436] py-32 overflow-hidden">
+        <div className="container mx-auto px-6 mb-12 flex justify-between items-end">
+          <h2 className="text-6xl font-black uppercase">Find Your <br /> Space</h2>
+          <div className="font-mono text-xs uppercase tracking-tighter text-right">
+            118 Rooms <br />
+            Optimized for Comfort
+          </div>
+        </div>
+
+        <div className="flex space-x-12 px-6 overflow-x-auto no-scrollbar pb-10">
+          {[1, 2, 3].map((item) => (
+            <div key={item} className="flex-none w-[400px] group cursor-pointer">
+              <div className="relative overflow-hidden mb-6 h-[500px]">
+                <img 
+                  src={`https://images.unsplash.com/photo-1590490359683-658d3d23f972?auto=format&fit=crop&q=80`} 
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  alt="Room"
+                />
+                <div className="absolute top-4 right-4 bg-[#1F3436] text-white px-3 py-1 text-[10px] font-mono">
+                  TYPE: SOL_MOD_{item}
+                </div>
+              </div>
+              <h3 className="text-2xl font-black uppercase">Solo Deluxe</h3>
+              <div className="h-px w-full bg-[#1F3436]/20 my-4"></div>
+              <div className="flex justify-between text-xs font-bold uppercase">
+                <span>1 Guest</span>
+                <span className="text-[#1F3436]/60">From $120 / Night</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 5. FOOTER (Tech Minimalist) */}
+      <footer className="py-20 border-t border-white/10 px-6 container mx-auto text-center md:text-left">
+        <div className="grid grid-cols-12 gap-12">
+          <div className="col-span-12 md:col-span-6">
+            <div className="text-4xl font-black mb-6 uppercase">Episode.</div>
+            <p className="opacity-50 text-sm max-w-sm">Stay Smart. Stay Social. Experience the intersection of design and technology.</p>
+          </div>
+          <div className="col-span-6 md:col-span-3">
+            <h4 className="font-bold mb-6 uppercase text-[#D8F6C5]">Links</h4>
+            <ul className="space-y-4 text-sm opacity-70">
+              <li><a href="#" className="hover:text-white">Rooms</a></li>
+              <li><a href="#" className="hover:text-white">Shared Spaces</a></li>
+              <li><a href="#" className="hover:text-white">Work With Us</a></li>
+            </ul>
+          </div>
+          <div className="col-span-6 md:col-span-3 text-sm opacity-50 font-mono">
+            © 2024 EPISODE HOTELS <br />
+            ALL_SYSTEMS_OPERATIONAL
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default CyberBoutiqueLanding;
