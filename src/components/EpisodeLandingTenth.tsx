@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { ArrowRight, BedDouble, CalendarCheck2, CalendarDays, ChevronDown, ChevronLeft, ChevronRight, Menu, MessageCircle, Users, X } from 'lucide-react'
+import { ArrowRight, BedDouble, CalendarCheck2, CalendarDays, ChevronDown, ChevronLeft, ChevronRight, Menu, MessageCircle, Star, Users, X } from 'lucide-react'
 import mainHeroVideo from '../assets/video.mp4'
 import episodeRoomImage from '../assets/images/episode4.jpg'
 import logoImage from '../assets/images/logo2.png'
@@ -967,6 +967,11 @@ const EpisodeLandingTenth: React.FC = () => {
               <div className={ui.testimonialSection.carouselTrack}>
                 {[...testimonialBaseSlides, ...testimonialBaseSlides].map((item, cardIndex) => (
                   <div key={`${item.author}-${cardIndex}`} className={ui.testimonialSection.panel}>
+                    <div className="mb-3 flex items-center gap-1 text-[#d2a96c]">
+                      {Array.from({ length: 5 }).map((_, starIndex) => (
+                        <Star key={`${item.author}-star-${starIndex}`} size={15} fill="currentColor" />
+                      ))}
+                    </div>
                     <p className={ui.testimonialSection.quoteMark}>“</p>
                     <p className={ui.testimonialSection.quoteText}>{item.quote}</p>
                     <div className={ui.testimonialSection.authorRow}>
