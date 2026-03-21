@@ -5,6 +5,7 @@ import mainHeroVideo from '../assets/video.mp4'
 import episodeRoomImage from '../assets/images/episode4.jpg'
 import logoImage from '../assets/images/logo2.png'
 import { episodeDesignLibrary } from '../design-library'
+import EpisodeLandingOffers from './EpisodeLandingOffers'
 
 const imageModules = import.meta.glob('../assets/images/*.{jpg,jpeg,png,webp}', {
   eager: true,
@@ -19,12 +20,14 @@ const sectionCarouselImages = Object.entries(imageModules)
 const EpisodeLandingTenth: React.FC = () => {
   const [activeScene, setActiveScene] = useState(0)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isMobileBookingOpen, setIsMobileBookingOpen] = useState(false)
   const [desktopDropdown, setDesktopDropdown] = useState<'stay' | 'about' | 'work' | null>(null)
   const [carouselIndex, setCarouselIndex] = useState(0)
   const [collisionFlash, setCollisionFlash] = useState(false)
   const [collisionSpark, setCollisionSpark] = useState(false)
   const [activeSnapIndex, setActiveSnapIndex] = useState(0)
   const [activeRoomSlide, setActiveRoomSlide] = useState(0)
+  const [activeMobileTestimonialSlide, setActiveMobileTestimonialSlide] = useState(0)
   const sceneVideos = [mainHeroVideo]
   const videoRefs = useRef<Array<HTMLVideoElement | null>>([])
   const dropdownCloseTimeout = useRef<number | null>(null)
@@ -33,12 +36,12 @@ const EpisodeLandingTenth: React.FC = () => {
   const secondSectionRef = useRef<HTMLElement | null>(null)
   const thirdSectionRef = useRef<HTMLElement | null>(null)
   const fourthSectionRef = useRef<HTMLElement | null>(null)
+  const fifthSectionRef = useRef<HTMLElement | null>(null)
+  const mobileTestimonialCarouselRef = useRef<HTMLDivElement | null>(null)
   const energyPathBRef = useRef<SVGPathElement | null>(null)
   const energyPathCRef = useRef<SVGPathElement | null>(null)
-  const ballBOuterRef = useRef<SVGCircleElement | null>(null)
-  const ballBInnerRef = useRef<SVGCircleElement | null>(null)
-  const ballCOuterRef = useRef<SVGCircleElement | null>(null)
-  const ballCInnerRef = useRef<SVGCircleElement | null>(null)
+  const ballBOuterRef = useRef<SVGGElement | null>(null)
+  const ballCOuterRef = useRef<SVGGElement | null>(null)
   const roomsCarouselRef = useRef<HTMLDivElement | null>(null)
   const snapLockRef = useRef(false)
   const wheelDeltaAccumulatorRef = useRef(0)
@@ -64,16 +67,19 @@ const EpisodeLandingTenth: React.FC = () => {
       quote:
         'Modern interiors, automated check-in process, nice cafe and bar downstairs, and a free co-working space. I enjoyed every minute of my stay!',
       author: 'Denis',
+      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80',
     },
     {
       quote:
         'Smart rooms, super fast check-in, and an amazing social vibe. Perfect blend of comfort and modern city living.',
       author: 'Nina',
+      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80',
     },
     {
       quote:
         'Great location, clean spaces, and a super smooth digital stay experience. I would absolutely come back again.',
       author: 'Mark',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80',
     },
   ] as const
 
@@ -115,11 +121,10 @@ const EpisodeLandingTenth: React.FC = () => {
     let sparkUntil = 0
     let lastFlashState = false
 
-    const setBallPosition = (circleRef: React.RefObject<SVGCircleElement | null>, x: number, y: number) => {
-      const el = circleRef.current
+    const setBallPosition = (iconRef: React.RefObject<SVGGElement | null>, x: number, y: number) => {
+      const el = iconRef.current
       if (!el) return
-      el.setAttribute('cx', x.toFixed(2))
-      el.setAttribute('cy', y.toFixed(2))
+      el.setAttribute('transform', `translate(${x.toFixed(2)} ${y.toFixed(2)})`)
     }
 
     const getProgressOnPath = (phase: number) => {
@@ -167,9 +172,7 @@ const EpisodeLandingTenth: React.FC = () => {
         const pointB = pathB.getPointAtLength(totalB * progress)
         const pointC = pathC.getPointAtLength(totalC * progress)
         setBallPosition(ballBOuterRef, pointB.x, pointB.y)
-        setBallPosition(ballBInnerRef, pointB.x, pointB.y)
         setBallPosition(ballCOuterRef, pointC.x, pointC.y)
-        setBallPosition(ballCInnerRef, pointC.x, pointC.y)
       }
 
       lastPhase = phase
@@ -208,6 +211,17 @@ const EpisodeLandingTenth: React.FC = () => {
     carousel.scrollBy({ left: direction * step, behavior: 'smooth' })
   }
 
+  const scrollMobileTestimonialCarousel = (direction: -1 | 1) => {
+    const carousel = mobileTestimonialCarouselRef.current
+    if (!carousel) return
+    const firstCard = carousel.querySelector('[data-mobile-testimonial-card="true"]') as HTMLElement | null
+    const gap = Number.parseFloat(window.getComputedStyle(carousel).columnGap || window.getComputedStyle(carousel).gap || '0')
+    const step = (firstCard?.offsetWidth ?? carousel.clientWidth) + (Number.isFinite(gap) ? gap : 0)
+    const next = (activeMobileTestimonialSlide + direction + testimonialBaseSlides.length) % testimonialBaseSlides.length
+    carousel.scrollTo({ left: step * next, behavior: 'smooth' })
+    setActiveMobileTestimonialSlide(next)
+  }
+
   useEffect(() => {
     if (activeSnapIndex !== 2) return
     if (window.matchMedia('(min-width: 768px)').matches) return
@@ -235,10 +249,47 @@ const EpisodeLandingTenth: React.FC = () => {
   }, [activeSnapIndex])
 
   useEffect(() => {
+    if (activeSnapIndex !== 3) return
+    if (window.matchMedia('(min-width: 768px)').matches) return
+    const carousel = mobileTestimonialCarouselRef.current
+    if (!carousel) return
+
+    const syncSlideFromScroll = () => {
+      const firstCard = carousel.querySelector('[data-mobile-testimonial-card="true"]') as HTMLElement | null
+      const gap = Number.parseFloat(window.getComputedStyle(carousel).columnGap || window.getComputedStyle(carousel).gap || '0')
+      const baseWidth = firstCard?.offsetWidth ?? carousel.clientWidth
+      const step = (baseWidth || 1) + (Number.isFinite(gap) ? gap : 0)
+      const nextIndex = Math.round(carousel.scrollLeft / step)
+      const bounded = Math.max(0, Math.min(nextIndex, testimonialBaseSlides.length - 1))
+      setActiveMobileTestimonialSlide(bounded)
+    }
+
+    syncSlideFromScroll()
+    carousel.addEventListener('scroll', syncSlideFromScroll, { passive: true })
+
+    const timer = window.setInterval(() => {
+      const firstCard = carousel.querySelector('[data-mobile-testimonial-card="true"]') as HTMLElement | null
+      const gap = Number.parseFloat(window.getComputedStyle(carousel).columnGap || window.getComputedStyle(carousel).gap || '0')
+      const baseWidth = firstCard?.offsetWidth ?? carousel.clientWidth
+      const step = (baseWidth || 1) + (Number.isFinite(gap) ? gap : 0)
+      setActiveMobileTestimonialSlide((prev) => {
+        const next = (prev + 1) % testimonialBaseSlides.length
+        carousel.scrollTo({ left: step * next, behavior: 'smooth' })
+        return next
+      })
+    }, 4600)
+
+    return () => {
+      carousel.removeEventListener('scroll', syncSlideFromScroll)
+      window.clearInterval(timer)
+    }
+  }, [activeSnapIndex])
+
+  useEffect(() => {
     const container = mainScrollRef.current
     if (!container) return
 
-    const sections = [firstSectionRef.current, secondSectionRef.current, thirdSectionRef.current, fourthSectionRef.current].filter(Boolean) as HTMLElement[]
+    const sections = [firstSectionRef.current, secondSectionRef.current, thirdSectionRef.current, fourthSectionRef.current, fifthSectionRef.current].filter(Boolean) as HTMLElement[]
     if (sections.length < 2) return
 
     const lockFor = (ms: number) => {
@@ -530,19 +581,67 @@ const EpisodeLandingTenth: React.FC = () => {
             className={ui.bookingPanel.wrapper}
           >
             <div className={ui.bookingPanel.container}>
-              <button type="button" className={ui.bookingPanel.field}>
+              <AnimatePresence initial={false}>
+                {isMobileBookingOpen && (
+                  <>
+                    <motion.button
+                      type="button"
+                      initial={{ opacity: 0, y: 18 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 12 }}
+                      transition={{ duration: 0.28, ease: 'easeOut', delay: 0 }}
+                      className={`${ui.bookingPanel.field} md:hidden`}
+                    >
+                      <span>Check In</span>
+                      <CalendarDays size={16} className={ui.bookingPanel.icon} />
+                    </motion.button>
+                    <motion.button
+                      type="button"
+                      initial={{ opacity: 0, y: 18 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 12 }}
+                      transition={{ duration: 0.28, ease: 'easeOut', delay: 0.08 }}
+                      className={`${ui.bookingPanel.field} md:hidden`}
+                    >
+                      <span>Check Out</span>
+                      <CalendarCheck2 size={16} className={ui.bookingPanel.icon} />
+                    </motion.button>
+                    <motion.button
+                      type="button"
+                      initial={{ opacity: 0, y: 18 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 12 }}
+                      transition={{ duration: 0.28, ease: 'easeOut', delay: 0.16 }}
+                      className={`${ui.bookingPanel.field} md:hidden`}
+                    >
+                      <span>Guest number</span>
+                      <Users size={16} className={ui.bookingPanel.icon} />
+                    </motion.button>
+                  </>
+                )}
+              </AnimatePresence>
+
+              <button type="button" className={`${ui.bookingPanel.field} hidden md:flex`}>
                 <span>Check In</span>
                 <CalendarDays size={16} className={ui.bookingPanel.icon} />
               </button>
-              <button type="button" className={ui.bookingPanel.field}>
+              <button type="button" className={`${ui.bookingPanel.field} hidden md:flex`}>
                 <span>Check Out</span>
                 <CalendarCheck2 size={16} className={ui.bookingPanel.icon} />
               </button>
-              <button type="button" className={ui.bookingPanel.field}>
+              <button type="button" className={`${ui.bookingPanel.field} hidden md:flex`}>
                 <span>Guest number</span>
                 <Users size={16} className={ui.bookingPanel.icon} />
               </button>
-              <button type="button" className={ui.bookingPanel.submit}>
+
+              <button type="button" className={`${ui.bookingPanel.submit} hidden md:block`}>
+                Book now
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsMobileBookingOpen(true)}
+                className={`${ui.bookingPanel.submit} md:hidden`}
+              >
                 Book now
               </button>
             </div>
@@ -627,36 +726,30 @@ const EpisodeLandingTenth: React.FC = () => {
             <use href="#energyPathM2" fill="none" stroke={accentLineColor} strokeWidth="2.2" />
             <use href="#energyPathM3" fill="none" stroke={accentLineColor} strokeWidth="2" />
 
-            <circle r="12.3" fill={accentGreenColor} filter="url(#energyGlowMobile)" opacity="0.62">
+            <g filter="url(#energyGlowMobile)" opacity="0.98">
+              <circle r="16" fill={brandDarkColor} opacity="0.95" />
+              <circle r="5.4" cy="-3.8" fill={brandLightColor} />
+              <path d="M-8.4 11.1 V8.3 C-8.4 3.3 -4.5 -0.8 0 -0.8 C4.5 -0.8 8.4 3.3 8.4 8.3 V11.1 Z" fill={brandLightColor} />
               <animateMotion dur="4.6s" repeatCount="indefinite" rotate="auto">
                 <mpath href="#energyPathM1" />
               </animateMotion>
-            </circle>
-            <circle r="6.3" fill="#fcfff7" filter="url(#energyGlowMobile)" opacity="1">
-              <animateMotion dur="4.6s" repeatCount="indefinite" rotate="auto">
-                <mpath href="#energyPathM1" />
-              </animateMotion>
-            </circle>
-            <circle r="12.3" fill={accentGreenColor} filter="url(#energyGlowMobile)" opacity="0.62">
+            </g>
+            <g filter="url(#energyGlowMobile)" opacity="0.98">
+              <circle r="16" fill={brandDarkColor} opacity="0.95" />
+              <circle r="5.4" cy="-3.8" fill={brandLightColor} />
+              <path d="M-8.4 11.1 V8.3 C-8.4 3.3 -4.5 -0.8 0 -0.8 C4.5 -0.8 8.4 3.3 8.4 8.3 V11.1 Z" fill={brandLightColor} />
               <animateMotion dur="5s" repeatCount="indefinite" rotate="auto">
                 <mpath href="#energyPathM2" />
               </animateMotion>
-            </circle>
-            <circle r="6.3" fill="#fcfff7" filter="url(#energyGlowMobile)" opacity="1">
-              <animateMotion dur="5s" repeatCount="indefinite" rotate="auto">
-                <mpath href="#energyPathM2" />
-              </animateMotion>
-            </circle>
-            <circle r="12.3" fill={accentGreenColor} filter="url(#energyGlowMobile)" opacity="0.62">
+            </g>
+            <g filter="url(#energyGlowMobile)" opacity="0.98">
+              <circle r="16" fill={brandDarkColor} opacity="0.95" />
+              <circle r="5.4" cy="-3.8" fill={brandLightColor} />
+              <path d="M-8.4 11.1 V8.3 C-8.4 3.3 -4.5 -0.8 0 -0.8 C4.5 -0.8 8.4 3.3 8.4 8.3 V11.1 Z" fill={brandLightColor} />
               <animateMotion dur="5.4s" repeatCount="indefinite" rotate="auto">
                 <mpath href="#energyPathM3" />
               </animateMotion>
-            </circle>
-            <circle r="6.3" fill="#fcfff7" filter="url(#energyGlowMobile)" opacity="1">
-              <animateMotion dur="5.4s" repeatCount="indefinite" rotate="auto">
-                <mpath href="#energyPathM3" />
-              </animateMotion>
-            </circle>
+            </g>
           </svg>
 
           <svg
@@ -690,18 +783,46 @@ const EpisodeLandingTenth: React.FC = () => {
             <use href="#energyPathB" fill="none" stroke={accentLineColor} strokeWidth="2.45" />
             <use href="#energyPathC" fill="none" stroke={accentLineColor} strokeWidth="2.1" />
             <use href="#energyPathD" fill="none" stroke={accentLineColor} strokeWidth="1.95" opacity="0.9" />
-            <circle r="12.3" fill={accentGreenColor} filter="url(#energyGlowDesktop)" opacity="0.62"><animateMotion dur="5.1s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathA" /></animateMotion></circle>
-            <circle r="6.3" fill="#fcfff7" filter="url(#energyGlowDesktop)" opacity="1"><animateMotion dur="5.1s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathA" /></animateMotion></circle>
-            <circle ref={ballBOuterRef} cx="0" cy="0" r={collisionFlash ? 17.2 : 12.3} fill={accentGreenColor} filter="url(#energyGlowDesktop)" opacity={collisionFlash ? 0.95 : 0.62} />
-            <circle ref={ballBInnerRef} cx="0" cy="0" r={collisionFlash ? 8.8 : 6.3} fill="#fcfff7" filter="url(#energyGlowDesktop)" opacity="1" />
-            <circle ref={ballCOuterRef} cx="0" cy="0" r={collisionFlash ? 17.2 : 12.3} fill={accentGreenColor} filter="url(#energyGlowDesktop)" opacity={collisionFlash ? 0.95 : 0.62} />
-            <circle ref={ballCInnerRef} cx="0" cy="0" r={collisionFlash ? 8.8 : 6.3} fill="#fcfff7" filter="url(#energyGlowDesktop)" opacity="1" />
+            <g filter="url(#energyGlowDesktop)" opacity="0.98">
+              <circle r="16" fill={brandDarkColor} opacity="0.95" />
+              <circle r="5.4" cy="-3.8" fill={brandLightColor} />
+              <path d="M-8.4 11.1 V8.3 C-8.4 3.3 -4.5 -0.8 0 -0.8 C4.5 -0.8 8.4 3.3 8.4 8.3 V11.1 Z" fill={brandLightColor} />
+              <animateMotion dur="5.1s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathA" /></animateMotion>
+            </g>
+            <g ref={ballBOuterRef} transform="translate(0 0)" filter="url(#energyGlowDesktop)" opacity={collisionFlash ? 1 : 0.94}>
+              <circle r={collisionFlash ? 19 : 16} fill={brandDarkColor} opacity={collisionFlash ? 1 : 0.95} />
+              <circle r={collisionFlash ? 6.2 : 5.4} cy={collisionFlash ? -4.3 : -3.8} fill={brandLightColor} />
+              <path
+                d={
+                  collisionFlash
+                    ? 'M-9.6 12.3 V9.2 C-9.6 3.2 -4.9 -1.4 0 -1.4 C4.9 -1.4 9.6 3.2 9.6 9.2 V12.3 Z'
+                    : 'M-8.4 11.1 V8.3 C-8.4 3.3 -4.5 -0.8 0 -0.8 C4.5 -0.8 8.4 3.3 8.4 8.3 V11.1 Z'
+                }
+                fill={brandLightColor}
+              />
+            </g>
+            <g ref={ballCOuterRef} transform="translate(0 0)" filter="url(#energyGlowDesktop)" opacity={collisionFlash ? 1 : 0.94}>
+              <circle r={collisionFlash ? 19 : 16} fill={brandDarkColor} opacity={collisionFlash ? 1 : 0.95} />
+              <circle r={collisionFlash ? 6.2 : 5.4} cy={collisionFlash ? -4.3 : -3.8} fill={brandLightColor} />
+              <path
+                d={
+                  collisionFlash
+                    ? 'M-9.6 12.3 V9.2 C-9.6 3.2 -4.9 -1.4 0 -1.4 C4.9 -1.4 9.6 3.2 9.6 9.2 V12.3 Z'
+                    : 'M-8.4 11.1 V8.3 C-8.4 3.3 -4.5 -0.8 0 -0.8 C4.5 -0.8 8.4 3.3 8.4 8.3 V11.1 Z'
+                }
+                fill={brandLightColor}
+              />
+            </g>
             <circle cx="900" cy="210" r="3" fill="#f6ffe9" opacity="0">
               <animate attributeName="opacity" dur="4.6s" repeatCount="indefinite" values="0;0;1;0" keyTimes="0;0.47;0.5;0.56" />
               <animate attributeName="r" dur="4.6s" repeatCount="indefinite" values="3;3;18;3" keyTimes="0;0.47;0.52;0.56" />
             </circle>
-            <circle r="12.3" fill={accentGreenColor} filter="url(#energyGlowDesktop)" opacity="0.62"><animateMotion dur="5.6s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathD" /></animateMotion></circle>
-            <circle r="6.3" fill="#fcfff7" filter="url(#energyGlowDesktop)" opacity="1"><animateMotion dur="5.6s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathD" /></animateMotion></circle>
+            <g filter="url(#energyGlowDesktop)" opacity="0.98">
+              <circle r="16" fill={brandDarkColor} opacity="0.95" />
+              <circle r="5.4" cy="-3.8" fill={brandLightColor} />
+              <path d="M-8.4 11.1 V8.3 C-8.4 3.3 -4.5 -0.8 0 -0.8 C4.5 -0.8 8.4 3.3 8.4 8.3 V11.1 Z" fill={brandLightColor} />
+              <animateMotion dur="5.6s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathD" /></animateMotion>
+            </g>
             <g transform="translate(900 210)" opacity={collisionSpark ? 1 : 0} filter="url(#energyGlowDesktop)">
               <circle r="18" fill="#ffd94a" opacity="0.35" />
               <circle r="30" fill="#ffde59" opacity="0.16" />
@@ -890,36 +1011,30 @@ const EpisodeLandingTenth: React.FC = () => {
             <use href="#energyPathPage4M2" fill="none" stroke={accentLineColor} strokeWidth="2.2" />
             <use href="#energyPathPage4M3" fill="none" stroke={accentLineColor} strokeWidth="2" />
 
-            <circle r="12.3" fill={accentGreenColor} filter="url(#energyGlowPage4Mobile)" opacity="0.62">
+            <g filter="url(#energyGlowPage4Mobile)" opacity="0.98">
+              <circle r="16" fill={brandDarkColor} opacity="0.95" />
+              <circle r="5.4" cy="-3.8" fill={brandLightColor} />
+              <path d="M-8.4 11.1 V8.3 C-8.4 3.3 -4.5 -0.8 0 -0.8 C4.5 -0.8 8.4 3.3 8.4 8.3 V11.1 Z" fill={brandLightColor} />
               <animateMotion dur="4.6s" repeatCount="indefinite" rotate="auto">
                 <mpath href="#energyPathPage4M1" />
               </animateMotion>
-            </circle>
-            <circle r="6.3" fill="#fcfff7" filter="url(#energyGlowPage4Mobile)" opacity="1">
-              <animateMotion dur="4.6s" repeatCount="indefinite" rotate="auto">
-                <mpath href="#energyPathPage4M1" />
-              </animateMotion>
-            </circle>
-            <circle r="12.3" fill={accentGreenColor} filter="url(#energyGlowPage4Mobile)" opacity="0.62">
+            </g>
+            <g filter="url(#energyGlowPage4Mobile)" opacity="0.98">
+              <circle r="16" fill={brandDarkColor} opacity="0.95" />
+              <circle r="5.4" cy="-3.8" fill={brandLightColor} />
+              <path d="M-8.4 11.1 V8.3 C-8.4 3.3 -4.5 -0.8 0 -0.8 C4.5 -0.8 8.4 3.3 8.4 8.3 V11.1 Z" fill={brandLightColor} />
               <animateMotion dur="5s" repeatCount="indefinite" rotate="auto">
                 <mpath href="#energyPathPage4M2" />
               </animateMotion>
-            </circle>
-            <circle r="6.3" fill="#fcfff7" filter="url(#energyGlowPage4Mobile)" opacity="1">
-              <animateMotion dur="5s" repeatCount="indefinite" rotate="auto">
-                <mpath href="#energyPathPage4M2" />
-              </animateMotion>
-            </circle>
-            <circle r="12.3" fill={accentGreenColor} filter="url(#energyGlowPage4Mobile)" opacity="0.62">
+            </g>
+            <g filter="url(#energyGlowPage4Mobile)" opacity="0.98">
+              <circle r="16" fill={brandDarkColor} opacity="0.95" />
+              <circle r="5.4" cy="-3.8" fill={brandLightColor} />
+              <path d="M-8.4 11.1 V8.3 C-8.4 3.3 -4.5 -0.8 0 -0.8 C4.5 -0.8 8.4 3.3 8.4 8.3 V11.1 Z" fill={brandLightColor} />
               <animateMotion dur="5.4s" repeatCount="indefinite" rotate="auto">
                 <mpath href="#energyPathPage4M3" />
               </animateMotion>
-            </circle>
-            <circle r="6.3" fill="#fcfff7" filter="url(#energyGlowPage4Mobile)" opacity="1">
-              <animateMotion dur="5.4s" repeatCount="indefinite" rotate="auto">
-                <mpath href="#energyPathPage4M3" />
-              </animateMotion>
-            </circle>
+            </g>
           </svg>
 
           <svg
@@ -953,37 +1068,133 @@ const EpisodeLandingTenth: React.FC = () => {
             <use href="#energyPathPage4B" fill="none" stroke={accentLineColor} strokeWidth="2.45" />
             <use href="#energyPathPage4C" fill="none" stroke={accentLineColor} strokeWidth="2.1" />
             <use href="#energyPathPage4D" fill="none" stroke={accentLineColor} strokeWidth="1.95" opacity="0.9" />
-            <circle r="12.3" fill={accentGreenColor} filter="url(#energyGlowPage4Desktop)" opacity="0.62"><animateMotion dur="5.1s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathPage4A" /></animateMotion></circle>
-            <circle r="6.3" fill="#fcfff7" filter="url(#energyGlowPage4Desktop)" opacity="1"><animateMotion dur="5.1s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathPage4A" /></animateMotion></circle>
-            <circle r="12.3" fill={accentGreenColor} filter="url(#energyGlowPage4Desktop)" opacity="0.62"><animateMotion dur="4.1s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathPage4B" /></animateMotion></circle>
-            <circle r="6.3" fill="#fcfff7" filter="url(#energyGlowPage4Desktop)" opacity="1"><animateMotion dur="4.1s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathPage4B" /></animateMotion></circle>
-            <circle r="12.3" fill={accentGreenColor} filter="url(#energyGlowPage4Desktop)" opacity="0.62"><animateMotion dur="4.8s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathPage4C" /></animateMotion></circle>
-            <circle r="6.3" fill="#fcfff7" filter="url(#energyGlowPage4Desktop)" opacity="1"><animateMotion dur="4.8s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathPage4C" /></animateMotion></circle>
-            <circle r="12.3" fill={accentGreenColor} filter="url(#energyGlowPage4Desktop)" opacity="0.62"><animateMotion dur="5.6s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathPage4D" /></animateMotion></circle>
-            <circle r="6.3" fill="#fcfff7" filter="url(#energyGlowPage4Desktop)" opacity="1"><animateMotion dur="5.6s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathPage4D" /></animateMotion></circle>
+            <g filter="url(#energyGlowPage4Desktop)" opacity="0.98">
+              <circle r="16" fill={brandDarkColor} opacity="0.95" />
+              <circle r="5.4" cy="-3.8" fill={brandLightColor} />
+              <path d="M-8.4 11.1 V8.3 C-8.4 3.3 -4.5 -0.8 0 -0.8 C4.5 -0.8 8.4 3.3 8.4 8.3 V11.1 Z" fill={brandLightColor} />
+              <animateMotion dur="5.1s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathPage4A" /></animateMotion>
+            </g>
+            <g filter="url(#energyGlowPage4Desktop)" opacity="0.98">
+              <circle r="16" fill={brandDarkColor} opacity="0.95" />
+              <circle r="5.4" cy="-3.8" fill={brandLightColor} />
+              <path d="M-8.4 11.1 V8.3 C-8.4 3.3 -4.5 -0.8 0 -0.8 C4.5 -0.8 8.4 3.3 8.4 8.3 V11.1 Z" fill={brandLightColor} />
+              <animateMotion dur="4.1s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathPage4B" /></animateMotion>
+            </g>
+            <g filter="url(#energyGlowPage4Desktop)" opacity="0.98">
+              <circle r="16" fill={brandDarkColor} opacity="0.95" />
+              <circle r="5.4" cy="-3.8" fill={brandLightColor} />
+              <path d="M-8.4 11.1 V8.3 C-8.4 3.3 -4.5 -0.8 0 -0.8 C4.5 -0.8 8.4 3.3 8.4 8.3 V11.1 Z" fill={brandLightColor} />
+              <animateMotion dur="4.8s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathPage4C" /></animateMotion>
+            </g>
+            <g filter="url(#energyGlowPage4Desktop)" opacity="0.98">
+              <circle r="16" fill={brandDarkColor} opacity="0.95" />
+              <circle r="5.4" cy="-3.8" fill={brandLightColor} />
+              <path d="M-8.4 11.1 V8.3 C-8.4 3.3 -4.5 -0.8 0 -0.8 C4.5 -0.8 8.4 3.3 8.4 8.3 V11.1 Z" fill={brandLightColor} />
+              <animateMotion dur="5.6s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathPage4D" /></animateMotion>
+            </g>
           </svg>
           <div className={ui.testimonialSection.container}>
-            <div className={ui.testimonialSection.carouselViewport}>
-              <div className={ui.testimonialSection.carouselTrack}>
-                {[...testimonialBaseSlides, ...testimonialBaseSlides].map((item, cardIndex) => (
-                  <div key={`${item.author}-${cardIndex}`} className={ui.testimonialSection.panel}>
-                    <div className="mb-3 flex items-center gap-1 text-[#d2a96c]">
-                      {Array.from({ length: 5 }).map((_, starIndex) => (
-                        <Star key={`${item.author}-star-${starIndex}`} size={15} fill="currentColor" />
-                      ))}
-                    </div>
-                    <p className={ui.testimonialSection.quoteMark}>“</p>
-                    <p className={ui.testimonialSection.quoteText}>{item.quote}</p>
-                    <div className={ui.testimonialSection.authorRow}>
-                      <span className={ui.testimonialSection.authorName}>{item.author}</span>
-                      <span className={ui.testimonialSection.authorMeta}>(More reviews →)</span>
-                    </div>
+            <div className="mb-5 md:hidden">
+              <p className="text-[11px] uppercase tracking-[0.18em] text-[#1f3436]/70">Reviews</p>
+              <h3 className="mt-2 text-[26px] font-semibold leading-[1.05] tracking-tight text-[#101616]">Guest stories</h3>
+              <p className="mt-2 text-[13px] leading-[1.4] text-[#2f3839]/75">Swipe or tap arrows to explore verified experiences.</p>
+            </div>
+
+            <div
+              ref={mobileTestimonialCarouselRef}
+              className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 [scrollbar-width:none] md:hidden [&::-webkit-scrollbar]:hidden"
+            >
+              {testimonialBaseSlides.map((item) => (
+                <article
+                  key={`mobile-${item.author}`}
+                  data-mobile-testimonial-card="true"
+                  className="min-w-full snap-start rounded-[24px] border border-[#d8dede] bg-[#e8ecec] px-5 py-6 shadow-[0_10px_24px_rgba(31,52,54,0.08)]"
+                >
+                  <div className="mb-2 flex items-center gap-1 text-[#d2a96c]">
+                    {Array.from({ length: 5 }).map((_, starIndex) => (
+                      <Star key={`${item.author}-mobile-star-${starIndex}`} size={15} fill="currentColor" />
+                    ))}
                   </div>
+                  <p className="text-[38px] font-bold leading-none text-[#111]">“</p>
+                  <p className="mt-1 text-[18px] leading-[1.35] text-[#101616]">{item.quote}</p>
+                  <div className="mt-4 flex items-center justify-between gap-3 text-[16px] text-[#111]">
+                    <div>
+                      <span className="font-semibold">{item.author}</span>
+                      <span className="ml-2 text-[#2f3839]/80">(More reviews →)</span>
+                    </div>
+                    <img
+                      src={item.avatar}
+                      alt={`${item.author} profile`}
+                      loading="lazy"
+                      className="h-11 w-11 rounded-full border border-white/80 object-cover shadow-[0_6px_14px_rgba(31,52,54,0.20)]"
+                    />
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            <div className="mt-4 flex items-center justify-between md:hidden">
+              <button
+                type="button"
+                aria-label="Previous testimonial"
+                onClick={() => scrollMobileTestimonialCarousel(-1)}
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#1f3436]/15 bg-white/85 text-[#1f3436] shadow-[0_8px_18px_rgba(31,52,54,0.12)]"
+              >
+                <ChevronLeft size={18} />
+              </button>
+              <div className="flex items-center gap-1.5">
+                {testimonialBaseSlides.map((item, dotIndex) => (
+                  <span
+                    key={`mobile-dot-${item.author}`}
+                    className={`h-1.5 rounded-full transition-all duration-300 ${
+                      dotIndex === activeMobileTestimonialSlide ? 'w-6 bg-[#1f3436]' : 'w-2 bg-[#1f3436]/30'
+                    }`}
+                  />
                 ))}
+              </div>
+              <button
+                type="button"
+                aria-label="Next testimonial"
+                onClick={() => scrollMobileTestimonialCarousel(1)}
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#1f3436]/15 bg-white/85 text-[#1f3436] shadow-[0_8px_18px_rgba(31,52,54,0.12)]"
+              >
+                <ChevronRight size={18} />
+              </button>
+            </div>
+
+            <div className="hidden md:block">
+              <div className={ui.testimonialSection.carouselViewport}>
+                <div className={ui.testimonialSection.carouselTrack}>
+                  {[...testimonialBaseSlides, ...testimonialBaseSlides].map((item, cardIndex) => (
+                    <div key={`${item.author}-${cardIndex}`} className={ui.testimonialSection.panel}>
+                      <div className="mb-3 flex items-center gap-1 text-[#d2a96c]">
+                        {Array.from({ length: 5 }).map((_, starIndex) => (
+                          <Star key={`${item.author}-star-${starIndex}`} size={15} fill="currentColor" />
+                        ))}
+                      </div>
+                      <p className={ui.testimonialSection.quoteMark}>“</p>
+                      <p className={ui.testimonialSection.quoteText}>{item.quote}</p>
+                      <div className={`${ui.testimonialSection.authorRow} flex items-center justify-between gap-3`}>
+                        <div>
+                          <span className={ui.testimonialSection.authorName}>{item.author}</span>
+                          <span className={ui.testimonialSection.authorMeta}>(More reviews →)</span>
+                        </div>
+                        <img
+                          src={item.avatar}
+                          alt={`${item.author} profile`}
+                          loading="lazy"
+                          className="h-12 w-12 rounded-full border border-white/85 object-cover shadow-[0_8px_18px_rgba(31,52,54,0.22)]"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
         </section>
+
+        <EpisodeLandingOffers sectionRef={fifthSectionRef} isActive={activeSnapIndex === 4} />
       </main>
     </div>
   )
