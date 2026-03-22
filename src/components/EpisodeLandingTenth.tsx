@@ -3,6 +3,9 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowRight, BedDouble, CalendarCheck2, CalendarDays, ChevronDown, ChevronLeft, ChevronRight, Menu, MessageCircle, Star, Users, X } from 'lucide-react'
 import mainHeroVideo from '../assets/video.mp4'
 import episodeRoomImage from '../assets/images/episode4.jpg'
+import roomTwoImage from '../assets/images/room2.avif'
+import atriumPersonsImage from '../assets/images/atrium-persons.jpg'
+import meetingImage from '../assets/images/meeting.jpg'
 import logoImage from '../assets/images/logo2.png'
 import { episodeDesignLibrary } from '../design-library'
 import EpisodeLandingOffers from './EpisodeLandingOffers'
@@ -22,11 +25,7 @@ const EpisodeLandingTenth: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isMobileBookingOpen, setIsMobileBookingOpen] = useState(false)
   const [desktopDropdown, setDesktopDropdown] = useState<'stay' | 'about' | 'work' | null>(null)
-  const [carouselIndex, setCarouselIndex] = useState(0)
-  const [collisionFlash, setCollisionFlash] = useState(false)
-  const [collisionSpark, setCollisionSpark] = useState(false)
   const [activeSnapIndex, setActiveSnapIndex] = useState(0)
-  const [activeRoomSlide, setActiveRoomSlide] = useState(0)
   const [activeMobileTestimonialSlide, setActiveMobileTestimonialSlide] = useState(0)
   const sceneVideos = [mainHeroVideo]
   const videoRefs = useRef<Array<HTMLVideoElement | null>>([])
@@ -38,11 +37,6 @@ const EpisodeLandingTenth: React.FC = () => {
   const fourthSectionRef = useRef<HTMLElement | null>(null)
   const fifthSectionRef = useRef<HTMLElement | null>(null)
   const mobileTestimonialCarouselRef = useRef<HTMLDivElement | null>(null)
-  const energyPathBRef = useRef<SVGPathElement | null>(null)
-  const energyPathCRef = useRef<SVGPathElement | null>(null)
-  const ballBOuterRef = useRef<SVGGElement | null>(null)
-  const ballCOuterRef = useRef<SVGGElement | null>(null)
-  const roomsCarouselRef = useRef<HTMLDivElement | null>(null)
   const snapLockRef = useRef(false)
   const wheelDeltaAccumulatorRef = useRef(0)
   const wheelResetTimeoutRef = useRef<number | null>(null)
@@ -54,14 +48,21 @@ const EpisodeLandingTenth: React.FC = () => {
   const ui = episodeDesignLibrary.components
   const accentLineColor = episodeDesignLibrary.colors.accent.blue
   const accentGreenColor = episodeDesignLibrary.colors.accent.green
-  const accentTerracottaColor = episodeDesignLibrary.colors.accent.terracotta
-  const brandDarkColor = episodeDesignLibrary.colors.brand.dark
-  const brandLightColor = episodeDesignLibrary.colors.brand.light
   const dropdownItems: Record<'stay' | 'about' | 'work', string[]> = {
     stay: ['Sleep', 'Meet & Work', 'Eat & Drink'],
     about: ['About Episode', 'FAQ', 'Blog'],
     work: ['Develop with us', 'Careers'],
   }
+  const whoWeAreCollageImages = [
+    sectionCarouselImages[0] ?? episodeRoomImage,
+    atriumPersonsImage,
+    meetingImage,
+  ] as const
+  const sleepRoomCards = [
+    { title: 'Solo', src: episodeRoomImage, guests: 'x1', beds: 'x1', size: '20 m²' },
+    { title: 'Double Room', src: roomTwoImage, guests: 'x2', beds: 'x1', size: '20 m²' },
+    { title: 'Twin Room', src: sectionCarouselImages[0] ?? episodeRoomImage, guests: 'x2', beds: 'x2', size: '20 m²' },
+  ] as const
   const testimonialBaseSlides = [
     {
       quote:
@@ -110,79 +111,6 @@ const EpisodeLandingTenth: React.FC = () => {
     }
   }, [])
 
-  useEffect(() => {
-    const cycleMs = 5600
-    const collisionStartRatio = 0.45
-    const collisionEndRatio = 0.63
-    const sparkDurationMs = 180
-    let rafId = 0
-    const startedAt = performance.now()
-    let lastPhase = 0
-    let sparkUntil = 0
-    let lastFlashState = false
-
-    const setBallPosition = (iconRef: React.RefObject<SVGGElement | null>, x: number, y: number) => {
-      const el = iconRef.current
-      if (!el) return
-      el.setAttribute('transform', `translate(${x.toFixed(2)} ${y.toFixed(2)})`)
-    }
-
-    const getProgressOnPath = (phase: number) => {
-      if (phase < collisionStartRatio) {
-        return (phase / collisionStartRatio) * 0.5
-      }
-      if (phase < collisionEndRatio) {
-        return 0.5
-      }
-      return 0.5 + ((phase - collisionEndRatio) / (1 - collisionEndRatio)) * 0.5
-    }
-
-    const tick = (now: number) => {
-      const elapsed = now - startedAt
-      const phase = (elapsed % cycleMs) / cycleMs
-      const wrapped = phase < lastPhase
-      const enteredCollision = (lastPhase < collisionStartRatio && phase >= collisionStartRatio) || (wrapped && phase >= collisionStartRatio)
-      const enteredSeparation = (lastPhase < collisionEndRatio && phase >= collisionEndRatio) || (wrapped && phase >= collisionEndRatio)
-
-      if (enteredCollision) {
-        sparkUntil = now + sparkDurationMs
-      }
-      if (enteredSeparation) {
-        setCarouselIndex((prev) => {
-          if (sectionCarouselImages.length === 0) return prev
-          return (prev + 1) % sectionCarouselImages.length
-        })
-      }
-
-      const inCollision = phase >= collisionStartRatio && phase < collisionEndRatio
-      if (inCollision !== lastFlashState) {
-        lastFlashState = inCollision
-        setCollisionFlash(inCollision)
-      }
-
-      const sparkNow = now < sparkUntil
-      setCollisionSpark((prev) => (prev !== sparkNow ? sparkNow : prev))
-
-      const pathB = energyPathBRef.current
-      const pathC = energyPathCRef.current
-      if (pathB && pathC) {
-        const progress = getProgressOnPath(phase)
-        const totalB = pathB.getTotalLength()
-        const totalC = pathC.getTotalLength()
-        const pointB = pathB.getPointAtLength(totalB * progress)
-        const pointC = pathC.getPointAtLength(totalC * progress)
-        setBallPosition(ballBOuterRef, pointB.x, pointB.y)
-        setBallPosition(ballCOuterRef, pointC.x, pointC.y)
-      }
-
-      lastPhase = phase
-      rafId = window.requestAnimationFrame(tick)
-    }
-
-    rafId = window.requestAnimationFrame(tick)
-    return () => window.cancelAnimationFrame(rafId)
-  }, [])
-
   const openDropdown = (menu: 'stay' | 'about' | 'work') => {
     if (dropdownCloseTimeout.current) {
       window.clearTimeout(dropdownCloseTimeout.current)
@@ -203,14 +131,6 @@ const EpisodeLandingTenth: React.FC = () => {
     secondSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
-  const scrollRoomsCarousel = (direction: -1 | 1) => {
-    const carousel = roomsCarouselRef.current
-    if (!carousel) return
-    const firstCard = carousel.querySelector('[data-room-card="true"]') as HTMLElement | null
-    const step = (firstCard?.offsetWidth ?? 280) + 12
-    carousel.scrollBy({ left: direction * step, behavior: 'smooth' })
-  }
-
   const scrollMobileTestimonialCarousel = (direction: -1 | 1) => {
     const carousel = mobileTestimonialCarouselRef.current
     if (!carousel) return
@@ -221,32 +141,6 @@ const EpisodeLandingTenth: React.FC = () => {
     carousel.scrollTo({ left: step * next, behavior: 'smooth' })
     setActiveMobileTestimonialSlide(next)
   }
-
-  useEffect(() => {
-    if (activeSnapIndex !== 2) return
-    if (window.matchMedia('(min-width: 768px)').matches) return
-    const carousel = roomsCarouselRef.current
-    if (!carousel) return
-    const roomCount = 3
-
-    const scrollToSlide = (index: number) => {
-      const firstCard = carousel.querySelector('[data-room-card="true"]') as HTMLElement | null
-      const step = (firstCard?.offsetWidth ?? 280) + 8
-      carousel.scrollTo({ left: step * index, behavior: 'smooth' })
-    }
-
-    scrollToSlide(activeRoomSlide)
-
-    const timer = window.setInterval(() => {
-      setActiveRoomSlide((prev) => {
-        const next = (prev + 1) % roomCount
-        scrollToSlide(next)
-        return next
-      })
-    }, 3200)
-
-    return () => window.clearInterval(timer)
-  }, [activeSnapIndex])
 
   useEffect(() => {
     if (activeSnapIndex !== 3) return
@@ -685,304 +579,193 @@ const EpisodeLandingTenth: React.FC = () => {
 
         <section
           ref={secondSectionRef}
-          className="relative flex h-screen snap-start snap-always items-start overflow-hidden bg-[#edf3f4] px-4 pb-6 pt-24 text-[#171717] max-[390px]:px-3 max-[390px]:pb-4 max-[390px]:pt-20 max-[360px]:pt-18 md:items-center md:px-10 md:pt-28"
+          className="relative flex h-screen snap-start snap-always items-center overflow-hidden bg-[#f1f3f3] px-4 pb-6 pt-[82px] text-[#171717] md:px-10 md:pb-0 md:pt-0"
         >
-          <div className="pointer-events-none absolute inset-0">
-            <div
-              className="absolute inset-0"
-              style={{
-                backgroundImage: `
-                  radial-gradient(62% 56% at 14% 18%, ${accentGreenColor}66 0%, transparent 62%),
-                  radial-gradient(50% 44% at 82% 20%, ${accentLineColor}52 0%, transparent 64%),
-                  radial-gradient(40% 38% at 66% 80%, ${accentTerracottaColor}2f 0%, transparent 68%),
-                  linear-gradient(128deg, ${brandLightColor}a6 0%, #f3f7f7 44%, #eaf1f2 100%)
-                `,
-              }}
-            />
-            <div className="absolute inset-0 opacity-[0.16] [background-image:linear-gradient(rgba(31,52,54,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(31,52,54,0.08)_1px,transparent_1px)] [background-size:64px_64px]" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,transparent_0%,rgba(255,255,255,0.26)_100%)]" />
-          </div>
           <svg
-            viewBox="0 0 1000 360"
+            viewBox="0 0 1600 900"
             preserveAspectRatio="none"
-            shapeRendering="geometricPrecision"
-            className="pointer-events-none absolute inset-x-0 top-20 h-[34%] w-full opacity-[0.82] max-[390px]:top-16 max-[390px]:h-[30%] max-[360px]:h-[28%] md:hidden"
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 h-full w-full opacity-[0.9]"
           >
             <defs>
-              <filter id="energyGlowMobile" x="-220%" y="-220%" width="560%" height="560%">
-                <feGaussianBlur stdDeviation="10" result="blurred" />
-                <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="coreGlow" />
+              <filter id="whoWeAreLineGlow" x="-250%" y="-250%" width="600%" height="600%">
+                <feGaussianBlur stdDeviation="7" result="softGlow" />
+                <feGaussianBlur in="SourceGraphic" stdDeviation="2.2" result="coreGlow" />
                 <feMerge>
-                  <feMergeNode in="blurred" />
+                  <feMergeNode in="softGlow" />
                   <feMergeNode in="coreGlow" />
                   <feMergeNode in="SourceGraphic" />
                 </feMerge>
               </filter>
-              <path id="energyPathM1" d="M-60 92 C 120 26, 320 20, 500 132 C 650 224, 830 216, 1060 110" />
-              <path id="energyPathM2" d="M-80 214 C 140 140, 330 126, 520 78 C 700 34, 850 52, 1080 198" />
-              <path id="energyPathM3" d="M-40 290 C 180 250, 360 214, 560 152 C 760 92, 910 116, 1080 244" />
+              <path id="whoWeAreLineA" d="M-80 40 V572 C-80 708 38 776 188 776 C338 776 458 708 458 572 C458 498 404 450 332 450 C262 450 208 498 208 572 V630" />
+              <path id="whoWeAreLineB" d="M1680 760 V228 C1680 92 1562 24 1412 24 C1262 24 1142 92 1142 228 C1142 302 1196 350 1268 350 C1338 350 1392 302 1392 228 V170" />
+              <path id="whoWeAreLineC" d="M800 -40 V960" />
+              <path id="whoWeAreLineD" d="M520 -40 C520 210 536 388 510 566 C488 714 502 842 560 960" />
+              <path id="whoWeAreLineE" d="M1080 -40 C1080 210 1064 388 1090 566 C1112 714 1098 842 1040 960" />
             </defs>
-            <use href="#energyPathM1" fill="none" stroke={accentLineColor} strokeWidth="2.4" />
-            <use href="#energyPathM2" fill="none" stroke={accentLineColor} strokeWidth="2.2" />
-            <use href="#energyPathM3" fill="none" stroke={accentLineColor} strokeWidth="2" />
+            <use href="#whoWeAreLineA" fill="none" stroke={accentLineColor} strokeWidth="3.1" opacity="1" />
+            <use href="#whoWeAreLineB" fill="none" stroke={accentLineColor} strokeWidth="3.1" opacity="1" />
+            <use href="#whoWeAreLineC" fill="none" stroke={accentLineColor} strokeWidth="2.5" opacity="0.96" />
+            <use href="#whoWeAreLineD" fill="none" stroke={accentLineColor} strokeWidth="2.1" opacity="0.92" />
+            <use href="#whoWeAreLineE" fill="none" stroke={accentLineColor} strokeWidth="2.1" opacity="0.92" />
 
-            <g filter="url(#energyGlowMobile)" opacity="0.98">
-              <circle r="16" fill={brandDarkColor} opacity="0.95" />
-              <circle r="5.4" cy="-3.8" fill={brandLightColor} />
-              <path d="M-8.4 11.1 V8.3 C-8.4 3.3 -4.5 -0.8 0 -0.8 C4.5 -0.8 8.4 3.3 8.4 8.3 V11.1 Z" fill={brandLightColor} />
-              <animateMotion dur="4.6s" repeatCount="indefinite" rotate="auto">
-                <mpath href="#energyPathM1" />
+            <circle r="8.4" fill="#d8f6c5" opacity="0.5" filter="url(#whoWeAreLineGlow)">
+              <animateMotion dur="8.8s" repeatCount="indefinite" rotate="auto">
+                <mpath href="#whoWeAreLineA" />
               </animateMotion>
-            </g>
-            <g filter="url(#energyGlowMobile)" opacity="0.98">
-              <circle r="16" fill={brandDarkColor} opacity="0.95" />
-              <circle r="5.4" cy="-3.8" fill={brandLightColor} />
-              <path d="M-8.4 11.1 V8.3 C-8.4 3.3 -4.5 -0.8 0 -0.8 C4.5 -0.8 8.4 3.3 8.4 8.3 V11.1 Z" fill={brandLightColor} />
-              <animateMotion dur="5s" repeatCount="indefinite" rotate="auto">
-                <mpath href="#energyPathM2" />
-              </animateMotion>
-            </g>
-            <g filter="url(#energyGlowMobile)" opacity="0.98">
-              <circle r="16" fill={brandDarkColor} opacity="0.95" />
-              <circle r="5.4" cy="-3.8" fill={brandLightColor} />
-              <path d="M-8.4 11.1 V8.3 C-8.4 3.3 -4.5 -0.8 0 -0.8 C4.5 -0.8 8.4 3.3 8.4 8.3 V11.1 Z" fill={brandLightColor} />
-              <animateMotion dur="5.4s" repeatCount="indefinite" rotate="auto">
-                <mpath href="#energyPathM3" />
-              </animateMotion>
-            </g>
-          </svg>
-
-          <svg
-            viewBox="0 0 1600 900"
-            preserveAspectRatio="none"
-            shapeRendering="geometricPrecision"
-            className="pointer-events-none absolute inset-0 hidden h-full w-full opacity-[0.78] md:block"
-          >
-            <defs>
-              <filter id="energyGlowDesktop" x="-220%" y="-220%" width="560%" height="560%">
-                <feGaussianBlur stdDeviation="12" result="blurred" />
-                <feGaussianBlur in="SourceGraphic" stdDeviation="3.6" result="coreGlow" />
-                <feColorMatrix in="coreGlow" type="saturate" values="1.9" result="saturatedCore" />
-                <feComponentTransfer in="saturatedCore" result="brightCore">
-                  <feFuncR type="linear" slope="1.2" />
-                  <feFuncG type="linear" slope="1.35" />
-                  <feFuncB type="linear" slope="1.15" />
-                </feComponentTransfer>
-                <feMerge>
-                  <feMergeNode in="blurred" />
-                  <feMergeNode in="brightCore" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-              <path id="energyPathA" d="M-120 300 C 180 40, 480 40, 520 320 L 520 900" />
-              <path ref={energyPathBRef} id="energyPathB" d="M-120 210 C 180 120, 540 120, 900 210 C 1260 300, 1620 300, 1920 210" />
-              <path ref={energyPathCRef} id="energyPathC" d="M1920 250 C 1620 340, 1260 340, 900 210 C 540 80, 180 80, -120 250" />
-              <path id="energyPathD" d="M740 900 L 740 520 C 740 340, 860 250, 1020 250 C 1170 250, 1280 330, 1280 500 L 1280 900" />
-            </defs>
-            <use href="#energyPathA" fill="none" stroke={accentLineColor} strokeWidth="2.6" />
-            <use href="#energyPathB" fill="none" stroke={accentLineColor} strokeWidth="2.45" />
-            <use href="#energyPathC" fill="none" stroke={accentLineColor} strokeWidth="2.1" />
-            <use href="#energyPathD" fill="none" stroke={accentLineColor} strokeWidth="1.95" opacity="0.9" />
-            <g filter="url(#energyGlowDesktop)" opacity="0.98">
-              <circle r="16" fill={brandDarkColor} opacity="0.95" />
-              <circle r="5.4" cy="-3.8" fill={brandLightColor} />
-              <path d="M-8.4 11.1 V8.3 C-8.4 3.3 -4.5 -0.8 0 -0.8 C4.5 -0.8 8.4 3.3 8.4 8.3 V11.1 Z" fill={brandLightColor} />
-              <animateMotion dur="5.1s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathA" /></animateMotion>
-            </g>
-            <g ref={ballBOuterRef} transform="translate(0 0)" filter="url(#energyGlowDesktop)" opacity={collisionFlash ? 1 : 0.94}>
-              <circle r={collisionFlash ? 19 : 16} fill={brandDarkColor} opacity={collisionFlash ? 1 : 0.95} />
-              <circle r={collisionFlash ? 6.2 : 5.4} cy={collisionFlash ? -4.3 : -3.8} fill={brandLightColor} />
-              <path
-                d={
-                  collisionFlash
-                    ? 'M-9.6 12.3 V9.2 C-9.6 3.2 -4.9 -1.4 0 -1.4 C4.9 -1.4 9.6 3.2 9.6 9.2 V12.3 Z'
-                    : 'M-8.4 11.1 V8.3 C-8.4 3.3 -4.5 -0.8 0 -0.8 C4.5 -0.8 8.4 3.3 8.4 8.3 V11.1 Z'
-                }
-                fill={brandLightColor}
-              />
-            </g>
-            <g ref={ballCOuterRef} transform="translate(0 0)" filter="url(#energyGlowDesktop)" opacity={collisionFlash ? 1 : 0.94}>
-              <circle r={collisionFlash ? 19 : 16} fill={brandDarkColor} opacity={collisionFlash ? 1 : 0.95} />
-              <circle r={collisionFlash ? 6.2 : 5.4} cy={collisionFlash ? -4.3 : -3.8} fill={brandLightColor} />
-              <path
-                d={
-                  collisionFlash
-                    ? 'M-9.6 12.3 V9.2 C-9.6 3.2 -4.9 -1.4 0 -1.4 C4.9 -1.4 9.6 3.2 9.6 9.2 V12.3 Z'
-                    : 'M-8.4 11.1 V8.3 C-8.4 3.3 -4.5 -0.8 0 -0.8 C4.5 -0.8 8.4 3.3 8.4 8.3 V11.1 Z'
-                }
-                fill={brandLightColor}
-              />
-            </g>
-            <circle cx="900" cy="210" r="3" fill="#f6ffe9" opacity="0">
-              <animate attributeName="opacity" dur="4.6s" repeatCount="indefinite" values="0;0;1;0" keyTimes="0;0.47;0.5;0.56" />
-              <animate attributeName="r" dur="4.6s" repeatCount="indefinite" values="3;3;18;3" keyTimes="0;0.47;0.52;0.56" />
             </circle>
-            <g filter="url(#energyGlowDesktop)" opacity="0.98">
-              <circle r="16" fill={brandDarkColor} opacity="0.95" />
-              <circle r="5.4" cy="-3.8" fill={brandLightColor} />
-              <path d="M-8.4 11.1 V8.3 C-8.4 3.3 -4.5 -0.8 0 -0.8 C4.5 -0.8 8.4 3.3 8.4 8.3 V11.1 Z" fill={brandLightColor} />
-              <animateMotion dur="5.6s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathD" /></animateMotion>
-            </g>
-            <g transform="translate(900 210)" opacity={collisionSpark ? 1 : 0} filter="url(#energyGlowDesktop)">
-              <circle r="18" fill="#ffd94a" opacity="0.35" />
-              <circle r="30" fill="#ffde59" opacity="0.16" />
-              <path d="M2 -24 L-8 -5 L3 -5 L-6 22 L16 -3 L4 -3 Z" fill="#ffe872" stroke="#fff6b8" strokeWidth="1.2" />
-              <path d="M-20 -3 L-8 -6 L-13 4 Z" fill="#ffe872" opacity="0.9" />
-              <path d="M20 2 L8 5 L13 -5 Z" fill="#ffe872" opacity="0.9" />
-            </g>
+            <circle r="3.6" fill="#fcfff7" opacity="1" filter="url(#whoWeAreLineGlow)">
+              <animateMotion dur="8.8s" repeatCount="indefinite" rotate="auto">
+                <mpath href="#whoWeAreLineA" />
+              </animateMotion>
+            </circle>
+
+            <circle r="8.8" fill="#b8daf0" opacity="0.5" filter="url(#whoWeAreLineGlow)">
+              <animateMotion dur="10.2s" repeatCount="indefinite" rotate="auto">
+                <mpath href="#whoWeAreLineB" />
+              </animateMotion>
+            </circle>
+            <circle r="3.8" fill="#fcfff7" opacity="1" filter="url(#whoWeAreLineGlow)">
+              <animateMotion dur="10.2s" repeatCount="indefinite" rotate="auto">
+                <mpath href="#whoWeAreLineB" />
+              </animateMotion>
+            </circle>
+
+            <circle r="8.2" fill="#d1e9ec" opacity="0.48" filter="url(#whoWeAreLineGlow)">
+              <animateMotion dur="11.6s" repeatCount="indefinite" rotate="auto">
+                <mpath href="#whoWeAreLineC" />
+              </animateMotion>
+            </circle>
+            <circle r="3.3" fill="#fcfff7" opacity="0.98" filter="url(#whoWeAreLineGlow)">
+              <animateMotion dur="11.6s" repeatCount="indefinite" rotate="auto">
+                <mpath href="#whoWeAreLineC" />
+              </animateMotion>
+            </circle>
+
+            <circle r="7.2" fill="#d8f6c5" opacity="0.42" filter="url(#whoWeAreLineGlow)">
+              <animateMotion dur="9.4s" repeatCount="indefinite" rotate="auto">
+                <mpath href="#whoWeAreLineD" />
+              </animateMotion>
+            </circle>
+
+            <circle r="7.2" fill="#d8f6c5" opacity="0.42" filter="url(#whoWeAreLineGlow)">
+              <animateMotion dur="9.9s" repeatCount="indefinite" rotate="auto">
+                <mpath href="#whoWeAreLineE" />
+              </animateMotion>
+            </circle>
           </svg>
-          <div className="relative mx-auto grid w-full max-w-[1240px] grid-cols-1 items-start gap-4 max-[390px]:gap-3 md:grid-cols-2 md:items-center md:gap-12">
+          <div className="relative mx-auto grid w-full max-w-[1240px] grid-cols-1 items-center gap-4 md:grid-cols-2 md:items-center md:gap-12">
             <div className="max-w-[640px]">
-              <h2 className="mb-2 text-[28px] font-bold leading-[1.05] tracking-tight max-[390px]:text-[24px] max-[360px]:text-[22px] md:mb-4 md:text-5xl">Who we are</h2>
-              <p className="text-[15px] leading-[1.55] text-[#1f1f1f]/85 max-[390px]:text-[13.5px] max-[390px]:leading-[1.45] max-[360px]:text-[13px] md:text-lg md:leading-7">
+              <h2 className="mb-2 text-[30px] font-semibold leading-[0.95] tracking-tight text-[#1f3436] md:mb-5 md:text-[62px]">Who we are</h2>
+              <p className="text-[14px] leading-[1.5] text-[#1f1f1f]/85 md:text-lg md:leading-7">
                 Episode is created for today&apos;s modern travelers: those who demand more for less. We are innovators who merge technology with chic design to create unique experiences. Our hotel rooms and social spaces are created to offer maximum comfort and style, providing everything you need and nothing you don&apos;t. Join us and experience the future of hospitality today.
               </p>
-              <h3 className="mt-5 text-[28px] font-medium leading-[1.08] tracking-tight max-[390px]:mt-4 max-[390px]:text-[24px] max-[360px]:text-[22px] md:mt-10 md:text-4xl">
+              <h3 className="mt-3 text-[22px] font-medium leading-[1.08] tracking-tight text-[#1f3436] md:mt-9 md:text-[40px]">
                 Just like our doors, our minds are open too!
               </h3>
               <motion.button
                 type="button"
-                whileHover={{ y: -1 }}
+                whileHover={{ y: -1, scale: 1.01 }}
                 whileTap={{ scale: 0.98 }}
-                className="mt-5 hidden items-center gap-2 rounded-xl bg-black px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-[#121212] md:inline-flex"
+                className={`${ui.bookingPanel.submit} group mt-4 inline-flex h-10 w-auto items-center gap-2 px-6 text-[13px] md:mt-6 md:h-11 md:px-7 md:text-sm`}
               >
                 Read more
-                <ArrowRight size={16} />
+                <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
               </motion.button>
             </div>
 
-            <div
-              className={`relative h-[220px] overflow-hidden rounded-3xl border-0 transition-all duration-200 max-[390px]:h-[190px] max-[360px]:h-[170px] md:h-[420px] md:border-2 ${
-                collisionFlash
-                  ? 'md:border-[#86d8ff] md:shadow-[0_0_0_1px_rgba(134,216,255,0.92),0_0_24px_rgba(91,195,255,0.9),0_0_56px_rgba(91,195,255,0.62),inset_0_0_18px_rgba(143,226,255,0.35)]'
-                  : 'md:border-transparent md:shadow-none'
-              }`}
-            >
+            <div className="group relative mx-auto h-[204px] w-full max-w-[560px] md:h-[520px]">
               <img
-                src={sectionCarouselImages[carouselIndex] ?? episodeRoomImage}
-                alt="Episode hotel room"
-                className="h-full w-full object-cover"
+                src={whoWeAreCollageImages[0]}
+                alt="Episode architecture"
+                className="h-full w-full rounded-[32px] object-cover shadow-lg"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/18 via-black/5 to-transparent" />
+              <motion.div
+                initial={{ opacity: 0, y: -46 }}
+                animate={activeSnapIndex === 1 ? { opacity: 1, y: 0 } : { opacity: 0, y: -46 }}
+                transition={{ duration: 0.7, ease: [0.2, 0.9, 0.24, 1], delay: activeSnapIndex === 1 ? 0.12 : 0 }}
+                className="absolute -left-1 -top-1 w-[40%] md:-left-6 md:-top-6 md:w-1/2"
+              >
+                <img
+                  src={whoWeAreCollageImages[1]}
+                  alt="Episode social vibe"
+                  className="aspect-[4/5] w-full rounded-[15px] border-4 border-[#f1f3f3] object-cover shadow-xl transition-transform duration-700 ease-[cubic-bezier(0.2,0.9,0.24,1)] group-hover:-translate-x-2 group-hover:-translate-y-2 group-hover:-rotate-1 md:rounded-[24px]"
+                />
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 52 }}
+                animate={activeSnapIndex === 1 ? { opacity: 1, y: 0 } : { opacity: 0, y: 52 }}
+                transition={{ duration: 0.7, ease: [0.2, 0.9, 0.24, 1], delay: activeSnapIndex === 1 ? 0.28 : 0 }}
+                className="absolute -bottom-2 -right-1 w-[34%] md:-bottom-8 md:-right-4 md:w-5/12"
+              >
+                <img
+                  src={whoWeAreCollageImages[2]}
+                  alt="Connected guest stories"
+                  className="aspect-square w-full rounded-[15px] border-4 border-[#f1f3f3] object-cover shadow-xl transition-transform duration-700 ease-[cubic-bezier(0.2,0.9,0.24,1)] group-hover:translate-x-2 group-hover:translate-y-2 group-hover:rotate-1 md:rounded-[24px]"
+                />
+              </motion.div>
             </div>
-            <motion.button
-              type="button"
-              whileHover={{ y: -1 }}
-              whileTap={{ scale: 0.98 }}
-              className="mt-2 inline-flex justify-self-start items-center gap-2 rounded-xl bg-black px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-[#121212] max-[390px]:px-5 max-[390px]:py-2.5 max-[390px]:text-[13px] md:hidden"
-            >
-              Read more
-              <ArrowRight size={16} />
-            </motion.button>
           </div>
         </section>
 
-        <section ref={thirdSectionRef} className={ui.sleepSection.wrapper}>
-          <div className="pointer-events-none absolute inset-0 overflow-hidden">
-            <div
-              className="absolute inset-0"
-              style={{
-                backgroundImage: `
-                  radial-gradient(58% 52% at 16% 14%, ${accentGreenColor}40 0%, transparent 66%),
-                  radial-gradient(44% 40% at 84% 22%, ${accentLineColor}3b 0%, transparent 72%),
-                  radial-gradient(40% 34% at 52% 84%, ${accentTerracottaColor}26 0%, transparent 70%),
-                  linear-gradient(145deg, #f3f6f6 0%, #e8efef 52%, #e3ebec 100%)
-                `,
-              }}
-            />
-            <motion.div
-              initial={{ x: -30, y: 0, opacity: 0.26 }}
-              animate={{ x: 24, y: -10, opacity: 0.36 }}
-              transition={{ duration: 9, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut' }}
-              className="absolute -left-10 top-[16%] h-[280px] w-[280px] rounded-full bg-white/55 blur-3xl"
-            />
-            <motion.div
-              initial={{ x: 18, y: 8, opacity: 0.18 }}
-              animate={{ x: -22, y: -14, opacity: 0.28 }}
-              transition={{ duration: 11, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut' }}
-              className="absolute right-[-40px] top-[34%] h-[260px] w-[260px] rounded-full bg-[#c9d9de]/55 blur-3xl"
-            />
-            <div className="absolute inset-0 opacity-[0.11] [background-image:linear-gradient(rgba(31,52,54,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(31,52,54,0.12)_1px,transparent_1px)] [background-size:64px_64px]" />
+        <section ref={thirdSectionRef} className="relative flex h-screen w-full snap-start snap-always overflow-hidden bg-[#1f3436] pt-[74px] md:pt-0">
+          <div className="pointer-events-none absolute inset-0">
+            <div className="absolute inset-0 bg-[radial-gradient(55%_45%_at_12%_18%,rgba(239,211,172,0.08),transparent_66%),radial-gradient(44%_38%_at_84%_80%,rgba(184,218,240,0.08),transparent_68%)]" />
+            <div className="absolute inset-0 opacity-[0.08] [background-image:linear-gradient(rgba(209,233,236,0.14)_1px,transparent_1px),linear-gradient(90deg,rgba(209,233,236,0.14)_1px,transparent_1px)] [background-size:72px_72px]" />
           </div>
-          <div className={ui.sleepSection.container}>
-            <motion.div
-              initial={{ y: '100%', scaleY: 0, opacity: 0 }}
-              animate={activeSnapIndex === 2 ? { y: 0, scaleY: 1, opacity: 1 } : { y: '100%', scaleY: 0, opacity: 0 }}
-              transition={{ duration: 1.5, ease: [0.2, 0.9, 0.24, 1] }}
-              className={ui.sleepSection.panel}
-              style={{ background: `linear-gradient(145deg, ${brandDarkColor} 0%, #184c72 100%)`, transformOrigin: 'bottom center' }}
-            >
-              <div className={ui.sleepSection.panelLines}>
-                <svg viewBox="0 0 1200 700" preserveAspectRatio="none" className={ui.sleepSection.panelLinesSvg}>
-                  <path d="M-80 470 C 190 330, 390 330, 620 470" fill="none" stroke={brandLightColor} strokeWidth="1.2" opacity="0.24" />
-                  <path d="M340 0 L340 220 C 340 328, 448 392, 590 392 C 734 392, 840 328, 840 220 L840 0" fill="none" stroke={brandLightColor} strokeWidth="1.1" opacity="0.2" />
-                  <path d="M700 700 L700 518 C 700 414, 792 354, 908 354 C 1024 354, 1108 414, 1108 500 L1108 700" fill="none" stroke={brandLightColor} strokeWidth="1" opacity="0.16" />
-                </svg>
-              </div>
-              <div className={ui.sleepSection.headerRow}>
-                <div>
-                  <h2 className={ui.sleepSection.heading}>Sleep</h2>
-                  <p className={ui.sleepSection.description}>
-                    Step into smart, easy-going comfort and discover modern amenities designed for your convenience. Relax in pillowy soft beds and stylish surroundings, equipped with everything you need to create your own unique episode.
-                  </p>
-                </div>
 
-                <div className={ui.sleepSection.callout}>
-                  <p className={ui.sleepSection.calloutText}>
-                    Book directly on our website for the best deals and exclusive benefits
-                  </p>
-                  <a href="#" className={ui.sleepSection.calloutCta}>
-                    Book now
-                    <ArrowRight size={18} />
-                  </a>
-                </div>
+          <div className="relative z-10 mx-auto w-full max-w-[1320px] px-4 py-6 md:px-10 md:py-24">
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:items-start md:gap-8">
+              <div>
+                <h2 className="text-[48px] font-semibold tracking-tight text-[#efd3ac] md:text-[84px]">Sleep</h2>
               </div>
+              <div>
+                <p className="max-w-[46ch] text-[14px] leading-[1.45] text-white/80 md:text-lg md:leading-[1.6]">
+                  Step into modern comfort with thoughtfully designed rooms that balance calm, technology, and effortless city living.
+                </p>
+                <a
+                  href="#"
+                  className="group mt-4 inline-flex items-center gap-2 text-[12px] uppercase tracking-[0.14em] text-[#d1e9ec] [text-shadow:0_0_14px_rgba(209,233,236,0.34)] md:mt-6 md:text-[13px]"
+                >
+                  Book directly for exclusive benefits
+                  <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
+                </a>
+              </div>
+            </div>
 
-              <div ref={roomsCarouselRef} className={ui.sleepSection.cardsRow}>
-                {[
-                  { title: 'Solo', src: sectionCarouselImages[0] ?? episodeRoomImage, guests: 'x1', beds: 'x1', size: '20 m²' },
-                  { title: 'Double Room', src: sectionCarouselImages[1] ?? episodeRoomImage, guests: 'x2', beds: 'x1', size: '20 m²' },
-                  { title: 'Twin Room', src: sectionCarouselImages[0] ?? episodeRoomImage, guests: 'x2', beds: 'x2', size: '20 m²' },
-                ].map((room) => (
-                  <article key={room.title} data-room-card="true" className={ui.sleepSection.card}>
-                    <div className={ui.sleepSection.badgeRow}>
-                      <span className={ui.sleepSection.badge}>
+            <div className="mt-6 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:mt-16 md:grid md:grid-cols-3 md:gap-10 md:overflow-visible md:pb-0">
+              {sleepRoomCards.map((room) => (
+                <article
+                  key={room.title}
+                  className="group min-w-[84%] snap-start transition-transform duration-500 md:min-w-0"
+                >
+                  <div className="relative aspect-[4/3.6] w-full overflow-hidden rounded-[28px]">
+                    <img
+                      src={room.src}
+                      alt={room.title}
+                      className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                    />
+                    <div className="absolute left-4 top-4 z-20 flex gap-2">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-white/82 px-2 py-0.5 text-[11px] font-medium text-[#1f3436] backdrop-blur-sm">
                         <Users size={11} />
                         {room.guests}
                       </span>
-                      <span className={ui.sleepSection.badge}>
+                      <span className="inline-flex items-center gap-1 rounded-full bg-white/82 px-2 py-0.5 text-[11px] font-medium text-[#1f3436] backdrop-blur-sm">
                         <BedDouble size={11} />
                         {room.beds}
                       </span>
-                      <span className={ui.sleepSection.badge}>{room.size}</span>
+                      <span className="inline-flex items-center rounded-full bg-white/82 px-2 py-0.5 text-[11px] font-medium text-[#1f3436] backdrop-blur-sm">
+                        {room.size}
+                      </span>
                     </div>
-                    <div className={`${ui.sleepSection.cardMedia} relative`}>
-                      <img src={room.src} alt={room.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
-                      <button
-                        type="button"
-                        aria-label="Previous room"
-                        onClick={() => scrollRoomsCarousel(-1)}
-                        className="absolute left-2 top-1/2 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-black/35 text-white backdrop-blur-sm md:hidden"
-                      >
-                        <ChevronLeft size={16} />
-                      </button>
-                      <button
-                        type="button"
-                        aria-label="Next room"
-                        onClick={() => scrollRoomsCarousel(1)}
-                        className="absolute right-2 top-1/2 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-black/35 text-white backdrop-blur-sm md:hidden"
-                      >
-                        <ChevronRight size={16} />
-                      </button>
-                    </div>
-                    <h3 className={ui.sleepSection.cardTitle}>
-                      {room.title}
-                      <ArrowRight size={18} />
-                    </h3>
-                  </article>
-                ))}
-              </div>
-            </motion.div>
+                  </div>
+                  <h3 className="inline-flex items-center gap-2 text-3xl font-medium text-white">
+                    {room.title}
+                    <ArrowRight size={18} className="transition-transform duration-300 group-hover:translate-x-2" />
+                  </h3>
+                </article>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -991,7 +774,7 @@ const EpisodeLandingTenth: React.FC = () => {
             viewBox="0 0 1000 360"
             preserveAspectRatio="none"
             shapeRendering="geometricPrecision"
-            className="pointer-events-none absolute inset-x-0 top-20 h-[34%] w-full opacity-[0.82] md:hidden"
+            className="pointer-events-none absolute inset-x-0 top-20 h-[34%] w-full opacity-[0.9] md:hidden"
           >
             <defs>
               <filter id="energyGlowPage4Mobile" x="-220%" y="-220%" width="560%" height="560%">
@@ -1003,34 +786,31 @@ const EpisodeLandingTenth: React.FC = () => {
                   <feMergeNode in="SourceGraphic" />
                 </feMerge>
               </filter>
-              <path id="energyPathPage4M1" d="M-60 92 C 120 26, 320 20, 500 132 C 650 224, 830 216, 1060 110" />
-              <path id="energyPathPage4M2" d="M-80 214 C 140 140, 330 126, 520 78 C 700 34, 850 52, 1080 198" />
-              <path id="energyPathPage4M3" d="M-40 290 C 180 250, 360 214, 560 152 C 760 92, 910 116, 1080 244" />
+              <path id="energyPathPage4M1" d="M-40 18 V236 C-40 304 24 338 108 338 C192 338 256 304 256 236 C256 198 228 172 188 172 C148 172 120 198 120 236 V266" />
+              <path id="energyPathPage4M2" d="M1040 342 V102 C1040 34 976 0 892 0 C808 0 744 34 744 102 C744 140 772 166 812 166 C852 166 880 140 880 102 V72" />
+              <path id="energyPathPage4M3" d="M500 -20 V380" />
             </defs>
-            <use href="#energyPathPage4M1" fill="none" stroke={accentLineColor} strokeWidth="2.4" />
-            <use href="#energyPathPage4M2" fill="none" stroke={accentLineColor} strokeWidth="2.2" />
-            <use href="#energyPathPage4M3" fill="none" stroke={accentLineColor} strokeWidth="2" />
+            <use href="#energyPathPage4M1" fill="none" stroke={accentLineColor} strokeWidth="2.5" opacity="1" />
+            <use href="#energyPathPage4M2" fill="none" stroke={accentLineColor} strokeWidth="2.5" opacity="1" />
+            <use href="#energyPathPage4M3" fill="none" stroke={accentLineColor} strokeWidth="2.1" opacity="0.95" />
 
-            <g filter="url(#energyGlowPage4Mobile)" opacity="0.98">
-              <circle r="16" fill={brandDarkColor} opacity="0.95" />
-              <circle r="5.4" cy="-3.8" fill={brandLightColor} />
-              <path d="M-8.4 11.1 V8.3 C-8.4 3.3 -4.5 -0.8 0 -0.8 C4.5 -0.8 8.4 3.3 8.4 8.3 V11.1 Z" fill={brandLightColor} />
+            <g filter="url(#energyGlowPage4Mobile)" opacity="1">
+              <circle r="8.6" fill={accentGreenColor} opacity="0.54" />
+              <circle r="3.8" fill="#fcfff7" />
               <animateMotion dur="4.6s" repeatCount="indefinite" rotate="auto">
                 <mpath href="#energyPathPage4M1" />
               </animateMotion>
             </g>
-            <g filter="url(#energyGlowPage4Mobile)" opacity="0.98">
-              <circle r="16" fill={brandDarkColor} opacity="0.95" />
-              <circle r="5.4" cy="-3.8" fill={brandLightColor} />
-              <path d="M-8.4 11.1 V8.3 C-8.4 3.3 -4.5 -0.8 0 -0.8 C4.5 -0.8 8.4 3.3 8.4 8.3 V11.1 Z" fill={brandLightColor} />
+            <g filter="url(#energyGlowPage4Mobile)" opacity="1">
+              <circle r="8.6" fill={accentGreenColor} opacity="0.54" />
+              <circle r="3.8" fill="#fcfff7" />
               <animateMotion dur="5s" repeatCount="indefinite" rotate="auto">
                 <mpath href="#energyPathPage4M2" />
               </animateMotion>
             </g>
-            <g filter="url(#energyGlowPage4Mobile)" opacity="0.98">
-              <circle r="16" fill={brandDarkColor} opacity="0.95" />
-              <circle r="5.4" cy="-3.8" fill={brandLightColor} />
-              <path d="M-8.4 11.1 V8.3 C-8.4 3.3 -4.5 -0.8 0 -0.8 C4.5 -0.8 8.4 3.3 8.4 8.3 V11.1 Z" fill={brandLightColor} />
+            <g filter="url(#energyGlowPage4Mobile)" opacity="1">
+              <circle r="7.8" fill={accentLineColor} opacity="0.5" />
+              <circle r="3.2" fill="#fcfff7" />
               <animateMotion dur="5.4s" repeatCount="indefinite" rotate="auto">
                 <mpath href="#energyPathPage4M3" />
               </animateMotion>
@@ -1041,7 +821,7 @@ const EpisodeLandingTenth: React.FC = () => {
             viewBox="0 0 1600 900"
             preserveAspectRatio="none"
             shapeRendering="geometricPrecision"
-            className="pointer-events-none absolute inset-0 hidden h-full w-full opacity-[0.78] md:block"
+            className="pointer-events-none absolute inset-0 hidden h-full w-full opacity-[0.9] md:block"
           >
             <defs>
               <filter id="energyGlowPage4Desktop" x="-220%" y="-220%" width="560%" height="560%">
@@ -1059,38 +839,41 @@ const EpisodeLandingTenth: React.FC = () => {
                   <feMergeNode in="SourceGraphic" />
                 </feMerge>
               </filter>
-              <path id="energyPathPage4A" d="M-120 300 C 180 40, 480 40, 520 320 L 520 900" />
-              <path id="energyPathPage4B" d="M-120 210 C 180 120, 540 120, 900 210 C 1260 300, 1620 300, 1920 210" />
-              <path id="energyPathPage4C" d="M1920 250 C 1620 340, 1260 340, 900 210 C 540 80, 180 80, -120 250" />
-              <path id="energyPathPage4D" d="M740 900 L 740 520 C 740 340, 860 250, 1020 250 C 1170 250, 1280 330, 1280 500 L 1280 900" />
+              <path id="energyPathPage4A" d="M-80 40 V572 C-80 708 38 776 188 776 C338 776 458 708 458 572 C458 498 404 450 332 450 C262 450 208 498 208 572 V630" />
+              <path id="energyPathPage4B" d="M1680 760 V228 C1680 92 1562 24 1412 24 C1262 24 1142 92 1142 228 C1142 302 1196 350 1268 350 C1338 350 1392 302 1392 228 V170" />
+              <path id="energyPathPage4C" d="M800 -40 V960" />
+              <path id="energyPathPage4D" d="M520 -40 C520 210 536 388 510 566 C488 714 502 842 560 960" />
+              <path id="energyPathPage4E" d="M1080 -40 C1080 210 1064 388 1090 566 C1112 714 1098 842 1040 960" />
             </defs>
-            <use href="#energyPathPage4A" fill="none" stroke={accentLineColor} strokeWidth="2.6" />
-            <use href="#energyPathPage4B" fill="none" stroke={accentLineColor} strokeWidth="2.45" />
-            <use href="#energyPathPage4C" fill="none" stroke={accentLineColor} strokeWidth="2.1" />
-            <use href="#energyPathPage4D" fill="none" stroke={accentLineColor} strokeWidth="1.95" opacity="0.9" />
-            <g filter="url(#energyGlowPage4Desktop)" opacity="0.98">
-              <circle r="16" fill={brandDarkColor} opacity="0.95" />
-              <circle r="5.4" cy="-3.8" fill={brandLightColor} />
-              <path d="M-8.4 11.1 V8.3 C-8.4 3.3 -4.5 -0.8 0 -0.8 C4.5 -0.8 8.4 3.3 8.4 8.3 V11.1 Z" fill={brandLightColor} />
+            <use href="#energyPathPage4A" fill="none" stroke={accentLineColor} strokeWidth="3.1" opacity="1" />
+            <use href="#energyPathPage4B" fill="none" stroke={accentLineColor} strokeWidth="3.1" opacity="1" />
+            <use href="#energyPathPage4C" fill="none" stroke={accentLineColor} strokeWidth="2.5" opacity="0.96" />
+            <use href="#energyPathPage4D" fill="none" stroke={accentLineColor} strokeWidth="2.1" opacity="0.92" />
+            <use href="#energyPathPage4E" fill="none" stroke={accentLineColor} strokeWidth="2.1" opacity="0.92" />
+            <g filter="url(#energyGlowPage4Desktop)" opacity="1">
+              <circle r="8.8" fill={accentGreenColor} opacity="0.52" />
+              <circle r="3.8" fill="#fcfff7" />
               <animateMotion dur="5.1s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathPage4A" /></animateMotion>
             </g>
-            <g filter="url(#energyGlowPage4Desktop)" opacity="0.98">
-              <circle r="16" fill={brandDarkColor} opacity="0.95" />
-              <circle r="5.4" cy="-3.8" fill={brandLightColor} />
-              <path d="M-8.4 11.1 V8.3 C-8.4 3.3 -4.5 -0.8 0 -0.8 C4.5 -0.8 8.4 3.3 8.4 8.3 V11.1 Z" fill={brandLightColor} />
+            <g filter="url(#energyGlowPage4Desktop)" opacity="1">
+              <circle r="8.8" fill={accentGreenColor} opacity="0.52" />
+              <circle r="3.8" fill="#fcfff7" />
               <animateMotion dur="4.1s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathPage4B" /></animateMotion>
             </g>
-            <g filter="url(#energyGlowPage4Desktop)" opacity="0.98">
-              <circle r="16" fill={brandDarkColor} opacity="0.95" />
-              <circle r="5.4" cy="-3.8" fill={brandLightColor} />
-              <path d="M-8.4 11.1 V8.3 C-8.4 3.3 -4.5 -0.8 0 -0.8 C4.5 -0.8 8.4 3.3 8.4 8.3 V11.1 Z" fill={brandLightColor} />
+            <g filter="url(#energyGlowPage4Desktop)" opacity="1">
+              <circle r="8.2" fill={accentLineColor} opacity="0.5" />
+              <circle r="3.3" fill="#fcfff7" />
               <animateMotion dur="4.8s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathPage4C" /></animateMotion>
             </g>
-            <g filter="url(#energyGlowPage4Desktop)" opacity="0.98">
-              <circle r="16" fill={brandDarkColor} opacity="0.95" />
-              <circle r="5.4" cy="-3.8" fill={brandLightColor} />
-              <path d="M-8.4 11.1 V8.3 C-8.4 3.3 -4.5 -0.8 0 -0.8 C4.5 -0.8 8.4 3.3 8.4 8.3 V11.1 Z" fill={brandLightColor} />
+            <g filter="url(#energyGlowPage4Desktop)" opacity="1">
+              <circle r="7.4" fill={accentGreenColor} opacity="0.46" />
+              <circle r="3.1" fill="#fcfff7" />
               <animateMotion dur="5.6s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathPage4D" /></animateMotion>
+            </g>
+            <g filter="url(#energyGlowPage4Desktop)" opacity="1">
+              <circle r="7.4" fill={accentGreenColor} opacity="0.46" />
+              <circle r="3.1" fill="#fcfff7" />
+              <animateMotion dur="5.9s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathPage4E" /></animateMotion>
             </g>
           </svg>
           <div className={ui.testimonialSection.container}>
