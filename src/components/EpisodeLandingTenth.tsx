@@ -9,6 +9,7 @@ import meetingImage from '../assets/images/meeting.jpg'
 import logoImage from '../assets/images/logo2.png'
 import { episodeDesignLibrary } from '../design-library'
 import EpisodeLandingOffers from './EpisodeLandingOffers'
+import EpisodeLandingEatDrink from './EpisodeLandingEatDrink'
 
 const imageModules = import.meta.glob('../assets/images/*.{jpg,jpeg,png,webp}', {
   eager: true,
@@ -36,11 +37,11 @@ const EpisodeLandingTenth: React.FC = () => {
   const thirdSectionRef = useRef<HTMLElement | null>(null)
   const fourthSectionRef = useRef<HTMLElement | null>(null)
   const fifthSectionRef = useRef<HTMLElement | null>(null)
+  const sixthSectionRef = useRef<HTMLElement | null>(null)
   const mobileTestimonialCarouselRef = useRef<HTMLDivElement | null>(null)
   const snapLockRef = useRef(false)
   const wheelDeltaAccumulatorRef = useRef(0)
   const wheelResetTimeoutRef = useRef<number | null>(null)
-  const snapSettleTimeoutRef = useRef<number | null>(null)
   const fadeUp = {
     hidden: { opacity: 0, y: 24 },
     show: { opacity: 1, y: 0 },
@@ -183,7 +184,7 @@ const EpisodeLandingTenth: React.FC = () => {
     const container = mainScrollRef.current
     if (!container) return
 
-    const sections = [firstSectionRef.current, secondSectionRef.current, thirdSectionRef.current, fourthSectionRef.current, fifthSectionRef.current].filter(Boolean) as HTMLElement[]
+    const sections = [firstSectionRef.current, secondSectionRef.current, thirdSectionRef.current, fourthSectionRef.current, fifthSectionRef.current, sixthSectionRef.current].filter(Boolean) as HTMLElement[]
     if (sections.length < 2) return
 
     const lockFor = (ms: number) => {
@@ -243,15 +244,6 @@ const EpisodeLandingTenth: React.FC = () => {
 
     const onScroll = () => {
       setActiveSnapIndex(getActiveIndex())
-      if (snapSettleTimeoutRef.current) {
-        window.clearTimeout(snapSettleTimeoutRef.current)
-      }
-      snapSettleTimeoutRef.current = window.setTimeout(() => {
-        if (snapLockRef.current) return
-        const settledIndex = getActiveIndex()
-        sections[settledIndex]?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-        lockFor(380)
-      }, 120)
     }
 
     container.addEventListener('wheel', onWheel, { passive: false })
@@ -260,9 +252,6 @@ const EpisodeLandingTenth: React.FC = () => {
     return () => {
       if (wheelResetTimeoutRef.current) {
         window.clearTimeout(wheelResetTimeoutRef.current)
-      }
-      if (snapSettleTimeoutRef.current) {
-        window.clearTimeout(snapSettleTimeoutRef.current)
       }
       container.removeEventListener('wheel', onWheel)
       container.removeEventListener('scroll', onScroll)
@@ -978,6 +967,7 @@ const EpisodeLandingTenth: React.FC = () => {
         </section>
 
         <EpisodeLandingOffers sectionRef={fifthSectionRef} isActive={activeSnapIndex === 4} />
+        <EpisodeLandingEatDrink sectionRef={sixthSectionRef} isActive={activeSnapIndex === 5} />
       </main>
     </div>
   )
