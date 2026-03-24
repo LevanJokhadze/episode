@@ -1,15 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { ArrowRight, BedDouble, CalendarCheck2, CalendarDays, ChevronDown, ChevronLeft, ChevronRight, Menu, MessageCircle, Star, Users, X } from 'lucide-react'
+import { ArrowRight, CalendarCheck2, CalendarDays, ChevronDown, Menu, MessageCircle, Users, X } from 'lucide-react'
 import mainHeroVideo from '../assets/video.mp4'
 import episodeRoomImage from '../assets/images/episode4.jpg'
-import roomTwoImage from '../assets/images/room2.avif'
 import atriumPersonsImage from '../assets/images/atrium-persons.jpg'
 import meetingImage from '../assets/images/meeting.jpg'
 import logoImage from '../assets/images/logo2.png'
 import { episodeDesignLibrary } from '../design-library'
 import EpisodeLandingOffers from './EpisodeLandingOffers'
 import EpisodeLandingEatDrink from './EpisodeLandingEatDrink'
+import EpisodeLandingSleep from './EpisodeLandingSleep'
+import EpisodeLandingMeetWork from './EpisodeLandingMeetWork'
 
 const imageModules = import.meta.glob('../assets/images/*.{jpg,jpeg,png,webp}', {
   eager: true,
@@ -27,7 +28,6 @@ const EpisodeLandingTenth: React.FC = () => {
   const [isMobileBookingOpen, setIsMobileBookingOpen] = useState(false)
   const [desktopDropdown, setDesktopDropdown] = useState<'stay' | 'about' | 'work' | null>(null)
   const [activeSnapIndex, setActiveSnapIndex] = useState(0)
-  const [activeMobileTestimonialSlide, setActiveMobileTestimonialSlide] = useState(0)
   const sceneVideos = [mainHeroVideo]
   const videoRefs = useRef<Array<HTMLVideoElement | null>>([])
   const dropdownCloseTimeout = useRef<number | null>(null)
@@ -38,7 +38,6 @@ const EpisodeLandingTenth: React.FC = () => {
   const fourthSectionRef = useRef<HTMLElement | null>(null)
   const fifthSectionRef = useRef<HTMLElement | null>(null)
   const sixthSectionRef = useRef<HTMLElement | null>(null)
-  const mobileTestimonialCarouselRef = useRef<HTMLDivElement | null>(null)
   const snapLockRef = useRef(false)
   const wheelDeltaAccumulatorRef = useRef(0)
   const wheelResetTimeoutRef = useRef<number | null>(null)
@@ -48,7 +47,6 @@ const EpisodeLandingTenth: React.FC = () => {
   }
   const ui = episodeDesignLibrary.components
   const accentLineColor = episodeDesignLibrary.colors.accent.blue
-  const accentGreenColor = episodeDesignLibrary.colors.accent.green
   const dropdownItems: Record<'stay' | 'about' | 'work', string[]> = {
     stay: ['Sleep', 'Meet & Work', 'Eat & Drink'],
     about: ['About Episode', 'FAQ', 'Blog'],
@@ -58,31 +56,6 @@ const EpisodeLandingTenth: React.FC = () => {
     sectionCarouselImages[0] ?? episodeRoomImage,
     atriumPersonsImage,
     meetingImage,
-  ] as const
-  const sleepRoomCards = [
-    { title: 'Solo', src: episodeRoomImage, guests: 'x1', beds: 'x1', size: '20 m²' },
-    { title: 'Double Room', src: roomTwoImage, guests: 'x2', beds: 'x1', size: '20 m²' },
-    { title: 'Twin Room', src: sectionCarouselImages[0] ?? episodeRoomImage, guests: 'x2', beds: 'x2', size: '20 m²' },
-  ] as const
-  const testimonialBaseSlides = [
-    {
-      quote:
-        'Modern interiors, automated check-in process, nice cafe and bar downstairs, and a free co-working space. I enjoyed every minute of my stay!',
-      author: 'Denis',
-      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80',
-    },
-    {
-      quote:
-        'Smart rooms, super fast check-in, and an amazing social vibe. Perfect blend of comfort and modern city living.',
-      author: 'Nina',
-      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80',
-    },
-    {
-      quote:
-        'Great location, clean spaces, and a super smooth digital stay experience. I would absolutely come back again.',
-      author: 'Mark',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80',
-    },
   ] as const
 
   useEffect(() => {
@@ -131,54 +104,6 @@ const EpisodeLandingTenth: React.FC = () => {
   const scrollToSecondSection = () => {
     secondSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
-
-  const scrollMobileTestimonialCarousel = (direction: -1 | 1) => {
-    const carousel = mobileTestimonialCarouselRef.current
-    if (!carousel) return
-    const firstCard = carousel.querySelector('[data-mobile-testimonial-card="true"]') as HTMLElement | null
-    const gap = Number.parseFloat(window.getComputedStyle(carousel).columnGap || window.getComputedStyle(carousel).gap || '0')
-    const step = (firstCard?.offsetWidth ?? carousel.clientWidth) + (Number.isFinite(gap) ? gap : 0)
-    const next = (activeMobileTestimonialSlide + direction + testimonialBaseSlides.length) % testimonialBaseSlides.length
-    carousel.scrollTo({ left: step * next, behavior: 'smooth' })
-    setActiveMobileTestimonialSlide(next)
-  }
-
-  useEffect(() => {
-    if (activeSnapIndex !== 3) return
-    if (window.matchMedia('(min-width: 768px)').matches) return
-    const carousel = mobileTestimonialCarouselRef.current
-    if (!carousel) return
-
-    const syncSlideFromScroll = () => {
-      const firstCard = carousel.querySelector('[data-mobile-testimonial-card="true"]') as HTMLElement | null
-      const gap = Number.parseFloat(window.getComputedStyle(carousel).columnGap || window.getComputedStyle(carousel).gap || '0')
-      const baseWidth = firstCard?.offsetWidth ?? carousel.clientWidth
-      const step = (baseWidth || 1) + (Number.isFinite(gap) ? gap : 0)
-      const nextIndex = Math.round(carousel.scrollLeft / step)
-      const bounded = Math.max(0, Math.min(nextIndex, testimonialBaseSlides.length - 1))
-      setActiveMobileTestimonialSlide(bounded)
-    }
-
-    syncSlideFromScroll()
-    carousel.addEventListener('scroll', syncSlideFromScroll, { passive: true })
-
-    const timer = window.setInterval(() => {
-      const firstCard = carousel.querySelector('[data-mobile-testimonial-card="true"]') as HTMLElement | null
-      const gap = Number.parseFloat(window.getComputedStyle(carousel).columnGap || window.getComputedStyle(carousel).gap || '0')
-      const baseWidth = firstCard?.offsetWidth ?? carousel.clientWidth
-      const step = (baseWidth || 1) + (Number.isFinite(gap) ? gap : 0)
-      setActiveMobileTestimonialSlide((prev) => {
-        const next = (prev + 1) % testimonialBaseSlides.length
-        carousel.scrollTo({ left: step * next, behavior: 'smooth' })
-        return next
-      })
-    }, 4600)
-
-    return () => {
-      carousel.removeEventListener('scroll', syncSlideFromScroll)
-      window.clearInterval(timer)
-    }
-  }, [activeSnapIndex])
 
   useEffect(() => {
     const container = mainScrollRef.current
@@ -697,274 +622,9 @@ const EpisodeLandingTenth: React.FC = () => {
           </div>
         </section>
 
-        <section ref={thirdSectionRef} className="relative flex h-screen w-full snap-start snap-always overflow-hidden bg-[#1f3436] pt-[74px] md:pt-0">
-          <div className="pointer-events-none absolute inset-0">
-            <div className="absolute inset-0 bg-[radial-gradient(55%_45%_at_12%_18%,rgba(239,211,172,0.08),transparent_66%),radial-gradient(44%_38%_at_84%_80%,rgba(184,218,240,0.08),transparent_68%)]" />
-            <div className="absolute inset-0 opacity-[0.08] [background-image:linear-gradient(rgba(209,233,236,0.14)_1px,transparent_1px),linear-gradient(90deg,rgba(209,233,236,0.14)_1px,transparent_1px)] [background-size:72px_72px]" />
-          </div>
+        <EpisodeLandingSleep sectionRef={thirdSectionRef} />
 
-          <div className="relative z-10 mx-auto w-full max-w-[1320px] px-4 py-6 md:px-10 md:py-24">
-            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:items-start md:gap-8">
-              <div>
-                <h2 className="text-[48px] font-semibold tracking-tight text-[#efd3ac] md:text-[84px]">Sleep</h2>
-              </div>
-              <div>
-                <p className="max-w-[46ch] text-[14px] leading-[1.45] text-white/80 md:text-lg md:leading-[1.6]">
-                  Step into modern comfort with thoughtfully designed rooms that balance calm, technology, and effortless city living.
-                </p>
-                <a
-                  href="#"
-                  className="group mt-4 inline-flex items-center gap-2 text-[12px] uppercase tracking-[0.14em] text-[#d1e9ec] [text-shadow:0_0_14px_rgba(209,233,236,0.34)] md:mt-6 md:text-[13px]"
-                >
-                  Book directly for exclusive benefits
-                  <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
-                </a>
-              </div>
-            </div>
-
-            <div className="mt-6 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:mt-16 md:grid md:grid-cols-3 md:gap-10 md:overflow-visible md:pb-0">
-              {sleepRoomCards.map((room) => (
-                <article
-                  key={room.title}
-                  className="group min-w-[84%] snap-start transition-transform duration-500 md:min-w-0"
-                >
-                  <div className="relative aspect-[4/3.6] w-full overflow-hidden rounded-[28px]">
-                    <img
-                      src={room.src}
-                      alt={room.title}
-                      className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                    />
-                    <div className="absolute left-4 top-4 z-20 flex gap-2">
-                      <span className="inline-flex items-center gap-1 rounded-full bg-white/82 px-2 py-0.5 text-[11px] font-medium text-[#1f3436] backdrop-blur-sm">
-                        <Users size={11} />
-                        {room.guests}
-                      </span>
-                      <span className="inline-flex items-center gap-1 rounded-full bg-white/82 px-2 py-0.5 text-[11px] font-medium text-[#1f3436] backdrop-blur-sm">
-                        <BedDouble size={11} />
-                        {room.beds}
-                      </span>
-                      <span className="inline-flex items-center rounded-full bg-white/82 px-2 py-0.5 text-[11px] font-medium text-[#1f3436] backdrop-blur-sm">
-                        {room.size}
-                      </span>
-                    </div>
-                  </div>
-                  <h3 className="inline-flex items-center gap-2 text-3xl font-medium text-white">
-                    {room.title}
-                    <ArrowRight size={18} className="transition-transform duration-300 group-hover:translate-x-2" />
-                  </h3>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section ref={fourthSectionRef} className={ui.testimonialSection.wrapper}>
-          <svg
-            viewBox="0 0 1000 360"
-            preserveAspectRatio="none"
-            shapeRendering="geometricPrecision"
-            className="pointer-events-none absolute inset-x-0 top-20 h-[34%] w-full opacity-[0.9] md:hidden"
-          >
-            <defs>
-              <filter id="energyGlowPage4Mobile" x="-220%" y="-220%" width="560%" height="560%">
-                <feGaussianBlur stdDeviation="10" result="blurred" />
-                <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="coreGlow" />
-                <feMerge>
-                  <feMergeNode in="blurred" />
-                  <feMergeNode in="coreGlow" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-              <path id="energyPathPage4M1" d="M-40 18 V236 C-40 304 24 338 108 338 C192 338 256 304 256 236 C256 198 228 172 188 172 C148 172 120 198 120 236 V266" />
-              <path id="energyPathPage4M2" d="M1040 342 V102 C1040 34 976 0 892 0 C808 0 744 34 744 102 C744 140 772 166 812 166 C852 166 880 140 880 102 V72" />
-              <path id="energyPathPage4M3" d="M500 -20 V380" />
-            </defs>
-            <use href="#energyPathPage4M1" fill="none" stroke={accentLineColor} strokeWidth="2.5" opacity="1" />
-            <use href="#energyPathPage4M2" fill="none" stroke={accentLineColor} strokeWidth="2.5" opacity="1" />
-            <use href="#energyPathPage4M3" fill="none" stroke={accentLineColor} strokeWidth="2.1" opacity="0.95" />
-
-            <g filter="url(#energyGlowPage4Mobile)" opacity="1">
-              <circle r="8.6" fill={accentGreenColor} opacity="0.54" />
-              <circle r="3.8" fill="#fcfff7" />
-              <animateMotion dur="4.6s" repeatCount="indefinite" rotate="auto">
-                <mpath href="#energyPathPage4M1" />
-              </animateMotion>
-            </g>
-            <g filter="url(#energyGlowPage4Mobile)" opacity="1">
-              <circle r="8.6" fill={accentGreenColor} opacity="0.54" />
-              <circle r="3.8" fill="#fcfff7" />
-              <animateMotion dur="5s" repeatCount="indefinite" rotate="auto">
-                <mpath href="#energyPathPage4M2" />
-              </animateMotion>
-            </g>
-            <g filter="url(#energyGlowPage4Mobile)" opacity="1">
-              <circle r="7.8" fill={accentLineColor} opacity="0.5" />
-              <circle r="3.2" fill="#fcfff7" />
-              <animateMotion dur="5.4s" repeatCount="indefinite" rotate="auto">
-                <mpath href="#energyPathPage4M3" />
-              </animateMotion>
-            </g>
-          </svg>
-
-          <svg
-            viewBox="0 0 1600 900"
-            preserveAspectRatio="none"
-            shapeRendering="geometricPrecision"
-            className="pointer-events-none absolute inset-0 hidden h-full w-full opacity-[0.9] md:block"
-          >
-            <defs>
-              <filter id="energyGlowPage4Desktop" x="-220%" y="-220%" width="560%" height="560%">
-                <feGaussianBlur stdDeviation="12" result="blurred" />
-                <feGaussianBlur in="SourceGraphic" stdDeviation="3.6" result="coreGlow" />
-                <feColorMatrix in="coreGlow" type="saturate" values="1.9" result="saturatedCore" />
-                <feComponentTransfer in="saturatedCore" result="brightCore">
-                  <feFuncR type="linear" slope="1.2" />
-                  <feFuncG type="linear" slope="1.35" />
-                  <feFuncB type="linear" slope="1.15" />
-                </feComponentTransfer>
-                <feMerge>
-                  <feMergeNode in="blurred" />
-                  <feMergeNode in="brightCore" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-              <path id="energyPathPage4A" d="M-80 40 V572 C-80 708 38 776 188 776 C338 776 458 708 458 572 C458 498 404 450 332 450 C262 450 208 498 208 572 V630" />
-              <path id="energyPathPage4B" d="M1680 760 V228 C1680 92 1562 24 1412 24 C1262 24 1142 92 1142 228 C1142 302 1196 350 1268 350 C1338 350 1392 302 1392 228 V170" />
-              <path id="energyPathPage4C" d="M800 -40 V960" />
-              <path id="energyPathPage4D" d="M520 -40 C520 210 536 388 510 566 C488 714 502 842 560 960" />
-              <path id="energyPathPage4E" d="M1080 -40 C1080 210 1064 388 1090 566 C1112 714 1098 842 1040 960" />
-            </defs>
-            <use href="#energyPathPage4A" fill="none" stroke={accentLineColor} strokeWidth="3.1" opacity="1" />
-            <use href="#energyPathPage4B" fill="none" stroke={accentLineColor} strokeWidth="3.1" opacity="1" />
-            <use href="#energyPathPage4C" fill="none" stroke={accentLineColor} strokeWidth="2.5" opacity="0.96" />
-            <use href="#energyPathPage4D" fill="none" stroke={accentLineColor} strokeWidth="2.1" opacity="0.92" />
-            <use href="#energyPathPage4E" fill="none" stroke={accentLineColor} strokeWidth="2.1" opacity="0.92" />
-            <g filter="url(#energyGlowPage4Desktop)" opacity="1">
-              <circle r="8.8" fill={accentGreenColor} opacity="0.52" />
-              <circle r="3.8" fill="#fcfff7" />
-              <animateMotion dur="5.1s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathPage4A" /></animateMotion>
-            </g>
-            <g filter="url(#energyGlowPage4Desktop)" opacity="1">
-              <circle r="8.8" fill={accentGreenColor} opacity="0.52" />
-              <circle r="3.8" fill="#fcfff7" />
-              <animateMotion dur="4.1s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathPage4B" /></animateMotion>
-            </g>
-            <g filter="url(#energyGlowPage4Desktop)" opacity="1">
-              <circle r="8.2" fill={accentLineColor} opacity="0.5" />
-              <circle r="3.3" fill="#fcfff7" />
-              <animateMotion dur="4.8s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathPage4C" /></animateMotion>
-            </g>
-            <g filter="url(#energyGlowPage4Desktop)" opacity="1">
-              <circle r="7.4" fill={accentGreenColor} opacity="0.46" />
-              <circle r="3.1" fill="#fcfff7" />
-              <animateMotion dur="5.6s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathPage4D" /></animateMotion>
-            </g>
-            <g filter="url(#energyGlowPage4Desktop)" opacity="1">
-              <circle r="7.4" fill={accentGreenColor} opacity="0.46" />
-              <circle r="3.1" fill="#fcfff7" />
-              <animateMotion dur="5.9s" repeatCount="indefinite" rotate="auto"><mpath href="#energyPathPage4E" /></animateMotion>
-            </g>
-          </svg>
-          <div className={ui.testimonialSection.container}>
-            <div className="mb-5 md:hidden">
-              <p className="text-[11px] uppercase tracking-[0.18em] text-[#1f3436]/70">Reviews</p>
-              <h3 className="mt-2 text-[26px] font-semibold leading-[1.05] tracking-tight text-[#101616]">Guest stories</h3>
-              <p className="mt-2 text-[13px] leading-[1.4] text-[#2f3839]/75">Swipe or tap arrows to explore verified experiences.</p>
-            </div>
-
-            <div
-              ref={mobileTestimonialCarouselRef}
-              className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 [scrollbar-width:none] md:hidden [&::-webkit-scrollbar]:hidden"
-            >
-              {testimonialBaseSlides.map((item) => (
-                <article
-                  key={`mobile-${item.author}`}
-                  data-mobile-testimonial-card="true"
-                  className="min-w-full snap-start rounded-[24px] border border-[#d8dede] bg-[#e8ecec] px-5 py-6 shadow-[0_10px_24px_rgba(31,52,54,0.08)]"
-                >
-                  <div className="mb-2 flex items-center gap-1 text-[#d2a96c]">
-                    {Array.from({ length: 5 }).map((_, starIndex) => (
-                      <Star key={`${item.author}-mobile-star-${starIndex}`} size={15} fill="currentColor" />
-                    ))}
-                  </div>
-                  <p className="text-[38px] font-bold leading-none text-[#111]">“</p>
-                  <p className="mt-1 text-[18px] leading-[1.35] text-[#101616]">{item.quote}</p>
-                  <div className="mt-4 flex items-center justify-between gap-3 text-[16px] text-[#111]">
-                    <div>
-                      <span className="font-semibold">{item.author}</span>
-                      <span className="ml-2 text-[#2f3839]/80">(More reviews →)</span>
-                    </div>
-                    <img
-                      src={item.avatar}
-                      alt={`${item.author} profile`}
-                      loading="lazy"
-                      className="h-11 w-11 rounded-full border border-white/80 object-cover shadow-[0_6px_14px_rgba(31,52,54,0.20)]"
-                    />
-                  </div>
-                </article>
-              ))}
-            </div>
-
-            <div className="mt-4 flex items-center justify-between md:hidden">
-              <button
-                type="button"
-                aria-label="Previous testimonial"
-                onClick={() => scrollMobileTestimonialCarousel(-1)}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#1f3436]/15 bg-white/85 text-[#1f3436] shadow-[0_8px_18px_rgba(31,52,54,0.12)]"
-              >
-                <ChevronLeft size={18} />
-              </button>
-              <div className="flex items-center gap-1.5">
-                {testimonialBaseSlides.map((item, dotIndex) => (
-                  <span
-                    key={`mobile-dot-${item.author}`}
-                    className={`h-1.5 rounded-full transition-all duration-300 ${
-                      dotIndex === activeMobileTestimonialSlide ? 'w-6 bg-[#1f3436]' : 'w-2 bg-[#1f3436]/30'
-                    }`}
-                  />
-                ))}
-              </div>
-              <button
-                type="button"
-                aria-label="Next testimonial"
-                onClick={() => scrollMobileTestimonialCarousel(1)}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#1f3436]/15 bg-white/85 text-[#1f3436] shadow-[0_8px_18px_rgba(31,52,54,0.12)]"
-              >
-                <ChevronRight size={18} />
-              </button>
-            </div>
-
-            <div className="hidden md:block">
-              <div className={ui.testimonialSection.carouselViewport}>
-                <div className={ui.testimonialSection.carouselTrack}>
-                  {[...testimonialBaseSlides, ...testimonialBaseSlides].map((item, cardIndex) => (
-                    <div key={`${item.author}-${cardIndex}`} className={ui.testimonialSection.panel}>
-                      <div className="mb-3 flex items-center gap-1 text-[#d2a96c]">
-                        {Array.from({ length: 5 }).map((_, starIndex) => (
-                          <Star key={`${item.author}-star-${starIndex}`} size={15} fill="currentColor" />
-                        ))}
-                      </div>
-                      <p className={ui.testimonialSection.quoteMark}>“</p>
-                      <p className={ui.testimonialSection.quoteText}>{item.quote}</p>
-                      <div className={`${ui.testimonialSection.authorRow} flex items-center justify-between gap-3`}>
-                        <div>
-                          <span className={ui.testimonialSection.authorName}>{item.author}</span>
-                          <span className={ui.testimonialSection.authorMeta}>(More reviews →)</span>
-                        </div>
-                        <img
-                          src={item.avatar}
-                          alt={`${item.author} profile`}
-                          loading="lazy"
-                          className="h-12 w-12 rounded-full border border-white/85 object-cover shadow-[0_8px_18px_rgba(31,52,54,0.22)]"
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        <EpisodeLandingMeetWork sectionRef={fourthSectionRef} />
 
         <EpisodeLandingOffers sectionRef={fifthSectionRef} isActive={activeSnapIndex === 4} />
         <EpisodeLandingEatDrink sectionRef={sixthSectionRef} isActive={activeSnapIndex === 5} />
