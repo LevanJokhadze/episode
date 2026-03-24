@@ -38,9 +38,6 @@ const EpisodeLandingTenth: React.FC = () => {
   const fourthSectionRef = useRef<HTMLElement | null>(null)
   const fifthSectionRef = useRef<HTMLElement | null>(null)
   const sixthSectionRef = useRef<HTMLElement | null>(null)
-  const snapLockRef = useRef(false)
-  const wheelDeltaAccumulatorRef = useRef(0)
-  const wheelResetTimeoutRef = useRef<number | null>(null)
   const fadeUp = {
     hidden: { opacity: 0, y: 24 },
     show: { opacity: 1, y: 0 },
@@ -56,6 +53,12 @@ const EpisodeLandingTenth: React.FC = () => {
     sectionCarouselImages[0] ?? episodeRoomImage,
     atriumPersonsImage,
     meetingImage,
+  ] as const
+  const isWhoWeAreActive = activeSnapIndex === 1
+  const whoWeArePillars = [
+    { title: 'Networking', detail: 'Curated people and conversations.' },
+    { title: 'Bar Culture', detail: 'Cocktails, music, and social energy.' },
+    { title: 'Communal Spaces', detail: 'Work, rest, and connect in one flow.' },
   ] as const
 
   useEffect(() => {
@@ -112,20 +115,6 @@ const EpisodeLandingTenth: React.FC = () => {
     const sections = [firstSectionRef.current, secondSectionRef.current, thirdSectionRef.current, fourthSectionRef.current, fifthSectionRef.current, sixthSectionRef.current].filter(Boolean) as HTMLElement[]
     if (sections.length < 2) return
 
-    const lockFor = (ms: number) => {
-      snapLockRef.current = true
-      window.setTimeout(() => {
-        snapLockRef.current = false
-      }, ms)
-    }
-
-    const snapToIndex = (targetIndex: number) => {
-      const boundedIndex = Math.max(0, Math.min(targetIndex, sections.length - 1))
-      setActiveSnapIndex(boundedIndex)
-      sections[boundedIndex]?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      lockFor(560)
-    }
-
     const getActiveIndex = () => {
       const top = container.scrollTop
       let bestIndex = 0
@@ -140,45 +129,41 @@ const EpisodeLandingTenth: React.FC = () => {
       return bestIndex
     }
 
-    const onWheel = (event: WheelEvent) => {
-      if (snapLockRef.current) {
-        event.preventDefault()
-        return
-      }
+    // Keep active section in sync with native CSS snap behavior.
+    const observer = new IntersectionObserver(
+      (entries) => {
+        let bestEntry: IntersectionObserverEntry | null = null
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue
+          if (!bestEntry || entry.intersectionRatio > bestEntry.intersectionRatio) {
+            bestEntry = entry
+          }
+        }
+        if (!bestEntry) return
+        const idx = sections.findIndex((section) => section === bestEntry?.target)
+        if (idx >= 0) setActiveSnapIndex(idx)
+      },
+      {
+        root: container,
+        threshold: [0.25, 0.5, 0.75],
+      },
+    )
 
-      if (Math.abs(event.deltaY) < 2) return
-      event.preventDefault()
+    sections.forEach((section) => observer.observe(section))
 
-      wheelDeltaAccumulatorRef.current += event.deltaY
-      if (wheelResetTimeoutRef.current) {
-        window.clearTimeout(wheelResetTimeoutRef.current)
-      }
-      wheelResetTimeoutRef.current = window.setTimeout(() => {
-        wheelDeltaAccumulatorRef.current = 0
-      }, 140)
-
-      if (Math.abs(wheelDeltaAccumulatorRef.current) < 42) return
-
-      const currentIndex = getActiveIndex()
-      const direction = wheelDeltaAccumulatorRef.current > 0 ? 1 : -1
-      wheelDeltaAccumulatorRef.current = 0
-      const nextIndex = currentIndex + direction
-      if (nextIndex === currentIndex) return
-      snapToIndex(nextIndex)
-    }
-
+    let rafId: number | null = null
     const onScroll = () => {
-      setActiveSnapIndex(getActiveIndex())
+      if (rafId !== null) window.cancelAnimationFrame(rafId)
+      rafId = window.requestAnimationFrame(() => {
+        setActiveSnapIndex(getActiveIndex())
+      })
     }
 
-    container.addEventListener('wheel', onWheel, { passive: false })
     container.addEventListener('scroll', onScroll, { passive: true })
     onScroll()
     return () => {
-      if (wheelResetTimeoutRef.current) {
-        window.clearTimeout(wheelResetTimeoutRef.current)
-      }
-      container.removeEventListener('wheel', onWheel)
+      if (rafId !== null) window.cancelAnimationFrame(rafId)
+      observer.disconnect()
       container.removeEventListener('scroll', onScroll)
     }
   }, [])
@@ -326,7 +311,7 @@ const EpisodeLandingTenth: React.FC = () => {
           </button>
         </motion.div>
       )}
-      <main ref={mainScrollRef} className="h-screen snap-y snap-mandatory md:snap-proximity overflow-y-auto overscroll-y-contain scroll-smooth">
+      <main ref={mainScrollRef} className="h-screen snap-y snap-mandatory overflow-y-auto overscroll-y-contain scroll-smooth">
         <section ref={firstSectionRef} className="relative flex h-screen snap-start snap-always items-center justify-center overflow-hidden pt-16 md:pt-20">
           <div className="absolute inset-0 z-0 bg-[#1f3436]">
             {sceneVideos.map((videoSrc, index) => (
@@ -493,13 +478,13 @@ const EpisodeLandingTenth: React.FC = () => {
 
         <section
           ref={secondSectionRef}
-          className="relative flex h-screen snap-start snap-always items-center overflow-hidden bg-[#f1f3f3] px-4 pb-6 pt-[82px] text-[#171717] md:px-10 md:pb-0 md:pt-0"
+          className="relative flex h-screen snap-start snap-always items-center overflow-hidden bg-[#f1f3f3] px-4 pb-6 pt-[82px] text-[#171717] max-[390px]:px-3 max-[390px]:pb-4 max-[390px]:pt-[74px] md:px-10 md:pb-0 md:pt-0"
         >
           <svg
             viewBox="0 0 1600 900"
             preserveAspectRatio="none"
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 h-full w-full opacity-[0.9]"
+            className="pointer-events-none absolute inset-0 h-full w-full opacity-[0.9] max-[390px]:opacity-[0.58]"
           >
             <defs>
               <filter id="whoWeAreLineGlow" x="-250%" y="-250%" width="600%" height="600%">
@@ -568,63 +553,143 @@ const EpisodeLandingTenth: React.FC = () => {
               </animateMotion>
             </circle>
           </svg>
-          <div className="relative mx-auto grid w-full max-w-[1240px] grid-cols-1 items-center gap-4 md:grid-cols-2 md:items-center md:gap-12">
-            <div className="max-w-[640px]">
-              <h2 className="mb-2 text-[30px] font-semibold leading-[0.95] tracking-tight text-[#1f3436] md:mb-5 md:text-[62px]">Who we are</h2>
-              <p className="text-[14px] leading-[1.5] text-[#1f1f1f]/85 md:text-lg md:leading-7">
-                Episode is created for today&apos;s modern travelers: those who demand more for less. We are innovators who merge technology with chic design to create unique experiences. Our hotel rooms and social spaces are created to offer maximum comfort and style, providing everything you need and nothing you don&apos;t. Join us and experience the future of hospitality today.
-              </p>
-              <h3 className="mt-3 text-[22px] font-medium leading-[1.08] tracking-tight text-[#1f3436] md:mt-9 md:text-[40px]">
-                Just like our doors, our minds are open too!
-              </h3>
+          <motion.div
+            initial={{ opacity: 0, y: 26 }}
+            animate={isWhoWeAreActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 26 }}
+            transition={{ duration: 0.75, ease: [0.2, 0.9, 0.24, 1] }}
+            className="relative mx-auto grid w-full max-w-[1260px] grid-cols-1 items-center gap-5 md:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] md:gap-10"
+          >
+            <motion.div
+              initial={{ opacity: 0, x: -34 }}
+              animate={isWhoWeAreActive ? { opacity: 1, x: 0 } : { opacity: 0, x: -34 }}
+              transition={{ duration: 0.7, delay: isWhoWeAreActive ? 0.06 : 0, ease: [0.2, 0.9, 0.24, 1] }}
+              className="max-w-[650px] max-[390px]:max-w-[360px] md:translate-y-4"
+            >
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                animate={isWhoWeAreActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+                transition={{ duration: 0.55, delay: isWhoWeAreActive ? 0.08 : 0 }}
+                className="mb-2 text-[11px] uppercase tracking-[0.2em] text-[#1f3436]/68 md:mb-3"
+              >
+                Who we are
+              </motion.p>
+              <motion.h2
+                initial={{ opacity: 0, y: 18 }}
+                animate={isWhoWeAreActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
+                transition={{ duration: 0.62, delay: isWhoWeAreActive ? 0.14 : 0, ease: [0.2, 0.9, 0.24, 1] }}
+                className="mb-3 text-[32px] font-semibold leading-[0.92] tracking-tight text-[#1f3436] max-[390px]:mb-2.5 max-[390px]:text-[28px] max-[390px]:leading-[0.96] md:mb-6 md:text-[64px]"
+              >
+                Everything social,
+                <br />
+                under one roof.
+              </motion.h2>
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={isWhoWeAreActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                transition={{ duration: 0.66, delay: isWhoWeAreActive ? 0.22 : 0, ease: [0.2, 0.9, 0.24, 1] }}
+                className="max-w-[58ch] text-[14px] leading-[1.5] text-[#1f1f1f]/84 max-[390px]:text-[12px] max-[390px]:leading-[1.38] md:text-[17px] md:leading-[1.58]"
+              >
+                At Episode, your day flows naturally from productive networking to vibrant bar evenings and relaxed communal moments.
+                No disconnected venues, no friction, just one living ecosystem built for modern city life.
+              </motion.p>
+              <div className="mt-4 grid gap-2.5 max-[390px]:mt-3 max-[390px]:gap-2 md:mt-6">
+                {whoWeArePillars.map((pillar, idx) => (
+                  <motion.div
+                    key={pillar.title}
+                    initial={{ opacity: 0, x: -18 }}
+                    animate={isWhoWeAreActive ? { opacity: 1, x: 0 } : { opacity: 0, x: -18 }}
+                    transition={{ duration: 0.55, delay: isWhoWeAreActive ? 0.28 + idx * 0.08 : 0, ease: [0.2, 0.9, 0.24, 1] }}
+                    className={`inline-flex w-fit items-center gap-3 rounded-2xl border border-[#1f3436]/12 bg-white/55 px-3.5 py-2 shadow-[0_10px_24px_rgba(31,52,54,0.08)] backdrop-blur-sm max-[390px]:gap-2 max-[390px]:px-2.5 max-[390px]:py-1.5 md:px-4 ${idx === 2 ? 'max-[390px]:hidden' : ''}`}
+                  >
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#1f3436]" />
+                    <p className="text-[12px] text-[#1f3436]/82 max-[390px]:text-[11px] md:text-[13px]">
+                      <span className="font-semibold text-[#1f3436]">{pillar.title}</span>
+                      <span className="ml-2">{pillar.detail}</span>
+                    </p>
+                  </motion.div>
+                ))}
+              </div>
               <motion.button
                 type="button"
+                initial={{ opacity: 0, y: 18 }}
+                animate={isWhoWeAreActive ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
+                transition={{ duration: 0.6, delay: isWhoWeAreActive ? 0.48 : 0, ease: [0.2, 0.9, 0.24, 1] }}
                 whileHover={{ y: -1, scale: 1.01 }}
                 whileTap={{ scale: 0.98 }}
-                className={`${ui.bookingPanel.submit} group mt-4 inline-flex h-10 w-auto items-center gap-2 px-6 text-[13px] md:mt-6 md:h-11 md:px-7 md:text-sm`}
+                className={`${ui.bookingPanel.submit} group mt-4 inline-flex h-10 w-auto items-center gap-2 px-6 text-[13px] max-[390px]:mt-3 max-[390px]:h-9 max-[390px]:px-4 max-[390px]:text-[11px] md:mt-6 md:h-11 md:px-7 md:text-sm`}
               >
                 Read more
                 <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
               </motion.button>
-            </div>
+            </motion.div>
 
-            <div className="group relative mx-auto h-[204px] w-full max-w-[560px] md:h-[520px]">
-              <img
-                src={whoWeAreCollageImages[0]}
-                alt="Episode architecture"
-                className="h-full w-full rounded-[32px] object-cover shadow-lg"
-              />
+            <motion.div
+              initial={{ opacity: 0, x: 34 }}
+              animate={isWhoWeAreActive ? { opacity: 1, x: 0 } : { opacity: 0, x: 34 }}
+              transition={{ duration: 0.75, delay: isWhoWeAreActive ? 0.12 : 0, ease: [0.2, 0.9, 0.24, 1] }}
+              className="group relative mx-auto h-[230px] w-full max-w-[620px] max-[390px]:h-[188px] max-[390px]:max-w-[350px] md:h-[500px]"
+            >
               <motion.div
-                initial={{ opacity: 0, y: -46 }}
-                animate={activeSnapIndex === 1 ? { opacity: 1, y: 0 } : { opacity: 0, y: -46 }}
-                transition={{ duration: 0.7, ease: [0.2, 0.9, 0.24, 1], delay: activeSnapIndex === 1 ? 0.12 : 0 }}
-                className="absolute -left-1 -top-1 w-[40%] md:-left-6 md:-top-6 md:w-1/2"
+                initial={{ opacity: 0, y: 18, scale: 1.05 }}
+                animate={isWhoWeAreActive ? { opacity: 1, y: [0, -4, 0], scale: 1 } : { opacity: 0, y: 18, scale: 1.05 }}
+                transition={{
+                  opacity: { duration: 0.7, delay: isWhoWeAreActive ? 0.18 : 0, ease: [0.2, 0.9, 0.24, 1] },
+                  scale: { duration: 0.7, delay: isWhoWeAreActive ? 0.18 : 0, ease: [0.2, 0.9, 0.24, 1] },
+                  y: { duration: 5.4, repeat: Infinity, ease: 'easeInOut' },
+                }}
+                className="absolute right-0 top-[8%] h-[85%] w-[74%] overflow-hidden rounded-[34px] shadow-[0_26px_52px_rgba(31,52,54,0.24)]"
+              >
+                <img src={whoWeAreCollageImages[0]} alt="Episode architecture" className="h-full w-full object-cover" />
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: -42 }}
+                animate={isWhoWeAreActive ? { opacity: 1, y: [0, -5, 0] } : { opacity: 0, y: -42 }}
+                transition={{
+                  opacity: { duration: 0.7, delay: isWhoWeAreActive ? 0.26 : 0, ease: [0.2, 0.9, 0.24, 1] },
+                  y: { duration: 5.1, repeat: Infinity, ease: 'easeInOut' },
+                }}
+                className="absolute left-[2%] top-0 w-[38%]"
               >
                 <img
                   src={whoWeAreCollageImages[1]}
-                  alt="Episode social vibe"
-                  className="aspect-[4/5] w-full rounded-[15px] border-4 border-[#f1f3f3] object-cover shadow-xl transition-transform duration-700 ease-[cubic-bezier(0.2,0.9,0.24,1)] group-hover:-translate-x-2 group-hover:-translate-y-2 group-hover:-rotate-1 md:rounded-[24px]"
+                  alt="Episode networking spaces"
+                  className="aspect-[4/5] w-full rounded-[22px] border-4 border-[#f1f3f3] object-cover shadow-xl transition-transform duration-700 ease-[cubic-bezier(0.2,0.9,0.24,1)] group-hover:-translate-x-2 group-hover:-translate-y-2 group-hover:-rotate-1"
                 />
               </motion.div>
+
               <motion.div
-                initial={{ opacity: 0, y: 52 }}
-                animate={activeSnapIndex === 1 ? { opacity: 1, y: 0 } : { opacity: 0, y: 52 }}
-                transition={{ duration: 0.7, ease: [0.2, 0.9, 0.24, 1], delay: activeSnapIndex === 1 ? 0.28 : 0 }}
-                className="absolute -bottom-2 -right-1 w-[34%] md:-bottom-8 md:-right-4 md:w-5/12"
+                initial={{ opacity: 0, y: 48 }}
+                animate={isWhoWeAreActive ? { opacity: 1, y: [0, 5, 0] } : { opacity: 0, y: 48 }}
+                transition={{
+                  opacity: { duration: 0.7, delay: isWhoWeAreActive ? 0.34 : 0, ease: [0.2, 0.9, 0.24, 1] },
+                  y: { duration: 5.8, repeat: Infinity, ease: 'easeInOut' },
+                }}
+                className="absolute bottom-[2%] left-[16%] w-[34%]"
               >
                 <img
                   src={whoWeAreCollageImages[2]}
-                  alt="Connected guest stories"
-                  className="aspect-square w-full rounded-[15px] border-4 border-[#f1f3f3] object-cover shadow-xl transition-transform duration-700 ease-[cubic-bezier(0.2,0.9,0.24,1)] group-hover:translate-x-2 group-hover:translate-y-2 group-hover:rotate-1 md:rounded-[24px]"
+                  alt="Episode communal and social moments"
+                  className="aspect-square w-full rounded-[22px] border-4 border-[#f1f3f3] object-cover shadow-xl transition-transform duration-700 ease-[cubic-bezier(0.2,0.9,0.24,1)] group-hover:translate-x-2 group-hover:translate-y-2 group-hover:rotate-1"
                 />
               </motion.div>
-            </div>
-          </div>
+
+              <motion.div
+                initial={{ opacity: 0, scale: 0.92 }}
+                animate={isWhoWeAreActive ? { opacity: 1, scale: [1, 1.03, 1] } : { opacity: 0, scale: 0.92 }}
+                transition={{ duration: 0.8, delay: isWhoWeAreActive ? 0.42 : 0, scale: { duration: 3.6, repeat: Infinity, ease: 'easeInOut' } }}
+                className="absolute bottom-[8%] right-[6%] rounded-2xl border border-white/70 bg-white/78 px-4 py-2 shadow-[0_14px_32px_rgba(31,52,54,0.16)] backdrop-blur-sm"
+              >
+                <p className="text-[10px] uppercase tracking-[0.16em] text-[#1f3436]/65">Episode ecosystem</p>
+                <p className="mt-1 text-[13px] font-semibold text-[#1f3436]">Network • Bar • Communal</p>
+              </motion.div>
+            </motion.div>
+          </motion.div>
         </section>
 
-        <EpisodeLandingSleep sectionRef={thirdSectionRef} />
+        <EpisodeLandingSleep sectionRef={thirdSectionRef} isActive={activeSnapIndex === 2} />
 
-        <EpisodeLandingMeetWork sectionRef={fourthSectionRef} />
+        <EpisodeLandingMeetWork sectionRef={fourthSectionRef} isActive={activeSnapIndex === 3} />
 
         <EpisodeLandingOffers sectionRef={fifthSectionRef} isActive={activeSnapIndex === 4} />
         <EpisodeLandingEatDrink sectionRef={sixthSectionRef} isActive={activeSnapIndex === 5} />
